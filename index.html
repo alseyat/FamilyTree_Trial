@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="Arabic">
+<head>
+    <meta charset="UTF-8">
+    <title>شجرة عشيرة السياط</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
+
+        .node rect {
+            fill: #fff;
+            stroke: steelblue;
+            stroke-width: 3px;
+        }
+        .node text {
+            font-family: 'Noto Naskh Arabic', sans-serif;
+        }
+        .link {
+            fill: none;
+            stroke: #040404;
+            stroke-width: 2.5px;
+        }
+        .node:hover {
+            cursor: pointer;
+        }
+        .node.has-children rect {
+            fill: lightblue;
+        }
+        .node.collapsed rect {
+            fill: blue;
+        }
+
+        #tree-container {
+            overflow-x: auto;
+            overflow-y: auto;
+            width: 100%;
+            height: 100%;
+        }
+        svg {
+            width: 50000px;
+            height: 10000px;
+        }
+
+        #expand-collapse-btn:hover {
+            background-color: rgb(134, 131, 131);
+        }
+
+        #expand-collapse-btn {
+            position: absolute;
+            top: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px 5px;
+            background-color: rgb(223, 221, 221);
+            border: 2px solid darkgray;
+            cursor: pointer;
+            text-align: center; /* Center the text horizontally */
+            line-height: 1; /* Adjust line height to center the text vertically */
+            width: 230px; /* Adjust width for desktop view */
+            height: 15px; /* Adjust height for desktop view */
+            border-radius: 10px; /* Rounded corners */
+
+        }
+
+        #page-title {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-family: 'Noto Naskh Arabic', sans-serif;
+            font-size: 40px; /* Adjust font size here */
+            white-space: nowrap; /* Prevent text from wrapping */
+            overflow: hidden; /* Hide overflow */
+            text-overflow: ellipsis; /* Add ellipsis to indicate overflow */
+        }
+
+        #page-subtitle {
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-family: 'Noto Naskh Arabic', sans-serif;
+            font-size: 20px; /* Adjust font size here */
+            white-space: nowrap; /* Prevent text from wrapping */
+            overflow: hidden; /* Hide overflow */
+            text-overflow: ellipsis; /* Add ellipsis to indicate overflow */
+        }
+
+        @media (max-width: 600px) {
+            #page-title {
+                position: absolute;
+                font-family: 'Noto Naskh Arabic', sans-serif;
+                font-size: 20px !important; /* Smaller font size for mobile */
+                top: 10px!important; 
+                left: 50% !important; /* Center align for mobile */
+                text-align: center;
+                transform: translateX(-50%) !important; /* Keep centered for mobile */
+                width: 90% !important; /* Ensure it fits in mobile view */
+                margin: 0 auto !important; /* Center horizontally */
+                white-space: nowrap; /* Prevent text from wrapping */
+                overflow: hidden; /* Hide overflow */
+                text-overflow: ellipsis; /* Add ellipsis to indicate overflow */
+            }
+
+            #page-subtitle {
+                font-size: 15px !important; /* Smaller font size for mobile */
+                top: 35px !important; /* Adjust top position for mobile */
+                left: 50% !important; /* Center align for mobile */
+                transform: translateX(-50%) !important; /* Keep centered for mobile */
+                width: 90% !important; /* Ensure it fits in mobile view */
+                margin: 0 auto !important; /* Center horizontally */
+                white-space: nowrap; /* Prevent text from wrapping */
+                overflow: hidden; /* Hide overflow */
+                text-overflow: ellipsis; /* Add ellipsis to indicate overflow */
+            }
+
+            #expand-collapse-btn {
+                font-size: 13px !important; /* Smaller font size for mobile */
+                padding: 3px 3px !important; /* Smaller padding for mobile */
+                top: 90px !important; /* Adjust top position for mobile */
+                left: 50% !important; /* Adjust left position for mobile */
+                transform: translateX(-50%) !important; /* Keep centered for mobile */
+                position: absolute;
+                background-color: lightgray;
+                border: 2px solid darkgray;
+                cursor: pointer;
+                text-align: center; /* Center the text horizontally */
+                line-height: 1; /* Adjust line height to center the text vertically */
+                width: 120px; /* Adjust width for desktop view */
+                height: 25px; /* Adjust height for desktop view */
+                border-radius: 10px; /* Rounded corners */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="page-title">
+        <div>شجرة عشيرة السياط</div>
+    </div>
+    <div id="page-subtitle">
+        <div>من ذرية سياط بن عودة بن محمد بن علّيج بن محمد بن سليمان (جد الحجلا)</div>
+        <div>بن نافع بن عمار بن زقروط الربيعي العبدي الشمري</div>
+    </div>
+    
+    <div id="expand-collapse-btn">اضغط هنا لعرض كامل الشجرة أو إغلاقها</div>
+    <div id="tree-container">
+        <svg></svg>
+    </div>
+    <script type="module">
+        import data from './alseyat.js';
+
+        const margin = { top: 200, right: 20, bottom: 20, left: 300 }; // Adjusted top margin to 200px for spacing below the button
+        let width = 1200, height = 2000;
+
+        let i = 0, duration = 200;
+
+        const svg = d3.select("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        const svgGroup = svg.append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`); // Initial translation with increased top padding
+
+        const tree = d3.tree().nodeSize([120, 50])
+            .separation((a, b) => a.parent === b.parent ? 1 : 1.25);
+        
+        let root = d3.hierarchy(data);
+        root.x0 = width / 2;
+        root.y0 = 0;
+
+        // Function to reverse children of each node
+        function reverseChildren(node) {
+            if (node.children) {
+                node.children.reverse();
+                node.children.forEach(reverseChildren);
+            }
+        }
+
+        // Reverse children order for the root node
+        reverseChildren(root);
+
+        collapse(root);
+
+        function collapse(d) {
+            if (d.children) {
+                d._children = d.children;
+                d._children.forEach(collapse);
+                d.children = null;
+            }
+        }
+
+        function expand(d) {
+            if (d._children) {
+                d.children = d._children;
+                d.children.forEach(expand);
+                d._children = null;
+            }
+        }
+
+        function update(source) {
+            const treeData = tree(root);
+            const nodes = treeData.descendants();
+            const links = treeData.descendants().slice(1);
+
+            nodes.forEach(d => d.y = d.depth * 70);
+
+            // Calculate the minimum x-coordinate to adjust the tree position
+            const minX = Math.min(...nodes.map(d => d.x));
+            const adjustment = Math.max(0, 100 - minX); // Ensure minimum padding of 200
+
+            // Calculate the maximum x-coordinate to adjust the SVG height
+            const maxX = Math.max(...nodes.map(d => d.x));
+            const newHeight = maxX + 200; // Add padding of 200
+
+            // Adjust the tree position dynamically
+            svgGroup.attr("transform", `translate(${adjustment} , 230)`);
+            // Adjust the SVG height dynamically
+            d3.select("svg").attr("height", newHeight);
+
+            const node = svgGroup.selectAll('g.node')
+                .data(nodes, d => d.id || (d.id = ++i));
+
+            const nodeEnter = node.enter().append('g')
+                .attr('class', 'node')
+                .attr('transform', d => `translate(${source.x0},${source.y0})`)
+                .on('click', click);
+
+            nodeEnter.append('rect')
+                .attr('width', 100)
+                .attr('height', 40)
+                .attr('x', -50)
+                .attr('y', -15)
+                .attr('rx', 10)
+                .attr('ry', 10)
+                .attr('class', 'node')
+                .style('fill', d => d._children ? "lightsteelblue" : "#fff");
+
+            nodeEnter.append('text')
+                .attr('dy', '.23em')
+                .attr('x', 0)
+                .attr('text-anchor', 'middle')
+                .attr("font-family", 'Noto Naskh Arabic, sans-serif')
+                .attr("font-size", "20px")
+                .text(d => d.data.name);
+
+            nodeEnter.append('text')
+                .attr('dy', '.35em')
+                .attr('x', 50)
+                .attr('y', -15)
+                .attr('text-anchor', 'start')
+                .attr("font-family", 'Noto Naskh Arabic, sans-serif')
+                .attr("font-size", "13px")
+                .style('fill', 'red')
+                .text(d => d.children || d._children ? `(${d.children ? d.children.length : d._children.length})` : '');
+
+            const nodeUpdate = nodeEnter.merge(node);
+
+            nodeUpdate.transition()
+                .duration(d => d.depth === 0 ? 0 : duration)
+                .attr('transform', d => `translate(${d.x},${d.y})`);
+
+            nodeUpdate.select('rect')
+                .attr('width', 100)
+                .attr('height', 30)
+                .attr('x', -50)
+                .attr('y', -15)
+                .attr('rx', 10)
+                .attr('ry', 10)
+                .attr('class', d => d._children ? 'has-children' : '')
+                .style('fill', d => d._children ? "lightsteelblue" : "#fff");
+
+            const nodeExit = node.exit().transition()
+                .duration(duration)
+                .attr('transform', d => `translate(${source.x},${source.y})`)
+                .remove();
+
+            nodeExit.select('rect')
+                .attr('width', 100)
+                .attr('height', 30)
+                .attr('x', -50)
+                .attr('y', -15)
+                .attr('rx', 10)
+                .attr('ry', 10);
+
+            const link = svgGroup.selectAll('path.link')
+                .data(links, d => d.id);
+
+            const linkEnter = link.enter().insert('path', 'g')
+                .attr('class', 'link')
+                .attr('d', d => {
+                    const o = { x: source.x, y: source.y };
+                    return `M${o.x},${o.y}V${o.y}H${d.x}V${d.y}`;
+                });
+
+            const linkUpdate = linkEnter.merge(link);
+
+            linkUpdate.transition()
+                .duration(duration)
+                .attr('d', d => `M${d.parent.x},${d.parent.y}V${d.parent.y + 35}H${d.x}V${d.y}`);
+
+            const linkExit = link.exit()
+                .attr('d', d => {
+                    const o = { x: source.x, y: source.y };
+                    return `M${o.x},${o.y}V${o.y}H${d.x}V${d.y}`;
+                })
+                .remove();
+
+            nodes.forEach(d => {
+                d.x0 = d.x;
+                d.y0 = d.y;
+            });
+        }
+
+        function click(event, d) {
+            if (d.children) {
+                d._children = d.children.concat(d._children || []);
+                d.children = null;
+            } else {
+                if (d._children) {
+                    d.children = d._children;
+                    d._children = null;
+                    d.children.forEach(child => {
+                        if (child.children) {
+                            child._children = child.children;
+                            child.children = null;
+                        }
+                    });
+                }
+            }
+            update(d);
+        }
+
+        let expanded = true;
+
+        function toggleTree() {
+            if (root.children) {
+                collapseAll(root);
+            } else {
+                expandAll(root);
+            }
+            update(root);
+            centerTopNode();
+        }
+
+        function collapseAll(d) {
+            if (d.children) {
+                d.children.forEach(collapseAll);
+                d._children = d.children;
+                d.children = null;
+            }
+        }
+
+        function expandAll(d) {
+            if (d._children) {
+                d.children = d._children;
+                d.children.forEach(expandAll);
+                d._children = null;
+            }
+        }
+
+        function centerTopNode() {
+            const topNode = d3.select('.node').node();
+            const treeContainer = document.getElementById('tree-container');
+            if (topNode && treeContainer) {
+                const topNodeBox = topNode.getBoundingClientRect();
+                const containerBox = treeContainer.getBoundingClientRect();
+                const scrollLeft = topNodeBox.left - containerBox.left + (topNodeBox.width / 2) - (containerBox.width / 2);
+                const scrollTop = topNodeBox.top - containerBox.top + (topNodeBox.height / 2) - (containerBox.height / 2);
+                treeContainer.scrollLeft = scrollLeft;
+                treeContainer.scrollTop = scrollTop;
+            }
+        }
+
+        document.getElementById('expand-collapse-btn').addEventListener('click', toggleTree);
+
+        update(root);
+        window.addEventListener('load', centerTopNode);
+        window.addEventListener('resize', centerTopNode);
+    </script>
+</body>
+</html>
