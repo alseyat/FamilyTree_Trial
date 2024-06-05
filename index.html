@@ -250,6 +250,8 @@
         root.x0 = width / 2;
         root.y0 = 0;
 
+        let initialVerticalOffset = 20;
+
         // Function to reverse children of each node
         function reverseChildren(node) {
             if (node.children) {
@@ -304,7 +306,7 @@
 
             const nodeEnter = node.enter().append('g')
                 .attr('class', 'node')
-                .attr('transform', d => `translate(${source.x0},${source.y0+10})`)
+                .attr('transform', d => `translate(${source.x0},${source.y0+initialVerticalOffset})`)
                 .on('click', click);
 
             nodeEnter.append('rect')
@@ -339,7 +341,7 @@
 
             nodeUpdate.transition()
                 .duration(d => d.depth === 0 ? 0 : duration)
-                .attr('transform', d => `translate(${d.x},${d.y+10})`);
+                .attr('transform', d => `translate(${d.x},${d.y+initialVerticalOffset})`);
 
             nodeUpdate.select('rect')
                 .attr('width', 100)
@@ -353,7 +355,7 @@
 
             const nodeExit = node.exit().transition()
                 .duration(duration)
-                .attr('transform', d => `translate(${source.x},${source.y+10})`)
+                .attr('transform', d => `translate(${source.x},${source.y+initialVerticalOffset})`)
                 .remove();
 
             nodeExit.select('rect')
@@ -371,19 +373,19 @@
                 .attr('class', 'link')
                 .attr('d', d => {
                     const o = { x: source.x, y: source.y };
-                    return `M${o.x},${o.y+10}V${o.y+10}H${d.x}V${d.y+10}`;
+                    return `M${o.x},${o.y+initialVerticalOffset}V${o.y+initialVerticalOffset}H${d.x}V${d.y+initialVerticalOffset}`;
                 });
 
             const linkUpdate = linkEnter.merge(link);
 
             linkUpdate.transition()
                 .duration(duration)
-                .attr('d', d => `M${d.parent.x},${d.parent.y+10}V${d.parent.y + 35+10}H${d.x}V${d.y+10}`);
+                .attr('d', d => `M${d.parent.x},${d.parent.y+initialVerticalOffset}V${d.parent.y + 35+initialVerticalOffset}H${d.x}V${d.y+initialVerticalOffset}`);
 
             const linkExit = link.exit()
                 .attr('d', d => {
                     const o = { x: source.x, y: source.y };
-                    return `M${o.x},${o.y+10}V${o.y}H${d.x}V${d.y+10}`;
+                    return `M${o.x},${o.y+initialVerticalOffset}V${o.y}H${d.x}V${d.y+initialVerticalOffset}`;
                 })
                 .remove();
 
