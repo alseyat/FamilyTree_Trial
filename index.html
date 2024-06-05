@@ -2,32 +2,37 @@
 <html lang="Arabic">
 <head>
     <meta charset="UTF-8">
-    <title>شجرة عشيرة السياط</title>
+    <title>شجرة أسرة السياط</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://d3js.org/d3.v6.min.js"></script>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Reem+Kufi+Ink:wght@400;700&display=swap');
 
         .node rect {
             fill: #fff;
             stroke: steelblue;
             stroke-width: 3px;
         }
+
         .node text {
             font-family: 'Noto Naskh Arabic', sans-serif;
         }
+
         .link {
             fill: none;
             stroke: #040404;
             stroke-width: 2.5px;
         }
+
         .node:hover {
             cursor: pointer;
         }
+
         .node.has-children rect {
             fill: lightblue;
         }
+
         .node.collapsed rect {
             fill: blue;
         }
@@ -38,6 +43,7 @@
             width: 100%;
             height: 100%;
         }
+
         svg {
             width: 50000px;
             height: 10000px;
@@ -47,34 +53,17 @@
             background-color: rgb(134, 131, 131);
         }
 
-        #expand-collapse-btn {
-            position: absolute;
-            top: 150px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 5px 5px;
-            background-color: rgb(223, 221, 221);
-            border: 2px solid darkgray;
-            cursor: pointer;
-            text-align: center; /* Center the text horizontally */
-            line-height: 1; /* Adjust line height to center the text vertically */
-            width: 230px; /* Adjust width for desktop view */
-            height: 15px; /* Adjust height for desktop view */
-            border-radius: 10px; /* Rounded corners */
-
-        }
-
         #page-title {
             position: absolute;
             top: 10px;
             left: 50%;
             transform: translateX(-50%);
             text-align: center;
-            font-family: 'Noto Naskh Arabic', sans-serif;
-            font-size: 40px; /* Adjust font size here */
-            white-space: nowrap; /* Prevent text from wrapping */
-            overflow: hidden; /* Hide overflow */
-            text-overflow: ellipsis; /* Add ellipsis to indicate overflow */
+            font-family: 'Reem Kufi Ink', sans-serif;
+            font-size: 45px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         #page-subtitle {
@@ -84,69 +73,157 @@
             transform: translateX(-50%);
             text-align: center;
             font-family: 'Noto Naskh Arabic', sans-serif;
-            font-size: 20px; /* Adjust font size here */
-            white-space: nowrap; /* Prevent text from wrapping */
-            overflow: hidden; /* Hide overflow */
-            text-overflow: ellipsis; /* Add ellipsis to indicate overflow */
+            font-size: 18px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #page-subsubtitle {
+            position: absolute;
+            top: 135px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-family: 'Noto Naskh Arabic', sans-serif;
+            font-size: 15px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 160px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+        }
+
+        .zoom-btn {
+            padding: 5px 10px;
+            background-color: rgb(223, 221, 221);
+            border: 2px solid darkgray;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 10px;
+            margin: 0 10px;
+        }
+
+        #expand-collapse-btn {
+            padding: 5px 10px;
+            background-color: rgb(223, 221, 221);
+            border: 2px solid darkgray;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        #zoom-in-btn {
+            top: 180px;
+            left: 70%;
+        }
+
+        #zoom-out-btn {
+            top: 180px;
+            left: 30%;
+        }
+
+        #instructions {
+            position: absolute;
+            top: 200px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-family: 'Noto Naskh Arabic', sans-serif;
+            font-size: 15px;
+            color: blue;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         @media (max-width: 600px) {
             #page-title {
-                position: absolute;
-                font-family: 'Noto Naskh Arabic', sans-serif;
-                font-size: 20px !important; /* Smaller font size for mobile */
-                top: 10px!important; 
-                left: 50% !important; /* Center align for mobile */
-                text-align: center;
-                transform: translateX(-50%) !important; /* Keep centered for mobile */
-                width: 90% !important; /* Ensure it fits in mobile view */
-                margin: 0 auto !important; /* Center horizontally */
-                white-space: nowrap; /* Prevent text from wrapping */
-                overflow: hidden; /* Hide overflow */
-                text-overflow: ellipsis; /* Add ellipsis to indicate overflow */
+                font-size: 20px !important;
+                top: 10px !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                width: 90% !important;
+                margin: 0 auto !important;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
             #page-subtitle {
-                font-size: 15px !important; /* Smaller font size for mobile */
-                top: 35px !important; /* Adjust top position for mobile */
-                left: 50% !important; /* Center align for mobile */
-                transform: translateX(-50%) !important; /* Keep centered for mobile */
-                width: 90% !important; /* Ensure it fits in mobile view */
-                margin: 0 auto !important; /* Center horizontally */
-                white-space: nowrap; /* Prevent text from wrapping */
-                overflow: hidden; /* Hide overflow */
-                text-overflow: ellipsis; /* Add ellipsis to indicate overflow */
+                font-size: 13px !important;
+                top: 40px !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                width: 90% !important;
+                margin: 0 auto !important;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            #page-subsubtitle {
+                font-size: 12px !important;
+                top: 90px !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                width: 90% !important;
+                margin: 0 auto !important;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            #button-container {
+                top: 120px;
+                width: 60%;
             }
 
             #expand-collapse-btn {
-                font-size: 13px !important; /* Smaller font size for mobile */
-                padding: 3px 3px !important; /* Smaller padding for mobile */
-                top: 90px !important; /* Adjust top position for mobile */
-                left: 50% !important; /* Adjust left position for mobile */
-                transform: translateX(-50%) !important; /* Keep centered for mobile */
-                position: absolute;
-                background-color: lightgray;
-                border: 2px solid darkgray;
-                cursor: pointer;
-                text-align: center; /* Center the text horizontally */
-                line-height: 1; /* Adjust line height to center the text vertically */
-                width: 120px; /* Adjust width for desktop view */
-                height: 25px; /* Adjust height for desktop view */
-                border-radius: 10px; /* Rounded corners */
+                font-size: 13px !important;
+                padding: 3px 3px !important;
+                width: 120px;
+                height: 35px;
+                border-radius: 10px;
+            }
+
+            #instructions {
+                top: 170px;
+                font-size: 10px;
             }
         }
     </style>
 </head>
 <body>
     <div id="page-title">
-        <div>شجرة عشيرة السياط</div>
+        <div>شجرة أسرة السياط</div>
     </div>
     <div id="page-subtitle">
         <div>من ذرية سياط بن عودة بن محمد بن علّيج بن محمد بن سليمان (جد الحجلا)</div>
         <div>بن نافع بن عمار بن زقروط الربيعي العبدي الشمري</div>
     </div>
-    
-    <div id="expand-collapse-btn">اضغط هنا لعرض كامل الشجرة أو إغلاقها</div>
+    <div id="page-subsubtitle">
+        <div><span style="color: rgb(135, 11, 11);font-weight: bold;">إعداد:</span> <span
+                style="color: rgb(7, 66, 147);font-weight: bold;">أنس بن سعود السياط</span></div>
+    </div>
+    <div id="button-container">
+        <div class="zoom-btn" id="zoom-out-btn">-</div>
+        <div id="expand-collapse-btn">اضغط هنا لعرض كامل الشجرة أو إغلاقها</div>
+        <div class="zoom-btn" id="zoom-in-btn">+</div>
+    </div>
+    <div id="instructions">
+        <div>اضغط على الاسم لإظهار الأبناء (الرقم الأحمر هو عدد الأبناء)، اضغط - أو + للتصغير أو التكبير</div>
+
+    </div>
     <div id="tree-container">
         <svg></svg>
     </div>
@@ -157,6 +234,7 @@
         let width = 1200, height = 2000;
 
         let i = 0, duration = 200;
+        let zoomLevel = 1; // Initial zoom level
 
         const svg = d3.select("svg")
             .attr("width", width)
@@ -167,7 +245,7 @@
 
         const tree = d3.tree().nodeSize([120, 50])
             .separation((a, b) => a.parent === b.parent ? 1 : 1.25);
-        
+
         let root = d3.hierarchy(data);
         root.x0 = width / 2;
         root.y0 = 0;
@@ -201,7 +279,7 @@
             }
         }
 
-        function update(source) {
+        function update(source, center = false) {
             const treeData = tree(root);
             const nodes = treeData.descendants();
             const links = treeData.descendants().slice(1);
@@ -217,7 +295,7 @@
             const newHeight = maxX + 200; // Add padding of 200
 
             // Adjust the tree position dynamically
-            svgGroup.attr("transform", `translate(${adjustment} , 230)`);
+            svgGroup.attr("transform", `translate(${adjustment} , 230) scale(${zoomLevel})`);
             // Adjust the SVG height dynamically
             d3.select("svg").attr("height", newHeight);
 
@@ -226,7 +304,7 @@
 
             const nodeEnter = node.enter().append('g')
                 .attr('class', 'node')
-                .attr('transform', d => `translate(${source.x0},${source.y0})`)
+                .attr('transform', d => `translate(${source.x0},${source.y0+10})`)
                 .on('click', click);
 
             nodeEnter.append('rect')
@@ -261,7 +339,7 @@
 
             nodeUpdate.transition()
                 .duration(d => d.depth === 0 ? 0 : duration)
-                .attr('transform', d => `translate(${d.x},${d.y})`);
+                .attr('transform', d => `translate(${d.x},${d.y+10})`);
 
             nodeUpdate.select('rect')
                 .attr('width', 100)
@@ -275,7 +353,7 @@
 
             const nodeExit = node.exit().transition()
                 .duration(duration)
-                .attr('transform', d => `translate(${source.x},${source.y})`)
+                .attr('transform', d => `translate(${source.x},${source.y+10})`)
                 .remove();
 
             nodeExit.select('rect')
@@ -293,19 +371,19 @@
                 .attr('class', 'link')
                 .attr('d', d => {
                     const o = { x: source.x, y: source.y };
-                    return `M${o.x},${o.y}V${o.y}H${d.x}V${d.y}`;
+                    return `M${o.x},${o.y+10}V${o.y+10}H${d.x}V${d.y+10}`;
                 });
 
             const linkUpdate = linkEnter.merge(link);
 
             linkUpdate.transition()
                 .duration(duration)
-                .attr('d', d => `M${d.parent.x},${d.parent.y}V${d.parent.y + 35}H${d.x}V${d.y}`);
+                .attr('d', d => `M${d.parent.x},${d.parent.y+10}V${d.parent.y + 35+10}H${d.x}V${d.y+10}`);
 
             const linkExit = link.exit()
                 .attr('d', d => {
                     const o = { x: source.x, y: source.y };
-                    return `M${o.x},${o.y}V${o.y}H${d.x}V${d.y}`;
+                    return `M${o.x},${o.y+10}V${o.y}H${d.x}V${d.y+10}`;
                 })
                 .remove();
 
@@ -313,6 +391,10 @@
                 d.x0 = d.x;
                 d.y0 = d.y;
             });
+
+            if (center) {
+                centerTopNode();
+            }
         }
 
         function click(event, d) {
@@ -331,7 +413,7 @@
                     });
                 }
             }
-            update(d);
+            update(d); // Center after click
         }
 
         let expanded = true;
@@ -342,8 +424,7 @@
             } else {
                 expandAll(root);
             }
-            update(root);
-            centerTopNode();
+            update(root, true); // Center after toggling
         }
 
         function collapseAll(d) {
@@ -362,6 +443,18 @@
             }
         }
 
+        function zoomIn() {
+            zoomLevel = Math.min(zoomLevel + 0.1, 1); // Limit max zoom level to 2
+            update(root, true); // Center after zoom
+            centerTopNode();
+        }
+
+        function zoomOut() {
+            zoomLevel = Math.max(zoomLevel - 0.1, 0.2); // Limit min zoom level to 0.5
+            update(root, true); // Center after zoom
+            centerTopNode();
+        }
+
         function centerTopNode() {
             const topNode = d3.select('.node').node();
             const treeContainer = document.getElementById('tree-container');
@@ -376,10 +469,12 @@
         }
 
         document.getElementById('expand-collapse-btn').addEventListener('click', toggleTree);
+        document.getElementById('zoom-in-btn').addEventListener('click', zoomIn);
+        document.getElementById('zoom-out-btn').addEventListener('click', zoomOut);
 
         update(root);
-        //window.addEventListener('load', centerTopNode);
-        //window.addEventListener('resize', centerTopNode);
+
     </script>
 </body>
+
 </html>
