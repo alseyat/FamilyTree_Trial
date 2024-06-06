@@ -237,17 +237,14 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
     <script>
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCUIB9GPZGJDUkqUajtCHeA-2TNb0kDNZc",
-  authDomain: "family-tree-7e938.firebaseapp.com",
-  projectId: "family-tree-7e938",
-  storageBucket: "family-tree-7e938.appspot.com",
-  messagingSenderId: "488428637219",
-  appId: "1:488428637219:web:fb497a31a38fa5c6bff596"
+            authDomain: "family-tree-7e938.firebaseapp.com",
+            projectId: "family-tree-7e938",
+            storageBucket: "family-tree-7e938.appspot.com",
+            messagingSenderId: "488428637219",
+            appId: "1:488428637219:web:fb497a31a38fa5c6bff596"
         };
-
-        // Initialize Firebase
         const app = firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
     </script>
@@ -273,7 +270,6 @@
         <div>اضغط على الاسم لإظهار الأبناء (الرقم الأحمر هو عدد الأبناء)، اضغط - أو + للتصغير أو التكبير</div>
     </div>
     <button id="view-stats-btn">عرض إحصائيات الشجرة</button>
-
     <div id="tree-container">
         <svg></svg>
     </div>
@@ -428,7 +424,7 @@
             const linkExit = link.exit()
                 .attr('d', d => {
                     const o = { x: source.x, y: source.y };
-                    return `M${o.x},${o.y+initialVerticalOffset}V${o.y}H${d.x}V${d.y+initialVerticalOffset}`);
+                    return `M${o.x},${o.y+initialVerticalOffset}V${o.y}H${d.x}V${d.y+initialVerticalOffset}`;
                 })
                 .remove();
 
