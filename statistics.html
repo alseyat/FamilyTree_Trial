@@ -65,17 +65,14 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
     <script>
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCUIB9GPZGJDUkqUajtCHeA-2TNb0kDNZc",
-  authDomain: "family-tree-7e938.firebaseapp.com",
-  projectId: "family-tree-7e938",
-  storageBucket: "family-tree-7e938.appspot.com",
-  messagingSenderId: "488428637219",
-  appId: "1:488428637219:web:fb497a31a38fa5c6bff596"
+            authDomain: "family-tree-7e938.firebaseapp.com",
+            projectId: "family-tree-7e938",
+            storageBucket: "family-tree-7e938.appspot.com",
+            messagingSenderId: "488428637219",
+            appId: "1:488428637219:web:fb497a31a38fa5c6bff596"
         };
-
-        // Initialize Firebase
         const app = firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
     </script>
@@ -85,15 +82,23 @@
         <div class="total-members" id="total-members"></div>
         <h2>أكثر الأسماء تكراراً</h2>
         <ul id="top-names" class="top-names"></ul>
-
         <h2>ًأكثر الأفراد أبناء</h2>
         <ul id="top-children" class="top-children"></ul>
     </div>
 
     <script>
         async function fetchStatistics() {
-            const doc = await db.collection('statistics').doc('familyTreeStatistics').get();
-            return doc.exists ? doc.data() : null;
+            try {
+                const doc = await db.collection('statistics').doc('familyTreeStatistics').get();
+                if (!doc.exists) {
+                    console.error('No such document!');
+                    return null;
+                }
+                console.log('Document data:', doc.data());
+                return doc.data();
+            } catch (error) {
+                console.error('Error getting document:', error);
+            }
         }
 
         function displayStatistics(statistics) {
