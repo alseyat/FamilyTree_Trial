@@ -157,7 +157,8 @@ function displayStatistics(statistics) {
                 resultCount++;
             }
         }
-
+// Fetch statistics from GitHub Pages on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', fetchStatistics);
         document.addEventListener('DOMContentLoaded', displayStatistics);
     </script>
 </body>
