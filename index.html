@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="Arabic">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <title>شجرة أسرة السياط</title>
@@ -126,21 +126,34 @@
             top: 180px;
             left: 70%;
         }
+        #zoom-in-btn:hover {
+            background-color: rgb(134, 131, 131);
+        }
 
         #zoom-out-btn {
             top: 180px;
             left: 30%;
         }
+        #zoom-out-btn:hover {
+            background-color: rgb(134, 131, 131);
+        }
 
         #view-stats-btn {
             padding: 10px 20px;
-            background-color: #4CAF50;
-            top: 250px;
-            left: 50%;
+            background-color: #ea5050;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            position: absolute;
+            top: 228px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 15px;
+            font-weight: bold;
+        }
+        #view-stats-btn:hover {
+            background-color: rgb(144, 20, 20);
         }
 
         #instructions {
@@ -211,6 +224,14 @@
                 top: 170px;
                 font-size: 10px;
             }
+
+            #view-stats-btn {
+                top: 195px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 13px;
+                font-weight: bold;
+            }
         }
     </style>
 </head>
@@ -223,8 +244,7 @@
         <div>بن نافع بن عمار بن زقروط الربيعي العبدي الشمري</div>
     </div>
     <div id="page-subsubtitle">
-        <div><span style="color: rgb(135, 11, 11);font-weight: bold;">إعداد:</span> <span
-                style="color: rgb(7, 66, 147);font-weight: bold;">أنس بن سعود السياط</span></div>
+        <div><span style="color: rgb(135, 11, 11);font-weight: bold;">إعداد:</span> <span style="color: rgb(7, 66, 147);font-weight: bold;">أنس بن سعود السياط</span></div>
     </div>
     <div id="button-container">
         <div class="zoom-btn" id="zoom-out-btn">-</div>
@@ -234,7 +254,7 @@
     <div id="instructions">
         <div>اضغط على الاسم لإظهار الأبناء (الرقم الأحمر هو عدد الأبناء)، اضغط - أو + للتصغير أو التكبير</div>
     </div>
-<!-- <button id="view-stats-btn">عرض إحصائيات الشجرة</button> -->
+    <button id="view-stats-btn">عرض إحصائيات الشجرة</button>
 
     <div id="tree-container">
         <svg></svg>
@@ -242,18 +262,18 @@
     <script type="module">
         import data from './alseyat.js';
 
-        const margin = { top: 200, right: 20, bottom: 20, left: 300 }; // Adjusted top margin to 200px for spacing below the button
+        const margin = { top: 200, right: 20, bottom: 20, left: 300 }; 
         let width = 1200, height = 2000;
 
         let i = 0, duration = 200;
-        let zoomLevel = 1; // Initial zoom level
+        let zoomLevel = 1; 
 
         const svg = d3.select("svg")
             .attr("width", width)
             .attr("height", height);
 
         const svgGroup = svg.append("g")
-            .attr("transform", `translate(${margin.left},${margin.top})`); // Initial translation with increased top padding
+            .attr("transform", `translate(${margin.left},${margin.top})`); 
 
         const tree = d3.tree().nodeSize([120, 50])
             .separation((a, b) => a.parent === b.parent ? 1 : 1.25);
@@ -262,9 +282,8 @@
         root.x0 = width / 2;
         root.y0 = 0;
 
-        let initialVerticalOffset = 20;
+        let initialVerticalOffset = 50;
 
-        // Function to reverse children of each node
         function reverseChildren(node) {
             if (node.children) {
                 node.children.reverse();
@@ -272,7 +291,6 @@
             }
         }
 
-        // Reverse children order for the root node
         reverseChildren(root);
 
         collapse(root);
@@ -300,17 +318,13 @@
 
             nodes.forEach(d => d.y = d.depth * 70);
 
-            // Calculate the minimum x-coordinate to adjust the tree position
             const minX = Math.min(...nodes.map(d => d.x));
-            const adjustment = Math.max(0, 100 - minX); // Ensure minimum padding of 200
+            const adjustment = Math.max(0, 100 - minX);
 
-            // Calculate the maximum x-coordinate to adjust the SVG height
             const maxX = Math.max(...nodes.map(d => d.x));
-            const newHeight = maxX + 200; // Add padding of 200
+            const newHeight = maxX + 200;
 
-            // Adjust the tree position dynamically
             svgGroup.attr("transform", `translate(${adjustment} , 230) scale(${zoomLevel})`);
-            // Adjust the SVG height dynamically
             d3.select("svg").attr("height", newHeight);
 
             const node = svgGroup.selectAll('g.node')
@@ -397,7 +411,7 @@
             const linkExit = link.exit()
                 .attr('d', d => {
                     const o = { x: source.x, y: source.y };
-                    return `M${o.x},${o.y+initialVerticalOffset}V${o.y}H${d.x}V${d.y+initialVerticalOffset}`;
+                    return `M${o.x},${o.y+initialVerticalOffset}V${o.y}H${d.x}V${d.y+initialVerticalOffset}`);
                 })
                 .remove();
 
@@ -427,7 +441,7 @@
                     });
                 }
             }
-            update(d); // Center after click
+            update(d); 
         }
 
         let expanded = true;
@@ -438,7 +452,7 @@
             } else {
                 expandAll(root);
             }
-            update(root, true); // Center after toggling
+            update(root, true); 
         }
 
         function collapseAll(d) {
@@ -458,14 +472,14 @@
         }
 
         function zoomIn() {
-            zoomLevel = Math.min(zoomLevel + 0.1, 1); // Limit max zoom level to 2
-            update(root, true); // Center after zoom
+            zoomLevel = Math.min(zoomLevel + 0.1, 1); 
+            update(root, true); 
             centerTopNode();
         }
 
         function zoomOut() {
-            zoomLevel = Math.max(zoomLevel - 0.1, 0.2); // Limit min zoom level to 0.5
-            update(root, true); // Center after zoom
+            zoomLevel = Math.max(zoomLevel - 0.1, 0.2); 
+            update(root, true); 
             centerTopNode();
         }
 
@@ -482,105 +496,159 @@
             }
         }
 
-            <script id="family-data" type="application/json">
-
-        function computeStatistics(node, nameCount, childrenCount, fullName = "") {
-            const currentFullName = fullName ? `${node.name} بن ${fullName}` : node.name;
-
-            // Count the current node's name
-            if (nameCount[node.name]) {
-                nameCount[node.name]++;
-            } else {
-                nameCount[node.name] = 1;
-            }
-
-            // Count children if any
-            const numChildren = node.children ? node.children.length : 0;
-            if (numChildren > 0) {
-                childrenCount.push({ fullName: currentFullName, children: numChildren });
-            }
-
-            // Recursively process children
-            if (node.children) {
-                node.children.forEach(child => computeStatistics(child, nameCount, childrenCount, currentFullName));
-            }
-        }
-
         function prepareStatistics(data) {
-    const nameCount = {};
-    const childrenCount = [];
-    let totalMembers = 0; // Initialize totalMembers
+            const nameCount = {};
+            const childrenCount = [];
+            let totalMembers = 0; 
 
-    function computeStatistics(node, fullName = "") {
-        totalMembers++; // Increment for each node
+            function computeStatistics(node, fullName = "") {
+                totalMembers++; 
 
-        const currentFullName = fullName ? `${node.name} بن ${fullName}` : node.name;
+                const currentFullName = fullName ? `${node.name} بن ${fullName}` : node.name;
 
-        // Count the current node's name
-        if (nameCount[node.name]) {
-            nameCount[node.name]++;
-        } else {
-            nameCount[node.name] = 1;
-        }
+                if (nameCount[node.name]) {
+                    nameCount[node.name]++;
+                } else {
+                    nameCount[node.name] = 1;
+                }
 
-        // Count children if any
-        const numChildren = node.children ? node.children.length : 0;
-        if (numChildren > 0) {
-            childrenCount.push({ fullName: currentFullName, children: numChildren });
-        }
+                const numChildren = node.children ? node.children.length : 0;
+                if (numChildren > 0) {
+                    childrenCount.push({ fullName: currentFullName, children: numChildren });
+                }
 
-        // Recursively process children
-        if (node.children) {
-            node.children.forEach(child => computeStatistics(child, currentFullName));
-        }
-    }
+                if (node.children) {
+                    node.children.forEach(child => computeStatistics(child, currentFullName));
+                }
+            }
 
-    computeStatistics(data);
+            computeStatistics(data);
 
-    // Group names by their count
-    const groupedNames = {};
-    Object.entries(nameCount).forEach(([name, count]) => {
-        if (!groupedNames[count]) {
-            groupedNames[count] = [];
-        }
-        groupedNames[count].push(name);
-    });
+            const groupedNames = {};
+            Object.entries(nameCount).forEach(([name, count]) => {
+                if (!groupedNames[count]) {
+                    groupedNames[count] = [];
+                }
+                groupedNames[count].push(name);
+            });
 
-    // Convert grouped names to an array
-    const topNames = Object.entries(groupedNames)
-        .map(([count, names]) => [names.join('، '), count]);
+            const topNames = Object.entries(groupedNames)
+                .map(([count, names]) => [names.join('، '), count]);
 
-    // Get top ten people with the most children
-    const topChildren = childrenCount
-        .sort((a, b) => b.children - a.children)
-        .slice(0, 10); // Limit to top 10
+            const topChildren = childrenCount
+                .sort((a, b) => b.children - a.children)
+                .slice(0, 10); 
 
-    return { topNames, topChildren, totalMembers };
-}
-
-
-
-        function storeStatistics(statistics) {
-            localStorage.setItem('familyTreeStatistics', JSON.stringify(statistics));
+            return { topNames, topChildren, totalMembers };
         }
 
         const statistics = prepareStatistics(data);
-        storeStatistics(statistics);
 
         document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('view-stats-btn').addEventListener('click', function() {
-            window.open('statistics.html', '_blank');
+            document.getElementById('view-stats-btn').addEventListener('click', function() {
+                const statsWindow = window.open('', '_blank');
+                statsWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html lang="ar">
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>إحصائيات شجرة أسرة السياط</title>
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <style>
+                            @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
+                            body {
+                                font-family: 'Noto Naskh Arabic', sans-serif;
+                                direction: rtl;
+                            }
+                            .container {
+                                width: 30%;
+                                margin: 0 auto;
+                            }
+                            @media only screen and (max-width: 600px) {
+                                .container {
+                                    width: 90%;
+                                }
+                            }
+                            h2 {
+                                text-align: center;
+                                direction: ltr;
+                            }
+                            ul {
+                                list-style-type: none;
+                                padding: 0;
+                            }
+                            .top-names li, .top-children li {
+                                background: #f4f4f4;
+                                margin: 5px 0;
+                                padding: 10px;
+                                border: 1px solid #ddd;
+                                display: flex;
+                                justify-content: space-between;
+                            }
+                            .name {
+                                flex: 1;
+                                text-align: right;
+                            }
+                            .count {
+                                flex: 0.5;
+                                text-align: left;
+                            }
+                            .total-members {
+                                text-align: center;
+                                margin-bottom: 20px;
+                                font-size: 24px;
+                                font-weight: bold;
+                                color: #333;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container">
+                            <div class="total-members">إجمالي عدد أفراد الأسرة: ${statistics.totalMembers}</div>
+                            <h2>أكثر الأسماء تكراراً</h2>
+                            <ul id="top-names" class="top-names"></ul>
+                            <h2>ًأكثر الأفراد أبناء</h2>
+                            <ul id="top-children" class="top-children"></ul>
+                        </div>
+                        <script>
+                            const statistics = ${JSON.stringify(statistics)};
+
+                            function displayStatistics() {
+                                const { topNames, topChildren, totalMembers } = statistics;
+
+                                const topNamesList = document.getElementById('top-names');
+                                topNames.forEach(([names, count]) => {
+                                    const li = document.createElement('li');
+                                    li.innerHTML = \`<div class="name">\${names}</div><div class="count">\${count}</div>\`;
+                                    topNamesList.appendChild(li);
+                                });
+
+                                const topChildrenList = document.getElementById('top-children');
+                                topChildren.forEach(({ fullName, children }) => {
+                                    const li = document.createElement('li');
+                                    li.innerHTML = \`<div class="count">عدد الأبناء: \${children}</div>\`;
+                                    const nameDiv = document.createElement('div');
+                                    nameDiv.className = 'name';
+                                    nameDiv.innerText = \`- \${fullName}\`;
+                                    li.appendChild(nameDiv);
+                                    topChildrenList.appendChild(li);
+                                });
+                            }
+
+                            document.addEventListener('DOMContentLoaded', displayStatistics);
+                        </script>
+                    </body>
+                    </html>
+                `);
+                statsWindow.document.close();
+            });
         });
-    });
-    </script>
 
         document.getElementById('expand-collapse-btn').addEventListener('click', toggleTree);
         document.getElementById('zoom-in-btn').addEventListener('click', zoomIn);
         document.getElementById('zoom-out-btn').addEventListener('click', zoomOut);
 
         update(root);
-
     </script>
 </body>
-
 </html>
