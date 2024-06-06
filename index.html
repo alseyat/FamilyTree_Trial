@@ -234,6 +234,23 @@
             }
         }
     </style>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCUIB9GPZGJDUkqUajtCHeA-2TNb0kDNZc",
+  authDomain: "family-tree-7e938.firebaseapp.com",
+  projectId: "family-tree-7e938",
+  storageBucket: "family-tree-7e938.appspot.com",
+  messagingSenderId: "488428637219",
+  appId: "1:488428637219:web:fb497a31a38fa5c6bff596"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+    </script>
 </head>
 <body>
     <div id="page-title">
@@ -244,7 +261,8 @@
         <div>بن نافع بن عمار بن زقروط الربيعي العبدي الشمري</div>
     </div>
     <div id="page-subsubtitle">
-        <div><span style="color: rgb(135, 11, 11);font-weight: bold;">إعداد:</span> <span style="color: rgb(7, 66, 147);font-weight: bold;">أنس بن سعود السياط</span></div>
+        <div><span style="color: rgb(135, 11, 11);font-weight: bold;">إعداد:</span> <span
+                style="color: rgb(7, 66, 147);font-weight: bold;">أنس بن سعود السياط</span></div>
     </div>
     <div id="button-container">
         <div class="zoom-btn" id="zoom-out-btn">-</div>
@@ -262,18 +280,18 @@
     <script type="module">
         import data from './alseyat.js';
 
-        const margin = { top: 200, right: 20, bottom: 20, left: 300 }; 
+        const margin = { top: 200, right: 20, bottom: 20, left: 300 };
         let width = 1200, height = 2000;
 
         let i = 0, duration = 200;
-        let zoomLevel = 1; 
+        let zoomLevel = 1;
 
         const svg = d3.select("svg")
             .attr("width", width)
             .attr("height", height);
 
         const svgGroup = svg.append("g")
-            .attr("transform", `translate(${margin.left},${margin.top})`); 
+            .attr("transform", `translate(${margin.left},${margin.top})`);
 
         const tree = d3.tree().nodeSize([120, 50])
             .separation((a, b) => a.parent === b.parent ? 1 : 1.25);
@@ -292,7 +310,6 @@
         }
 
         reverseChildren(root);
-
         collapse(root);
 
         function collapse(d) {
@@ -441,7 +458,7 @@
                     });
                 }
             }
-            update(d); 
+            update(d);
         }
 
         let expanded = true;
@@ -452,7 +469,7 @@
             } else {
                 expandAll(root);
             }
-            update(root, true); 
+            update(root, true);
         }
 
         function collapseAll(d) {
@@ -472,14 +489,14 @@
         }
 
         function zoomIn() {
-            zoomLevel = Math.min(zoomLevel + 0.1, 1); 
-            update(root, true); 
+            zoomLevel = Math.min(zoomLevel + 0.1, 1);
+            update(root, true);
             centerTopNode();
         }
 
         function zoomOut() {
-            zoomLevel = Math.max(zoomLevel - 0.1, 0.2); 
-            update(root, true); 
+            zoomLevel = Math.max(zoomLevel - 0.1, 0.2);
+            update(root, true);
             centerTopNode();
         }
 
@@ -499,10 +516,10 @@
         function prepareStatistics(data) {
             const nameCount = {};
             const childrenCount = [];
-            let totalMembers = 0; 
+            let totalMembers = 0;
 
             function computeStatistics(node, fullName = "") {
-                totalMembers++; 
+                totalMembers++;
 
                 const currentFullName = fullName ? `${node.name} بن ${fullName}` : node.name;
 
@@ -537,110 +554,21 @@
 
             const topChildren = childrenCount
                 .sort((a, b) => b.children - a.children)
-                .slice(0, 10); 
+                .slice(0, 10);
 
             return { topNames, topChildren, totalMembers };
         }
 
+        async function storeStatistics(statistics) {
+            await db.collection('statistics').doc('familyTreeStatistics').set(statistics);
+        }
+
         const statistics = prepareStatistics(data);
+        storeStatistics(statistics);
 
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('view-stats-btn').addEventListener('click', function() {
-                const statsWindow = window.open('', '_blank');
-                statsWindow.document.write(`
-                    <!DOCTYPE html>
-                    <html lang="ar">
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>إحصائيات شجرة أسرة السياط</title>
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <style>
-                            @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
-                            body {
-                                font-family: 'Noto Naskh Arabic', sans-serif;
-                                direction: rtl;
-                            }
-                            .container {
-                                width: 30%;
-                                margin: 0 auto;
-                            }
-                            @media only screen and (max-width: 600px) {
-                                .container {
-                                    width: 90%;
-                                }
-                            }
-                            h2 {
-                                text-align: center;
-                                direction: ltr;
-                            }
-                            ul {
-                                list-style-type: none;
-                                padding: 0;
-                            }
-                            .top-names li, .top-children li {
-                                background: #f4f4f4;
-                                margin: 5px 0;
-                                padding: 10px;
-                                border: 1px solid #ddd;
-                                display: flex;
-                                justify-content: space-between;
-                            }
-                            .name {
-                                flex: 1;
-                                text-align: right;
-                            }
-                            .count {
-                                flex: 0.5;
-                                text-align: left;
-                            }
-                            .total-members {
-                                text-align: center;
-                                margin-bottom: 20px;
-                                font-size: 24px;
-                                font-weight: bold;
-                                color: #333;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="container">
-                            <div class="total-members">إجمالي عدد أفراد الأسرة: ${statistics.totalMembers}</div>
-                            <h2>أكثر الأسماء تكراراً</h2>
-                            <ul id="top-names" class="top-names"></ul>
-                            <h2>ًأكثر الأفراد أبناء</h2>
-                            <ul id="top-children" class="top-children"></ul>
-                        </div>
-                        <script>
-                            const statistics = ${JSON.stringify(statistics)};
-
-                            function displayStatistics() {
-                                const { topNames, topChildren, totalMembers } = statistics;
-
-                                const topNamesList = document.getElementById('top-names');
-                                topNames.forEach(([names, count]) => {
-                                    const li = document.createElement('li');
-                                    li.innerHTML = \`<div class="name">\${names}</div><div class="count">\${count}</div>\`;
-                                    topNamesList.appendChild(li);
-                                });
-
-                                const topChildrenList = document.getElementById('top-children');
-                                topChildren.forEach(({ fullName, children }) => {
-                                    const li = document.createElement('li');
-                                    li.innerHTML = \`<div class="count">عدد الأبناء: \${children}</div>\`;
-                                    const nameDiv = document.createElement('div');
-                                    nameDiv.className = 'name';
-                                    nameDiv.innerText = \`- \${fullName}\`;
-                                    li.appendChild(nameDiv);
-                                    topChildrenList.appendChild(li);
-                                });
-                            }
-
-                            document.addEventListener('DOMContentLoaded', displayStatistics);
-                        </script>
-                    </body>
-                    </html>
-                `);
-                statsWindow.document.close();
+                window.open('statistics.html', '_blank');
             });
         });
 
