@@ -132,6 +132,17 @@
             left: 30%;
         }
 
+        #view-stats-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            top: 250px;
+            left: 50%;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
         #instructions {
             position: absolute;
             top: 200px;
@@ -222,8 +233,9 @@
     </div>
     <div id="instructions">
         <div>اضغط على الاسم لإظهار الأبناء (الرقم الأحمر هو عدد الأبناء)، اضغط - أو + للتصغير أو التكبير</div>
-
     </div>
+<!-- <button id="view-stats-btn">عرض إحصائيات الشجرة</button> -->
+
     <div id="tree-container">
         <svg></svg>
     </div>
@@ -469,6 +481,95 @@
                 treeContainer.scrollTop = scrollTop;
             }
         }
+
+        function computeStatistics(node, nameCount, childrenCount, fullName = "") {
+            const currentFullName = fullName ? `${node.name} بن ${fullName}` : node.name;
+
+            // Count the current node's name
+            if (nameCount[node.name]) {
+                nameCount[node.name]++;
+            } else {
+                nameCount[node.name] = 1;
+            }
+
+            // Count children if any
+            const numChildren = node.children ? node.children.length : 0;
+            if (numChildren > 0) {
+                childrenCount.push({ fullName: currentFullName, children: numChildren });
+            }
+
+            // Recursively process children
+            if (node.children) {
+                node.children.forEach(child => computeStatistics(child, nameCount, childrenCount, currentFullName));
+            }
+        }
+
+        function prepareStatistics(data) {
+    const nameCount = {};
+    const childrenCount = [];
+    let totalMembers = 0; // Initialize totalMembers
+
+    function computeStatistics(node, fullName = "") {
+        totalMembers++; // Increment for each node
+
+        const currentFullName = fullName ? `${node.name} بن ${fullName}` : node.name;
+
+        // Count the current node's name
+        if (nameCount[node.name]) {
+            nameCount[node.name]++;
+        } else {
+            nameCount[node.name] = 1;
+        }
+
+        // Count children if any
+        const numChildren = node.children ? node.children.length : 0;
+        if (numChildren > 0) {
+            childrenCount.push({ fullName: currentFullName, children: numChildren });
+        }
+
+        // Recursively process children
+        if (node.children) {
+            node.children.forEach(child => computeStatistics(child, currentFullName));
+        }
+    }
+
+    computeStatistics(data);
+
+    // Group names by their count
+    const groupedNames = {};
+    Object.entries(nameCount).forEach(([name, count]) => {
+        if (!groupedNames[count]) {
+            groupedNames[count] = [];
+        }
+        groupedNames[count].push(name);
+    });
+
+    // Convert grouped names to an array
+    const topNames = Object.entries(groupedNames)
+        .map(([count, names]) => [names.join('، '), count]);
+
+    // Get top ten people with the most children
+    const topChildren = childrenCount
+        .sort((a, b) => b.children - a.children)
+        .slice(0, 10); // Limit to top 10
+
+    return { topNames, topChildren, totalMembers };
+}
+
+
+
+        function storeStatistics(statistics) {
+            localStorage.setItem('familyTreeStatistics', JSON.stringify(statistics));
+        }
+
+        const statistics = prepareStatistics(data);
+        storeStatistics(statistics);
+
+        document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('view-stats-btn').addEventListener('click', function() {
+            window.open('statistics.html', '_blank');
+        });
+    });
 
         document.getElementById('expand-collapse-btn').addEventListener('click', toggleTree);
         document.getElementById('zoom-in-btn').addEventListener('click', zoomIn);
