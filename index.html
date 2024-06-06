@@ -482,6 +482,8 @@
             }
         }
 
+            <script id="family-data" type="application/json">
+
         function computeStatistics(node, nameCount, childrenCount, fullName = "") {
             const currentFullName = fullName ? `${node.name} بن ${fullName}` : node.name;
 
@@ -570,6 +572,7 @@
             window.open('statistics.html', '_blank');
         });
     });
+    </script>
 
         document.getElementById('expand-collapse-btn').addEventListener('click', toggleTree);
         document.getElementById('zoom-in-btn').addEventListener('click', zoomIn);
