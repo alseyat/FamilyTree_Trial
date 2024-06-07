@@ -9,7 +9,7 @@
 
         body {
             font-family: 'Noto Naskh Arabic', sans-serif;
-            direction: rtl;
+            direction: rtl; /* Set the text direction to right-to-left */
         }
         .container {
             width: 30%;
@@ -18,13 +18,13 @@
         
         @media only screen and (max-width: 600px) {
             .container {
-                width: 90%;
+                width: 90%; /* Adjust the width for mobile devices */
             }
         }
 
         h2 {
             text-align: center;
-            direction: ltr;
+            direction: ltr; /* Set the text direction to left-to-right */
         }
         ul {
             list-style-type: none;
@@ -44,7 +44,7 @@
             padding: 10px;
             border: 1px solid #ddd;
             display: flex;
-            flex-direction: column;
+            flex-direction: column; /* To make children elements stack vertically */
         }
         .name {
             flex: 1;
@@ -57,113 +57,94 @@
         .total-members {
             text-align: center;
             margin-bottom: 20px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
+            font-size: 24px; /* Adjust font size here */
+            font-weight: bold; /* Add bold styling */
+            color: #333; /* Change text color */
         }
     </style>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyCUIB9GPZGJDUkqUajtCHeA-2TNb0kDNZc",
-            authDomain: "family-tree-7e938.firebaseapp.com",
-            projectId: "family-tree-7e938",
-            storageBucket: "family-tree-7e938.appspot.com",
-            messagingSenderId: "488428637219",
-            appId: "1:488428637219:web:fb497a31a38fa5c6bff596"
-        };
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-    </script>
 </head>
 <body>
     <div class="container">
         <div class="total-members" id="total-members"></div>
         <h2>أكثر الأسماء تكراراً</h2>
         <ul id="top-names" class="top-names"></ul>
+
         <h2>ًأكثر الأفراد أبناء</h2>
         <ul id="top-children" class="top-children"></ul>
     </div>
 
     <script>
-        async function fetchStatistics() {
-            try {
-                const doc = await db.collection('statistics').doc('familyTreeStatistics').get();
-                if (!doc.exists) {
-                    console.error('No such document!');
-                    return null;
-                }
-                console.log('Document data:', doc.data());
-                return doc.data();
-            } catch (error) {
-                console.error('Error getting document:', error);
-            }
-        }
+        function displayStatistics() {
+            fetch('statistics.json')
+                .then(response => response.json())
+                .then(statistics => {
+                    if (!statistics) {
+                        document.getElementById('total-members').innerText = "لا توجد بيانات إحصائية";
+                        return;
+                    }
 
-        function displayStatistics(statistics) {
-            if (!statistics) {
-                document.getElementById('total-members').innerText = "لا توجد بيانات إحصائية";
-                return;
-            }
+                    const { topNames, topChildren, totalMembers } = statistics;
 
-            const { topNames, topChildren, totalMembers } = statistics;
+                    // Display the total number of family members
+                    document.getElementById('total-members').innerText = `إجمالي عدد أفراد الأسرة: ${totalMembers}`;
 
-            document.getElementById('total-members').innerText = `إجمالي عدد أفراد الأسرة: ${totalMembers}`;
+                    // Group names by their count for the first list
+                    const groupedNames = {};
+                    topNames.forEach(([names, count]) => {
+                        if (!groupedNames[count]) {
+                            groupedNames[count] = [];
+                        }
+                        groupedNames[count].push(names);
+                    });
 
-            const groupedNames = {};
-            topNames.forEach(([name, count]) => {
-                if (!groupedNames[count]) {
-                    groupedNames[count] = [];
-                }
-                groupedNames[count].push(name);
-            });
+                    // Convert grouped names to an array and sort by count
+                    const sortedNames = Object.entries(groupedNames)
+                        .map(([count, names]) => [names.join('، '), parseInt(count)])
+                        .sort((a, b) => b[1] - a[1]);
 
-            const sortedNames = Object.entries(groupedNames)
-                .map(([count, names]) => [names.join('، '), parseInt(count)])
-                .sort((a, b) => b[1] - a[1]);
+                    // Display all results for the first list
+                    const topNamesList = document.getElementById('top-names');
+                    sortedNames.forEach(([names, count]) => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<div class="name">${names}</div><div class="count">${count}</div>`;
+                        topNamesList.appendChild(li);
+                    });
 
-            const topNamesList = document.getElementById('top-names');
-            sortedNames.forEach(([names, count]) => {
-                const li = document.createElement('li');
-                li.innerHTML = `<div class="name">${names}</div><div class="count">${count}</div>`;
-                topNamesList.appendChild(li);
-            });
+                    // Group people by number of children for the second list
+                    const groupedChildren = {};
+                    topChildren.forEach(({ fullName, children }) => {
+                        if (!groupedChildren[children]) {
+                            groupedChildren[children] = [];
+                        }
+                        groupedChildren[children].push(fullName);
+                    });
 
-            const groupedChildren = {};
-            topChildren.forEach(({ fullName, children }) => {
-                if (!groupedChildren[children]) {
-                    groupedChildren[children] = [];
-                }
-                groupedChildren[children].push(fullName);
-            });
+                    // Convert grouped children to an array and sort by number of children
+                    const sortedChildren = Object.entries(groupedChildren)
+                        .map(([children, names]) => [names, parseInt(children)])
+                        .sort((a, b) => b[1] - a[1]);
 
-            const sortedChildren = Object.entries(groupedChildren)
-                .map(([children, names]) => [names, parseInt(children)])
-                .sort((a, b) => b[1] - a[1]);
+                    // Display top 10 results for the second list
+                    const topChildrenList = document.getElementById('top-children');
+                    let resultCount = 0;
+                    for (const [names, children] of sortedChildren) {
+                        if (resultCount >= 10) break; // Ensure only 10 unique results
 
-            const topChildrenList = document.getElementById('top-children');
-            let resultCount = 0;
-            for (const [names, children] of sortedChildren) {
-                if (resultCount >= 10) break;
-
-                const li = document.createElement('li');
-                li.innerHTML = `<div class="count">عدد الأبناء: ${children}</div>`;
-                names.forEach(name => {
-                    const nameDiv = document.createElement('div');
-                    nameDiv.className = 'name';
-                    nameDiv.innerText = `- ${name}.`;
-                    li.appendChild(nameDiv);
+                        const li = document.createElement('li');
+                        li.innerHTML = `<div class="count">عدد الأبناء: ${children}</div>`;
+                        names.forEach(name => {
+                            const nameDiv = document.createElement('div');
+                            nameDiv.className = 'name';
+                            nameDiv.innerText = `- ${name}.`; // Add text before and after the name
+                            li.appendChild(nameDiv);
+                        });
+                        topChildrenList.appendChild(li);
+                        resultCount++;
+                    }
                 });
-                topChildrenList.appendChild(li);
-                resultCount++;
-            }
         }
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            const statistics = await fetchStatistics();
-            displayStatistics(statistics);
-        });
+        document.addEventListener('DOMContentLoaded', displayStatistics);
     </script>
 </body>
 </html>
