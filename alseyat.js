@@ -4,7 +4,6 @@ const data = {
         {
             name: "سالم",
             children: [
-                { name: "عودة" },
                 { name: "خلف" }
             ]
         },
