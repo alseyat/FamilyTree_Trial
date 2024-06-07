@@ -9,42 +9,50 @@
         @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Reem+Kufi+Ink:wght@400;700&display=swap');
 
-        /* Styles for famtreev55.html */
         .node rect {
             fill: #fff;
             stroke: steelblue;
             stroke-width: 3px;
         }
+
         .node text {
             font-family: 'Noto Naskh Arabic', sans-serif;
         }
+
         .link {
             fill: none;
             stroke: #040404;
             stroke-width: 2.5px;
         }
+
         .node:hover {
             cursor: pointer;
         }
+
         .node.has-children rect {
             fill: lightblue;
         }
+
         .node.collapsed rect {
             fill: blue;
         }
+
         #tree-container {
             overflow-x: auto;
             overflow-y: auto;
             width: 100%;
             height: 100%;
         }
+
         svg {
             width: 50000px;
             height: 10000px;
         }
+
         #expand-collapse-btn:hover {
             background-color: rgb(134, 131, 131);
         }
+
         #page-title {
             position: absolute;
             top: 10px;
@@ -57,6 +65,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         #page-subtitle {
             position: absolute;
             top: 70px;
@@ -69,6 +78,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         #page-subsubtitle {
             position: absolute;
             top: 135px;
@@ -81,6 +91,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         #button-container {
             display: flex;
             justify-content: center;
@@ -91,6 +102,7 @@
             transform: translateX(-50%);
             width: 100%;
         }
+
         .zoom-btn {
             padding: 5px 10px;
             background-color: rgb(223, 221, 221);
@@ -100,6 +112,7 @@
             border-radius: 10px;
             margin: 0 10px;
         }
+
         #expand-collapse-btn {
             padding: 5px 10px;
             background-color: rgb(223, 221, 221);
@@ -108,9 +121,11 @@
             text-align: center;
             border-radius: 10px;
         }
-        #zoom-in-btn:hover, #zoom-out-btn:hover {
+
+        #zoom-in-btn:hover, #zoom-out-btn:hover, #view-stats-btn:hover {
             background-color: rgb(134, 131, 131);
         }
+
         #view-stats-btn {
             padding: 10px 20px;
             background-color: #ea5050;
@@ -118,16 +133,14 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            position: absolute;
+            position: absolute; /* Ensure proper positioning */
             top: 228px;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%); /* Center horizontally */
             font-size: 15px;
-            font-weight: bold;
+            font-weight: bold; /* Add bold styling */
         }
-        #view-stats-btn:hover {
-            background-color: rgb(144, 20, 20);
-        }
+
         #instructions {
             position: absolute;
             top: 200px;
@@ -142,70 +155,68 @@
             text-overflow: ellipsis;
         }
 
-        /* Styles for statistics.html */
-        body {
-            font-family: 'Noto Naskh Arabic', sans-serif;
-            direction: rtl;
-        }
-        .container {
-            width: 30%;
-            margin: 0 auto;
-        }
-        @media only screen and (max-width: 600px) {
-            .container {
-                width: 90%;
-            }
-            #page-title, #page-subtitle, #page-subsubtitle, #expand-collapse-btn, #instructions, #view-stats-btn {
-                font-size: 13px;
-                top: 40px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 90%;
-                margin: 0 auto;
+        @media (max-width: 600px) {
+            #page-title {
+                font-size: 20px !important;
+                top: 10px !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                width: 90% !important;
+                margin: 0 auto !important;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
+
+            #page-subtitle {
+                font-size: 13px !important;
+                top: 40px !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                width: 90% !important;
+                margin: 0 auto !important;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            #page-subsubtitle {
+                font-size: 12px !important;
+                top: 90px !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                width: 90% !important;
+                margin: 0 auto !important;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
             #button-container {
                 top: 120px;
                 width: 60%;
             }
+
+            #expand-collapse-btn {
+                font-size: 13px !important;
+                padding: 3px 3px !important;
+                width: 120px;
+                height: 35px;
+                border-radius: 10px;
+            }
+
+            #instructions {
+                top: 170px;
+                font-size: 10px;
+            }
+
             #view-stats-btn {
                 top: 195px;
+                left: 50%;
+                transform: translateX(-50%);
                 font-size: 13px;
+                font-weight: bold;
             }
-        }
-        h2 {
-            text-align: center;
-            direction: ltr;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        .top-names li, .top-children li {
-            background: #f4f4f4;
-            margin: 5px 0;
-            padding: 10px;
-            border: 1px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-            flex-direction: column;
-        }
-        .name {
-            flex: 1;
-            text-align: right;
-        }
-        .count {
-            flex: 0.5;
-            text-align: left;
-        }
-        .total-members {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
         }
     </style>
 </head>
@@ -234,24 +245,14 @@
     <div id="tree-container">
         <svg></svg>
     </div>
-
-    <!-- Statistics section -->
-    <div class="container" id="statistics-container" style="display: none;">
-        <div class="total-members" id="total-members"></div>
-        <h2>أكثر الأسماء تكراراً</h2>
-        <ul id="top-names" class="top-names"></ul>
-
-        <h2>ًأكثر الأفراد أبناء</h2>
-        <ul id="top-children" class="top-children"></ul>
-    </div>
-
     <script type="module">
         import data from './alseyat.js';
 
         const margin = { top: 200, right: 20, bottom: 20, left: 300 };
         let width = 1200, height = 2000;
+
         let i = 0, duration = 200;
-        let zoomLevel = 1;
+        let zoomLevel = 1; // Initial zoom level
 
         const svg = d3.select("svg")
             .attr("width", width)
@@ -277,6 +278,7 @@
         }
 
         reverseChildren(root);
+
         collapse(root);
 
         function collapse(d) {
@@ -316,7 +318,7 @@
 
             const nodeEnter = node.enter().append('g')
                 .attr('class', 'node')
-                .attr('transform', d => `translate(${source.x0},${source.y0 + initialVerticalOffset})`)
+                .attr('transform', d => `translate(${source.x0},${source.y0+initialVerticalOffset})`)
                 .on('click', click);
 
             nodeEnter.append('rect')
@@ -351,7 +353,7 @@
 
             nodeUpdate.transition()
                 .duration(d => d.depth === 0 ? 0 : duration)
-                .attr('transform', d => `translate(${d.x},${d.y + initialVerticalOffset})`);
+                .attr('transform', d => `translate(${d.x},${d.y+initialVerticalOffset})`);
 
             nodeUpdate.select('rect')
                 .attr('width', 100)
@@ -365,7 +367,7 @@
 
             const nodeExit = node.exit().transition()
                 .duration(duration)
-                .attr('transform', d => `translate(${source.x},${source.y + initialVerticalOffset})`)
+                .attr('transform', d => `translate(${source.x},${source.y+initialVerticalOffset})`)
                 .remove();
 
             nodeExit.select('rect')
@@ -383,19 +385,19 @@
                 .attr('class', 'link')
                 .attr('d', d => {
                     const o = { x: source.x, y: source.y };
-                    return `M${o.x},${o.y + initialVerticalOffset}V${o.y + initialVerticalOffset}H${d.x}V${d.y + initialVerticalOffset}`;
+                    return `M${o.x},${o.y+initialVerticalOffset}V${o.y+initialVerticalOffset}H${d.x}V${d.y+initialVerticalOffset}`;
                 });
 
             const linkUpdate = linkEnter.merge(link);
 
             linkUpdate.transition()
                 .duration(duration)
-                .attr('d', d => `M${d.parent.x},${d.parent.y + initialVerticalOffset}V${d.parent.y + 35 + initialVerticalOffset}H${d.x}V${d.y + initialVerticalOffset}`);
+                .attr('d', d => `M${d.parent.x},${d.parent.y+initialVerticalOffset}V${d.parent.y + 35+initialVerticalOffset}H${d.x}V${d.y+initialVerticalOffset}`);
 
             const linkExit = link.exit()
                 .attr('d', d => {
                     const o = { x: source.x, y: source.y };
-                    return `M${o.x},${o.y + initialVerticalOffset}V${o.y}H${d.x}V${d.y + initialVerticalOffset}`;
+                    return `M${o.x},${o.y+initialVerticalOffset}V${o.y}H${d.x}V${d.y+initialVerticalOffset}`;
                 })
                 .remove();
 
@@ -425,10 +427,8 @@
                     });
                 }
             }
-            update(d);
+            update(d); // Center after click
         }
-
-        let expanded = true;
 
         function toggleTree() {
             if (root.children) {
@@ -436,7 +436,7 @@
             } else {
                 expandAll(root);
             }
-            update(root, true);
+            update(root, true); // Center after toggling
         }
 
         function collapseAll(d) {
@@ -456,14 +456,14 @@
         }
 
         function zoomIn() {
-            zoomLevel = Math.min(zoomLevel + 0.1, 1);
-            update(root, true);
+            zoomLevel = Math.min(zoomLevel + 0.1, 1); // Limit max zoom level to 1
+            update(root, true); // Center after zoom
             centerTopNode();
         }
 
         function zoomOut() {
-            zoomLevel = Math.max(zoomLevel - 0.1, 0.2);
-            update(root, true);
+            zoomLevel = Math.max(zoomLevel - 0.1, 0.2); // Limit min zoom level to 0.2
+            update(root, true); // Center after zoom
             centerTopNode();
         }
 
@@ -527,7 +527,13 @@
         }
 
         function storeStatistics(statistics) {
-            localStorage.setItem('familyTreeStatistics', JSON.stringify(statistics));
+            fetch('statistics.json', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(statistics)
+            });
         }
 
         const statistics = prepareStatistics(data);
@@ -535,76 +541,15 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('view-stats-btn').addEventListener('click', function() {
-                document.getElementById('statistics-container').style.display = 'block';
-                window.scrollTo(0, document.body.scrollHeight);
-                displayStatistics();
+                window.open('statistics.html', '_blank');
             });
-            document.getElementById('expand-collapse-btn').addEventListener('click', toggleTree);
-            document.getElementById('zoom-in-btn').addEventListener('click', zoomIn);
-            document.getElementById('zoom-out-btn').addEventListener('click', zoomOut);
         });
 
+        document.getElementById('expand-collapse-btn').addEventListener('click', toggleTree);
+        document.getElementById('zoom-in-btn').addEventListener('click', zoomIn);
+        document.getElementById('zoom-out-btn').addEventListener('click', zoomOut);
+
         update(root);
-
-        function displayStatistics() {
-            const statistics = JSON.parse(localStorage.getItem('familyTreeStatistics'));
-            if (!statistics) {
-                document.getElementById('total-members').innerText = "لا توجد بيانات إحصائية";
-                return;
-            }
-
-            const { topNames, topChildren, totalMembers } = statistics;
-
-            document.getElementById('total-members').innerText = `إجمالي عدد أفراد الأسرة: ${totalMembers}`;
-
-            const groupedNames = {};
-            topNames.forEach(([name, count]) => {
-                if (!groupedNames[count]) {
-                    groupedNames[count] = [];
-                }
-                groupedNames[count].push(name);
-            });
-
-            const sortedNames = Object.entries(groupedNames)
-                .map(([count, names]) => [names.join('، '), parseInt(count)])
-                .sort((a, b) => b[1] - a[1]);
-
-            const topNamesList = document.getElementById('top-names');
-            sortedNames.forEach(([names, count]) => {
-                const li = document.createElement('li');
-                li.innerHTML = `<div class="name">${names}</div><div class="count">${count}</div>`;
-                topNamesList.appendChild(li);
-            });
-
-            const groupedChildren = {};
-            topChildren.forEach(({ fullName, children }) => {
-                if (!groupedChildren[children]) {
-                    groupedChildren[children] = [];
-                }
-                groupedChildren[children].push(fullName);
-            });
-
-            const sortedChildren = Object.entries(groupedChildren)
-                .map(([children, names]) => [names, parseInt(children)])
-                .sort((a, b) => b[1] - a[1]);
-
-            const topChildrenList = document.getElementById('top-children');
-            let resultCount = 0;
-            for (const [names, children] of sortedChildren) {
-                if (resultCount >= 10) break;
-
-                const li = document.createElement('li');
-                li.innerHTML = `<div class="count">عدد الأبناء: ${children}</div>`;
-                names.forEach(name => {
-                    const nameDiv = document.createElement('div');
-                    nameDiv.className = 'name';
-                    nameDiv.innerText = `- ${name}.`;
-                    li.appendChild(nameDiv);
-                });
-                topChildrenList.appendChild(li);
-                resultCount++;
-            }
-        }
     </script>
 </body>
 </html>
