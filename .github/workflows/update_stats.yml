@@ -3,10 +3,10 @@ name: Update Family Tree Statistics
 on:
   push:
     paths:
-      - 'alseyat.js'  # Watch for changes to alseyat.js
+      - 'alseyat.js'
 
 jobs:
-  update:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,15 +20,4 @@ jobs:
 
     - name: Run update script
       run: |
-        npm install
         node update_stats.js
-
-    - name: Commit and push changes
-      run: |
-        git config --global user.email "you@example.com"
-        git config --global user.name "Your Name"
-        git add statistics.json
-        git commit -m "Update statistics"
-        git push
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
