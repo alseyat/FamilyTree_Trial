@@ -75,73 +75,70 @@
 
     <script>
         function displayStatistics() {
-            fetch('statistics.json')
-                .then(response => response.json())
-                .then(statistics => {
-                    if (!statistics) {
-                        document.getElementById('total-members').innerText = "لا توجد بيانات إحصائية";
-                        return;
-                    }
+            const statistics = JSON.parse(localStorage.getItem('familyTreeStatistics'));
+            if (!statistics) {
+                document.getElementById('total-members').innerText = "لا توجد بيانات إحصائية";
+                return;
+            }
 
-                    const { topNames, topChildren, totalMembers } = statistics;
+            const { topNames, topChildren, totalMembers } = statistics;
 
-                    // Display the total number of family members
-                    document.getElementById('total-members').innerText = `إجمالي عدد أفراد الأسرة: ${totalMembers}`;
+            // Display the total number of family members
+            document.getElementById('total-members').innerText = `إجمالي عدد أفراد الأسرة: ${totalMembers}`;
 
-                    // Group names by their count for the first list
-                    const groupedNames = {};
-                    topNames.forEach(([names, count]) => {
-                        if (!groupedNames[count]) {
-                            groupedNames[count] = [];
-                        }
-                        groupedNames[count].push(names);
-                    });
+            // Group names by their count for the first list
+            const groupedNames = {};
+            topNames.forEach(([name, count]) => {
+                if (!groupedNames[count]) {
+                    groupedNames[count] = [];
+                }
+                groupedNames[count].push(name);
+            });
 
-                    // Convert grouped names to an array and sort by count
-                    const sortedNames = Object.entries(groupedNames)
-                        .map(([count, names]) => [names.join('، '), parseInt(count)])
-                        .sort((a, b) => b[1] - a[1]);
+            // Convert grouped names to an array and sort by count
+            const sortedNames = Object.entries(groupedNames)
+                .map(([count, names]) => [names.join('، '), parseInt(count)])
+                .sort((a, b) => b[1] - a[1]);
 
-                    // Display all results for the first list
-                    const topNamesList = document.getElementById('top-names');
-                    sortedNames.forEach(([names, count]) => {
-                        const li = document.createElement('li');
-                        li.innerHTML = `<div class="name">${names}</div><div class="count">${count}</div>`;
-                        topNamesList.appendChild(li);
-                    });
+            // Display all results for the first list
+            const topNamesList = document.getElementById('top-names');
+            sortedNames.forEach(([names, count]) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<div class="name">${names}</div><div class="count">${count}</div>`;
+                topNamesList.appendChild(li);
+            });
 
-                    // Group people by number of children for the second list
-                    const groupedChildren = {};
-                    topChildren.forEach(({ fullName, children }) => {
-                        if (!groupedChildren[children]) {
-                            groupedChildren[children] = [];
-                        }
-                        groupedChildren[children].push(fullName);
-                    });
+            // Group people by number of children for the second list
+            const groupedChildren = {};
+            topChildren.forEach(({ fullName, children }) => {
+                if (!groupedChildren[children]) {
+                    groupedChildren[children] = [];
+                }
+                groupedChildren[children].push(fullName);
+            });
 
-                    // Convert grouped children to an array and sort by number of children
-                    const sortedChildren = Object.entries(groupedChildren)
-                        .map(([children, names]) => [names, parseInt(children)])
-                        .sort((a, b) => b[1] - a[1]);
+            // Convert grouped children to an array and sort by number of children
+            const sortedChildren = Object.entries(groupedChildren)
+                .map(([children, names]) => [names, parseInt(children)])
+                .sort((a, b) => b[1] - a[1]);
 
-                    // Display top 10 results for the second list
-                    const topChildrenList = document.getElementById('top-children');
-                    let resultCount = 0;
-                    for (const [names, children] of sortedChildren) {
-                        if (resultCount >= 10) break; // Ensure only 10 unique results
+            // Display top 10 results for the second list
+            const topChildrenList = document.getElementById('top-children');
+            let resultCount = 0;
+            for (const [names, children] of sortedChildren) {
+                if (resultCount >= 10) break; // Ensure only 10 unique results
 
-                        const li = document.createElement('li');
-                        li.innerHTML = `<div class="count">عدد الأبناء: ${children}</div>`;
-                        names.forEach(name => {
-                            const nameDiv = document.createElement('div');
-                            nameDiv.className = 'name';
-                            nameDiv.innerText = `- ${name}.`; // Add text before and after the name
-                            li.appendChild(nameDiv);
-                        });
-                        topChildrenList.appendChild(li);
-                        resultCount++;
-                    }
+                const li = document.createElement('li');
+                li.innerHTML = `<div class="count">عدد الأبناء: ${children}</div>`;
+                names.forEach(name => {
+                    const nameDiv = document.createElement('div');
+                    nameDiv.className = 'name';
+                    nameDiv.innerText = `- ${name}.`; // Add text before and after the name
+                    li.appendChild(nameDiv);
                 });
+                topChildrenList.appendChild(li);
+                resultCount++;
+            }
         }
 
         document.addEventListener('DOMContentLoaded', displayStatistics);
