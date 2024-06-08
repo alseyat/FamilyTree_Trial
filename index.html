@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="Arabic">
 <head>
     <meta charset="UTF-8">
     <title>شجرة أسرة السياط</title>
@@ -122,24 +122,40 @@
             border-radius: 10px;
         }
 
-        #zoom-in-btn:hover, #zoom-out-btn:hover, #view-stats-btn:hover {
+        #zoom-in-btn {
+            top: 180px;
+            left: 70%;
+        }
+        #zoom-in-btn:hover {
+            background-color: rgb(134, 131, 131);
+        }
+
+        #zoom-out-btn {
+            top: 180px;
+            left: 30%;
+        }
+        #zoom-out-btn:hover {
             background-color: rgb(134, 131, 131);
         }
 
         #view-stats-btn {
-            padding: 10px 20px;
-            background-color: #ea5050;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            position: absolute; /* Ensure proper positioning */
-            top: 228px;
-            left: 50%;
-            transform: translateX(-50%); /* Center horizontally */
-            font-size: 15px;
-            font-weight: bold; /* Add bold styling */
+    padding: 10px 20px;
+    background-color: #ea5050;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position: absolute; /* Ensure proper positioning */
+    top: 228px;
+    left: 50%;
+    transform: translateX(-50%); /* Center horizontally */
+    font-size: 15px;
+    font-weight: bold; /* Add bold styling */
+}
+#view-stats-btn:hover {
+            background-color: rgb(144, 20, 20);
         }
+
 
         #instructions {
             position: absolute;
@@ -211,12 +227,12 @@
             }
 
             #view-stats-btn {
-                top: 195px;
-                left: 50%;
-                transform: translateX(-50%);
-                font-size: 13px;
-                font-weight: bold;
-            }
+    top: 195px;
+    left: 50%;
+    transform: translateX(-50%); /* Center horizontally */
+    font-size: 13px;
+    font-weight: bold; /* Add bold styling */
+}
         }
     </style>
 </head>
@@ -240,7 +256,7 @@
     <div id="instructions">
         <div>اضغط على الاسم لإظهار الأبناء (الرقم الأحمر هو عدد الأبناء)، اضغط - أو + للتصغير أو التكبير</div>
     </div>
-    <button id="view-stats-btn">عرض إحصائيات الشجرة</button>
+<button id="view-stats-btn">عرض إحصائيات الشجرة</button>
 
     <div id="tree-container">
         <svg></svg>
@@ -248,7 +264,7 @@
     <script type="module">
         import data from './alseyat.js';
 
-        const margin = { top: 200, right: 20, bottom: 20, left: 300 };
+        const margin = { top: 200, right: 20, bottom: 20, left: 300 }; // Adjusted top margin to 200px for spacing below the button
         let width = 1200, height = 2000;
 
         let i = 0, duration = 200;
@@ -259,7 +275,7 @@
             .attr("height", height);
 
         const svgGroup = svg.append("g")
-            .attr("transform", `translate(${margin.left},${margin.top})`);
+            .attr("transform", `translate(${margin.left},${margin.top})`); // Initial translation with increased top padding
 
         const tree = d3.tree().nodeSize([120, 50])
             .separation((a, b) => a.parent === b.parent ? 1 : 1.25);
@@ -270,6 +286,7 @@
 
         let initialVerticalOffset = 50;
 
+        // Function to reverse children of each node
         function reverseChildren(node) {
             if (node.children) {
                 node.children.reverse();
@@ -277,6 +294,7 @@
             }
         }
 
+        // Reverse children order for the root node
         reverseChildren(root);
 
         collapse(root);
@@ -304,13 +322,17 @@
 
             nodes.forEach(d => d.y = d.depth * 70);
 
+            // Calculate the minimum x-coordinate to adjust the tree position
             const minX = Math.min(...nodes.map(d => d.x));
-            const adjustment = Math.max(0, 100 - minX);
+            const adjustment = Math.max(0, 100 - minX); // Ensure minimum padding of 200
 
+            // Calculate the maximum x-coordinate to adjust the SVG height
             const maxX = Math.max(...nodes.map(d => d.x));
-            const newHeight = maxX + 200;
+            const newHeight = maxX + 200; // Add padding of 200
 
+            // Adjust the tree position dynamically
             svgGroup.attr("transform", `translate(${adjustment} , 230) scale(${zoomLevel})`);
+            // Adjust the SVG height dynamically
             d3.select("svg").attr("height", newHeight);
 
             const node = svgGroup.selectAll('g.node')
@@ -430,6 +452,8 @@
             update(d); // Center after click
         }
 
+        let expanded = true;
+
         function toggleTree() {
             if (root.children) {
                 collapseAll(root);
@@ -456,13 +480,13 @@
         }
 
         function zoomIn() {
-            zoomLevel = Math.min(zoomLevel + 0.1, 1); // Limit max zoom level to 1
+            zoomLevel = Math.min(zoomLevel + 0.1, 1); // Limit max zoom level to 2
             update(root, true); // Center after zoom
             centerTopNode();
         }
 
         function zoomOut() {
-            zoomLevel = Math.max(zoomLevel - 0.1, 0.2); // Limit min zoom level to 0.2
+            zoomLevel = Math.max(zoomLevel - 0.1, 0.2); // Limit min zoom level to 0.5
             update(root, true); // Center after zoom
             centerTopNode();
         }
@@ -480,76 +504,102 @@
             }
         }
 
-        function prepareStatistics(data) {
-            const nameCount = {};
-            const childrenCount = [];
-            let totalMembers = 0;
+        function computeStatistics(node, nameCount, childrenCount, fullName = "") {
+            const currentFullName = fullName ? `${node.name} بن ${fullName}` : node.name;
 
-            function computeStatistics(node, fullName = "") {
-                totalMembers++;
-
-                const currentFullName = fullName ? `${node.name} بن ${fullName}` : node.name;
-
-                if (nameCount[node.name]) {
-                    nameCount[node.name]++;
-                } else {
-                    nameCount[node.name] = 1;
-                }
-
-                const numChildren = node.children ? node.children.length : 0;
-                if (numChildren > 0) {
-                    childrenCount.push({ fullName: currentFullName, children: numChildren });
-                }
-
-                if (node.children) {
-                    node.children.forEach(child => computeStatistics(child, currentFullName));
-                }
+            // Count the current node's name
+            if (nameCount[node.name]) {
+                nameCount[node.name]++;
+            } else {
+                nameCount[node.name] = 1;
             }
 
-            computeStatistics(data);
+            // Count children if any
+            const numChildren = node.children ? node.children.length : 0;
+            if (numChildren > 0) {
+                childrenCount.push({ fullName: currentFullName, children: numChildren });
+            }
 
-            const groupedNames = {};
-            Object.entries(nameCount).forEach(([name, count]) => {
-                if (!groupedNames[count]) {
-                    groupedNames[count] = [];
-                }
-                groupedNames[count].push(name);
-            });
-
-            const topNames = Object.entries(groupedNames)
-                .map(([count, names]) => [names.join('، '), count]);
-
-            const topChildren = childrenCount
-                .sort((a, b) => b.children - a.children)
-                .slice(0, 10);
-
-            return { topNames, topChildren, totalMembers };
+            // Recursively process children
+            if (node.children) {
+                node.children.forEach(child => computeStatistics(child, nameCount, childrenCount, currentFullName));
+            }
         }
 
+        function prepareStatistics(data) {
+    const nameCount = {};
+    const childrenCount = [];
+    let totalMembers = 0; // Initialize totalMembers
+
+    function computeStatistics(node, fullName = "") {
+        totalMembers++; // Increment for each node
+
+        const currentFullName = fullName ? `${node.name} بن ${fullName}` : node.name;
+
+        // Count the current node's name
+        if (nameCount[node.name]) {
+            nameCount[node.name]++;
+        } else {
+            nameCount[node.name] = 1;
+        }
+
+        // Count children if any
+        const numChildren = node.children ? node.children.length : 0;
+        if (numChildren > 0) {
+            childrenCount.push({ fullName: currentFullName, children: numChildren });
+        }
+
+        // Recursively process children
+        if (node.children) {
+            node.children.forEach(child => computeStatistics(child, currentFullName));
+        }
+    }
+
+    computeStatistics(data);
+
+    // Group names by their count
+    const groupedNames = {};
+    Object.entries(nameCount).forEach(([name, count]) => {
+        if (!groupedNames[count]) {
+            groupedNames[count] = [];
+        }
+        groupedNames[count].push(name);
+    });
+
+    // Convert grouped names to an array
+    const topNames = Object.entries(groupedNames)
+        .map(([count, names]) => [names.join('، '), count]);
+
+    // Get top ten people with the most children
+    const topChildren = childrenCount
+        .sort((a, b) => b.children - a.children)
+        .slice(0, 10); // Limit to top 10
+
+    return { topNames, topChildren, totalMembers };
+}
+
+
+
         function storeStatistics(statistics) {
-            fetch('statistics.json', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(statistics)
-            });
+            localStorage.setItem('familyTreeStatistics', JSON.stringify(statistics));
         }
 
         const statistics = prepareStatistics(data);
         storeStatistics(statistics);
 
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('view-stats-btn').addEventListener('click', function() {
-                window.open('statistics.html', '_blank');
-            });
+        document.getElementById('view-stats-btn').addEventListener('click', function() {
+            window.open('statistics.html', '_blank');
         });
+    });
 
         document.getElementById('expand-collapse-btn').addEventListener('click', toggleTree);
         document.getElementById('zoom-in-btn').addEventListener('click', zoomIn);
         document.getElementById('zoom-out-btn').addEventListener('click', zoomOut);
 
         update(root);
+
     </script>
 </body>
+
 </html>
