@@ -284,7 +284,18 @@
         root.x0 = width / 2;
         root.y0 = 0;
 
-        let initialVerticalOffset = 50;
+        const breakpoint = 768; // Define the breakpoint for mobile view
+
+function isMobile() {
+    return window.innerWidth <= breakpoint;
+}
+const viewportWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+        let initialVerticalOffset = 80;
+        let initialHorizontalOffset = width / 2+19;
+        let initialHorizontalForMobile =  79;
+
+        
 
         // Function to reverse children of each node
         function reverseChildren(node) {
@@ -304,6 +315,7 @@
                 d._children = d.children;
                 d._children.forEach(collapse);
                 d.children = null;
+
             }
         }
 
@@ -312,10 +324,12 @@
                 d.children = d._children;
                 d.children.forEach(expand);
                 d._children = null;
+
             }
         }
 
         function update(source, center = false) {
+
             const treeData = tree(root);
             const nodes = treeData.descendants();
             const links = treeData.descendants().slice(1);
@@ -340,7 +354,15 @@
 
             const nodeEnter = node.enter().append('g')
                 .attr('class', 'node')
-                .attr('transform', d => `translate(${source.x0},${source.y0+initialVerticalOffset})`)
+                .attr('transform', d => {
+                if (isMobile()) {
+            // Adjustments for mobile view
+            return `translate(${source.x + initialHorizontalForMobile},${source.y0 + initialVerticalOffset})`;
+        } else {
+            // Adjustments for desktop view
+            return `translate(${source.x + initialHorizontalOffset},${source.y0 + initialVerticalOffset})`;
+        }
+    })
                 .on('click', click);
 
             nodeEnter.append('rect')
@@ -375,8 +397,16 @@
 
             nodeUpdate.transition()
                 .duration(d => d.depth === 0 ? 0 : duration)
-                .attr('transform', d => `translate(${d.x},${d.y+initialVerticalOffset})`);
+                .attr('transform', d => {
+                if (isMobile()) {
+            // Adjustments for mobile view
+            return   `translate(${d.x+initialHorizontalForMobile},${d.y+initialVerticalOffset})`;
+        } else {
+            // Adjustments for desktop view
+            return  `translate(${d.x+initialHorizontalOffset},${d.y+initialVerticalOffset})`;
 
+        }
+    });
             nodeUpdate.select('rect')
                 .attr('width', 100)
                 .attr('height', 30)
@@ -389,7 +419,18 @@
 
             const nodeExit = node.exit().transition()
                 .duration(duration)
-                .attr('transform', d => `translate(${source.x},${source.y+initialVerticalOffset})`)
+                .attr('transform', d => {
+                if (isMobile()) {
+            // Adjustments for mobile view
+            return `translate(${source.x+initialHorizontalForMobile},${source.y+initialVerticalOffset})`;
+
+        } else {
+            // Adjustments for desktop view
+            return `translate(${source.x+initialHorizontalOffset},${source.y+initialVerticalOffset})`;
+
+
+        }
+    })
                 .remove();
 
             nodeExit.select('rect')
@@ -407,19 +448,46 @@
                 .attr('class', 'link')
                 .attr('d', d => {
                     const o = { x: source.x, y: source.y };
-                    return `M${o.x},${o.y+initialVerticalOffset}V${o.y+initialVerticalOffset}H${d.x}V${d.y+initialVerticalOffset}`;
+                    if (isMobile()) {
+            // Adjustments for mobile view
+            return `M${o.x+initialHorizontalForMobile},${o.y+initialVerticalOffset}V${o.y+initialVerticalOffset}H${d.x+initialHorizontalForMobile}V${d.y+initialVerticalOffset}`;
+
+        } else {
+            // Adjustments for desktop view
+            return `M${o.x+initialHorizontalOffset},${o.y+initialVerticalOffset}V${o.y+initialVerticalOffset}H${d.x+initialHorizontalOffset}V${d.y+initialVerticalOffset}`;
+
+
+        }
                 });
 
             const linkUpdate = linkEnter.merge(link);
 
             linkUpdate.transition()
                 .duration(duration)
-                .attr('d', d => `M${d.parent.x},${d.parent.y+initialVerticalOffset}V${d.parent.y + 35+initialVerticalOffset}H${d.x}V${d.y+initialVerticalOffset}`);
+                 .attr('d', d => {
+                if (isMobile()) {
+            // Adjustments for mobile view
+            return `M${d.parent.x+initialHorizontalForMobile},${d.parent.y+initialVerticalOffset}V${d.parent.y + 35+initialVerticalOffset}H${d.x+initialHorizontalForMobile}V${d.y+initialVerticalOffset}`;
 
+
+        } else {
+            // Adjustments for desktop view
+            return `M${d.parent.x+initialHorizontalOffset},${d.parent.y+initialVerticalOffset}V${d.parent.y + 35+initialVerticalOffset}H${d.x+initialHorizontalOffset}V${d.y+initialVerticalOffset}`;
+        }
+    });
             const linkExit = link.exit()
                 .attr('d', d => {
                     const o = { x: source.x, y: source.y };
-                    return `M${o.x},${o.y+initialVerticalOffset}V${o.y}H${d.x}V${d.y+initialVerticalOffset}`;
+                    if (isMobile()) {
+            // Adjustments for mobile view
+            return `M${o.x+initialHorizontalForMobile},${o.y+initialVerticalOffset}V${o.y}H${d.x}V${d.y+initialVerticalOffset}`;
+
+        } else {
+            // Adjustments for desktop view
+            return `M${o.x+initialHorizontalOffset},${o.y+initialVerticalOffset}V${o.y}H${d.x}V${d.y+initialVerticalOffset}`;
+
+
+        }
                 })
                 .remove();
 
@@ -434,22 +502,34 @@
         }
 
         function click(event, d) {
+            let hasChanges = false;
+
             if (d.children) {
                 d._children = d.children.concat(d._children || []);
                 d.children = null;
+                hasChanges = true;
+                centerTopNode();
+
             } else {
                 if (d._children) {
                     d.children = d._children;
                     d._children = null;
+                    hasChanges = true;
+                    centerTopNode();
+
                     d.children.forEach(child => {
                         if (child.children) {
                             child._children = child.children;
                             child.children = null;
+
                         }
                     });
                 }
             }
-            update(d); // Center after click
+            if (hasChanges) {
+        update(d);
+        centerTopNode();
+    }
         }
 
         let expanded = true;
@@ -460,7 +540,8 @@
             } else {
                 expandAll(root);
             }
-            update(root, true); // Center after toggling
+            update(root); // Center after toggling
+            centerTopNode();
         }
 
         function collapseAll(d) {
@@ -480,7 +561,7 @@
         }
 
         function zoomIn() {
-            zoomLevel = Math.min(zoomLevel + 0.1, 1); // Limit max zoom level to 2
+            zoomLevel = Math.min(zoomLevel + 0.1, 1); // Limit max zoom level to 1
             update(root, true); // Center after zoom
             centerTopNode();
         }
