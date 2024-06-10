@@ -300,7 +300,6 @@ const data = {
                                                                 {
                                                                     name: "عواد",
                                                                     children: [
-                                                                        { name: "حنظول" },
                                                                         {
                                                                             name: "عطاالله",
                                                                             children: [
