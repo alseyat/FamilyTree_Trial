@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="Arabic">
+
 <head>
     <meta charset="UTF-8">
     <title>شجرة أسرة السياط</title>
-     <link rel="icon" href="https://raw.githubusercontent.com/alseyat/FamilyTree_Trial/main/favicon_io/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon_io/favicon.ico" type="image/x-icon">
 
-<!-- For .png format -->
-<link rel="icon" href="/favicon_io/favicon-32x32.png" type="image/png">
+    <!-- For .png format -->
+    <link rel="icon" href="/favicon_io/favicon-32x32.png" type="image/png">
+
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://d3js.org/d3.v6.min.js"></script>
@@ -131,6 +133,7 @@
             top: 180px;
             left: 70%;
         }
+
         #zoom-in-btn:hover {
             background-color: rgb(134, 131, 131);
         }
@@ -139,25 +142,30 @@
             top: 180px;
             left: 30%;
         }
+
         #zoom-out-btn:hover {
             background-color: rgb(134, 131, 131);
         }
 
         #view-stats-btn {
-    padding: 10px 20px;
-    background-color: #ea5050;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    position: absolute; /* Ensure proper positioning */
-    top: 228px;
-    left: 50%;
-    transform: translateX(-50%); /* Center horizontally */
-    font-size: 15px;
-    font-weight: bold; /* Add bold styling */
-}
-#view-stats-btn:hover {
+            padding: 10px 20px;
+            background-color: #ea5050;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            position: absolute;
+            /* Ensure proper positioning */
+            top: 228px;
+            left: 50%;
+            transform: translateX(-50%);
+            /* Center horizontally */
+            font-size: 15px;
+            font-weight: bold;
+            /* Add bold styling */
+        }
+
+        #view-stats-btn:hover {
             background-color: rgb(144, 20, 20);
         }
 
@@ -232,21 +240,24 @@
             }
 
             #view-stats-btn {
-    top: 195px;
-    left: 50%;
-    transform: translateX(-50%); /* Center horizontally */
-    font-size: 13px;
-    font-weight: bold; /* Add bold styling */
-}
+                top: 195px;
+                left: 50%;
+                transform: translateX(-50%);
+                /* Center horizontally */
+                font-size: 13px;
+                font-weight: bold;
+                /* Add bold styling */
+            }
         }
     </style>
 </head>
+
 <body>
     <div id="page-title">
         <div>شجرة أسرة السياط</div>
     </div>
     <div id="page-subtitle">
-        <div>من ذرية سياط بن عودة بن محمد بن علّيج بن محمد بن سليمان (جد الحجلا)</div>
+        <div>من ذرية سياط بن عودة بن محمد بن علّيق بن محمد بن سليمان (جد الحجلا)</div>
         <div>بن نافع بن عمار بن زقروط الربيعي العبدي الشمري</div>
     </div>
     <div id="page-subsubtitle">
@@ -261,7 +272,7 @@
     <div id="instructions">
         <div>اضغط على الاسم لإظهار الأبناء (الرقم الأحمر هو عدد الأبناء)، اضغط - أو + للتصغير أو التكبير</div>
     </div>
-<button id="view-stats-btn">عرض إحصائيات الشجرة</button>
+    <button id="view-stats-btn">عرض إحصائيات الشجرة</button>
 
     <div id="tree-container">
         <svg></svg>
@@ -291,16 +302,16 @@
 
         const breakpoint = 768; // Define the breakpoint for mobile view
 
-function isMobile() {
-    return window.innerWidth <= breakpoint;
-}
-const viewportWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        function isMobile() {
+            return window.innerWidth <= breakpoint;
+        }
+        const viewportWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
         let initialVerticalOffset = 80;
-        let initialHorizontalOffset = width / 2+19;
-        let initialHorizontalForMobile =  79;
+        let initialHorizontalOffset = width / 2 + 19;
+        let initialHorizontalForMobile = 79;
 
-        
+
 
         // Function to reverse children of each node
         function reverseChildren(node) {
@@ -360,14 +371,14 @@ const viewportWidth = window.innerWidth || document.documentElement.clientWidth 
             const nodeEnter = node.enter().append('g')
                 .attr('class', 'node')
                 .attr('transform', d => {
-                if (isMobile()) {
-            // Adjustments for mobile view
-            return `translate(${source.x + initialHorizontalForMobile},${source.y0 + initialVerticalOffset})`;
-        } else {
-            // Adjustments for desktop view
-            return `translate(${source.x + initialHorizontalOffset},${source.y0 + initialVerticalOffset})`;
-        }
-    })
+                    if (isMobile()) {
+                        // Adjustments for mobile view
+                        return `translate(${source.x + initialHorizontalForMobile},${source.y0 + initialVerticalOffset})`;
+                    } else {
+                        // Adjustments for desktop view
+                        return `translate(${source.x + initialHorizontalOffset},${source.y0 + initialVerticalOffset})`;
+                    }
+                })
                 .on('click', click);
 
             nodeEnter.append('rect')
@@ -403,15 +414,15 @@ const viewportWidth = window.innerWidth || document.documentElement.clientWidth 
             nodeUpdate.transition()
                 .duration(d => d.depth === 0 ? 0 : duration)
                 .attr('transform', d => {
-                if (isMobile()) {
-            // Adjustments for mobile view
-            return   `translate(${d.x+initialHorizontalForMobile},${d.y+initialVerticalOffset})`;
-        } else {
-            // Adjustments for desktop view
-            return  `translate(${d.x+initialHorizontalOffset},${d.y+initialVerticalOffset})`;
+                    if (isMobile()) {
+                        // Adjustments for mobile view
+                        return `translate(${d.x + initialHorizontalForMobile},${d.y + initialVerticalOffset})`;
+                    } else {
+                        // Adjustments for desktop view
+                        return `translate(${d.x + initialHorizontalOffset},${d.y + initialVerticalOffset})`;
 
-        }
-    });
+                    }
+                });
             nodeUpdate.select('rect')
                 .attr('width', 100)
                 .attr('height', 30)
@@ -425,17 +436,17 @@ const viewportWidth = window.innerWidth || document.documentElement.clientWidth 
             const nodeExit = node.exit().transition()
                 .duration(duration)
                 .attr('transform', d => {
-                if (isMobile()) {
-            // Adjustments for mobile view
-            return `translate(${source.x+initialHorizontalForMobile},${source.y+initialVerticalOffset})`;
+                    if (isMobile()) {
+                        // Adjustments for mobile view
+                        return `translate(${source.x + initialHorizontalForMobile},${source.y + initialVerticalOffset})`;
 
-        } else {
-            // Adjustments for desktop view
-            return `translate(${source.x+initialHorizontalOffset},${source.y+initialVerticalOffset})`;
+                    } else {
+                        // Adjustments for desktop view
+                        return `translate(${source.x + initialHorizontalOffset},${source.y + initialVerticalOffset})`;
 
 
-        }
-    })
+                    }
+                })
                 .remove();
 
             nodeExit.select('rect')
@@ -454,45 +465,45 @@ const viewportWidth = window.innerWidth || document.documentElement.clientWidth 
                 .attr('d', d => {
                     const o = { x: source.x, y: source.y };
                     if (isMobile()) {
-            // Adjustments for mobile view
-            return `M${o.x+initialHorizontalForMobile},${o.y+initialVerticalOffset}V${o.y+initialVerticalOffset}H${d.x+initialHorizontalForMobile}V${d.y+initialVerticalOffset}`;
+                        // Adjustments for mobile view
+                        return `M${o.x + initialHorizontalForMobile},${o.y + initialVerticalOffset}V${o.y + initialVerticalOffset}H${d.x + initialHorizontalForMobile}V${d.y + initialVerticalOffset}`;
 
-        } else {
-            // Adjustments for desktop view
-            return `M${o.x+initialHorizontalOffset},${o.y+initialVerticalOffset}V${o.y+initialVerticalOffset}H${d.x+initialHorizontalOffset}V${d.y+initialVerticalOffset}`;
+                    } else {
+                        // Adjustments for desktop view
+                        return `M${o.x + initialHorizontalOffset},${o.y + initialVerticalOffset}V${o.y + initialVerticalOffset}H${d.x + initialHorizontalOffset}V${d.y + initialVerticalOffset}`;
 
 
-        }
+                    }
                 });
 
             const linkUpdate = linkEnter.merge(link);
 
             linkUpdate.transition()
                 .duration(duration)
-                 .attr('d', d => {
-                if (isMobile()) {
-            // Adjustments for mobile view
-            return `M${d.parent.x+initialHorizontalForMobile},${d.parent.y+initialVerticalOffset}V${d.parent.y + 35+initialVerticalOffset}H${d.x+initialHorizontalForMobile}V${d.y+initialVerticalOffset}`;
+                .attr('d', d => {
+                    if (isMobile()) {
+                        // Adjustments for mobile view
+                        return `M${d.parent.x + initialHorizontalForMobile},${d.parent.y + initialVerticalOffset}V${d.parent.y + 35 + initialVerticalOffset}H${d.x + initialHorizontalForMobile}V${d.y + initialVerticalOffset}`;
 
 
-        } else {
-            // Adjustments for desktop view
-            return `M${d.parent.x+initialHorizontalOffset},${d.parent.y+initialVerticalOffset}V${d.parent.y + 35+initialVerticalOffset}H${d.x+initialHorizontalOffset}V${d.y+initialVerticalOffset}`;
-        }
-    });
+                    } else {
+                        // Adjustments for desktop view
+                        return `M${d.parent.x + initialHorizontalOffset},${d.parent.y + initialVerticalOffset}V${d.parent.y + 35 + initialVerticalOffset}H${d.x + initialHorizontalOffset}V${d.y + initialVerticalOffset}`;
+                    }
+                });
             const linkExit = link.exit()
                 .attr('d', d => {
                     const o = { x: source.x, y: source.y };
                     if (isMobile()) {
-            // Adjustments for mobile view
-            return `M${o.x+initialHorizontalForMobile},${o.y+initialVerticalOffset}V${o.y}H${d.x}V${d.y+initialVerticalOffset}`;
+                        // Adjustments for mobile view
+                        return `M${o.x + initialHorizontalForMobile},${o.y + initialVerticalOffset}V${o.y}H${d.x}V${d.y + initialVerticalOffset}`;
 
-        } else {
-            // Adjustments for desktop view
-            return `M${o.x+initialHorizontalOffset},${o.y+initialVerticalOffset}V${o.y}H${d.x}V${d.y+initialVerticalOffset}`;
+                    } else {
+                        // Adjustments for desktop view
+                        return `M${o.x + initialHorizontalOffset},${o.y + initialVerticalOffset}V${o.y}H${d.x}V${d.y + initialVerticalOffset}`;
 
 
-        }
+                    }
                 })
                 .remove();
 
@@ -532,9 +543,9 @@ const viewportWidth = window.innerWidth || document.documentElement.clientWidth 
                 }
             }
             if (hasChanges) {
-        update(d);
-        centerTopNode();
-    }
+                update(d);
+                centerTopNode();
+            }
         }
 
         let expanded = true;
@@ -591,11 +602,11 @@ const viewportWidth = window.innerWidth || document.documentElement.clientWidth 
         }
 
 
-        document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('view-stats-btn').addEventListener('click', function() {
-            window.open('statistics.html', '_blank');
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('view-stats-btn').addEventListener('click', function () {
+                location.href = 'statistics.html';
+            });
         });
-    });
 
         document.getElementById('expand-collapse-btn').addEventListener('click', toggleTree);
         document.getElementById('zoom-in-btn').addEventListener('click', zoomIn);
