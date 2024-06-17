@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>إحصائيات شجرة أسرة السياط</title>
+    <link rel="icon" href="/favicon_io/favicon.ico" type="image/x-icon">
+
+    <!-- For .png format -->
+    <link rel="icon" href="/favicon_io/favicon-32x32.png" type="image/png">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
@@ -15,6 +20,25 @@
             width: 30%;
             margin: 0 auto;
         }
+
+        .back-button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #ea5050;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    width: fit-content;
+}
+
+.back-button:hover {
+    background-color: rgb(144, 20, 20);
+}
+
         
         @media only screen and (max-width: 600px) {
             .container {
@@ -50,9 +74,13 @@
             flex: 1;
             text-align: right;
         }
+        .top-children .name {
+            margin-bottom: 15px; /* Add margin between names only for top-children list */
+        }
         .count {
             flex: 0.5;
             text-align: left;
+            margin-bottom: 0px; /* Add more space between count and names */
         }
         .total-members {
             text-align: center;
@@ -64,6 +92,8 @@
     </style>
 </head>
 <body>
+    <a href="index.html" class="back-button">العودة إلى الشجرة</a> <!-- Back button -->
+
     <div class="container">
         <div class="total-members" id="total-members"></div>
         <h2>أكثر الأسماء تكراراً</h2>
@@ -114,11 +144,19 @@
 
             const topNames = Object.entries(groupedNames)
                 .map(([count, names]) => [names.join('، '), parseInt(count)])
-                .sort((a, b) => b[1] - a[1]); // Sort from most to least
+                .sort((a, b) => b[1] - a[1]);
 
-            const topChildren = childrenCount
-                .sort((a, b) => b.children - a.children)
-                .slice(0, 10);
+            const groupedChildren = {};
+            childrenCount.forEach(({ fullName, children }) => {
+                if (!groupedChildren[children]) {
+                    groupedChildren[children] = [];
+                }
+                groupedChildren[children].push(fullName);
+            });
+
+            const topChildren = Object.entries(groupedChildren)
+                .map(([children, names]) => ({ names, children: parseInt(children) }))
+                .sort((a, b) => b.children - a.children);
 
             return { topNames, topChildren, totalMembers };
         }
@@ -136,10 +174,10 @@
             });
 
             const topChildrenList = document.getElementById('top-children');
-            topChildren.forEach(({ fullName, children }) => {
+            topChildren.forEach(({ names, children }) => {
                 const li = document.createElement('li');
                 li.innerHTML = `<div class="count">عدد الأبناء: ${children}</div>`;
-                fullName.split('، ').forEach(name => {
+                names.forEach(name => {
                     const nameDiv = document.createElement('div');
                     nameDiv.className = 'name';
                     nameDiv.innerText = `- ${name}.`;
