@@ -22,8 +22,20 @@
             stroke-width: 3px;
         }
 
+        /* Highlight style */
+        .node rect.highlight {
+            fill: rgb(75, 119, 170) !important;
+            stroke: rgb(0, 0, 0);
+        }
+
         .node text {
             font-family: 'Noto Naskh Arabic', sans-serif;
+        }
+
+        /* Highlight styles for <text> */
+        .node text.highlight {
+            fill: rgb(9, 0, 0) !important;
+            /* Highlight text color */
         }
 
         .link {
@@ -184,7 +196,92 @@
             text-overflow: ellipsis;
         }
 
+
+
+        /* Search Box Styles */
+        /* Container for Centering */
+        .search-container {
+            text-align: center;
+            /* Center text-aligned elements inside */
+            margin-top: 280px;
+            /* Adjust vertical position */
+        }
+
+        /* Input Box */
+        .search-container input[type="text"] {
+            font-family: 'Noto Naskh Arabic', sans-serif;
+            width: 30%;
+            /* Reduced width */
+            padding: 10px;
+            margin: 0 auto;
+            /* Center horizontally */
+            font-size: 16px;
+            display: block;
+            /* Make sure it's a block element */
+            direction: rtl;
+            /* Set text direction to right-to-left */
+            text-align: right;
+            /* Align text to the right */
+        }
+
+        /* Search Results Container */
+        ul#search-results {
+            font-family: 'Noto Naskh Arabic', sans-serif;
+            list-style-type: none;
+            padding: 0;
+            display: none;
+            position: absolute;
+            z-index: 1000;
+            background: white;
+            border: 1px solid #ddd;
+            width: 50%;
+            /* Match width of the input box */
+            left: 25%;
+            /* Centered relative to the input box */
+        }
+
+        /* Search Results Items */
+        ul#search-results li {
+            padding: 10px;
+            cursor: pointer;
+            direction: rtl;
+            /* Ensure items also follow right-to-left */
+            text-align: right;
+            /* Align text to the right */
+        }
+
+        /* Search Results Items Hover Effect */
+        ul#search-results li:hover {
+            background-color: #f0f0f0;
+        }
+
+
         @media (max-width: 600px) {
+
+            /* Search Box Adjustments for Mobile */
+            .search-container {
+                margin-top: 240px;
+                /* Adjust vertical position for mobile */
+            }
+
+            .search-container input[type="text"] {
+                width: 70%;
+                /* Increase width for mobile */
+                font-size: 14px;
+                /* Adjust font size for readability */
+                padding: 8px;
+                /* Adjust padding */
+            }
+
+            /* Search Results Container Adjustments for Mobile */
+            ul#search-results {
+                width: 80%;
+                /* Match width of the input box */
+                left: 10%;
+                /* Centered relative to the input box */
+            }
+
+
             #page-title {
                 font-size: 20px !important;
                 top: 10px !important;
@@ -248,6 +345,7 @@
                 font-weight: bold;
                 /* Add bold styling */
             }
+
         }
     </style>
 </head>
@@ -274,347 +372,551 @@
     </div>
     <button id="view-stats-btn">عرض إحصائيات الشجرة</button>
 
-    <div id="tree-container">
-        <svg></svg>
-    </div>
-    <script type="module">
-        import data from './alseyat.js';
-
-        const margin = { top: 200, right: 20, bottom: 20, left: 300 }; // Adjusted top margin to 200px for spacing below the button
-        let width = 1200, height = 2000;
-
-        let i = 0, duration = 200;
-        let zoomLevel = 1; // Initial zoom level
-
-        const svg = d3.select("svg")
-            .attr("width", width)
-            .attr("height", height);
-
-        const svgGroup = svg.append("g")
-            .attr("transform", `translate(${margin.left},${margin.top})`); // Initial translation with increased top padding
-
-        const tree = d3.tree().nodeSize([120, 50])
-            .separation((a, b) => a.parent === b.parent ? 1 : 1.25);
-
-        let root = d3.hierarchy(data);
-        root.x0 = width / 2;
-        root.y0 = 0;
-
-        const breakpoint = 768; // Define the breakpoint for mobile view
-
-        function isMobile() {
-            return window.innerWidth <= breakpoint;
-        }
-        const viewportWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-
-        let initialVerticalOffset = 80;
-        let initialHorizontalOffset = width / 2 + 19;
-        let initialHorizontalForMobile = 79;
+    <div class="search-container">
+        <input type="text" id="search-box" placeholder="ابحث عن اسم..." />
+        <ul id="search-results"></ul>
 
 
+        <div id="tree-container">
+            <svg></svg>
+        </div>
+        <script type="module">
+            import data from './alseyat.js';
 
-        // Function to reverse children of each node
-        function reverseChildren(node) {
-            if (node.children) {
-                node.children.reverse();
-                node.children.forEach(reverseChildren);
+            const margin = { top: 200, right: 20, bottom: 20, left: 300 }; // Adjusted top margin to 200px for spacing below the button
+            let width = 1200, height = 2000;
+
+            let i = 0, duration = 50, delay = 50;
+            let firstHighlightDelay = 250, secondHighlightDelay = 800, thirdHighlightDelay = 1200, fourthHighlightDelay = 300;
+
+            let zoomLevel = 1; // Initial zoom level
+
+            const svg = d3.select("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+            const svgGroup = svg.append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`); // Initial translation with increased top padding
+
+            const tree = d3.tree().nodeSize([120, 50])
+                .separation((a, b) => a.parent === b.parent ? 1 : 1.25);
+
+            let root = d3.hierarchy(data);
+            root.x0 = width / 2;
+            root.y0 = 0;
+
+            const breakpoint = 768; // Define the breakpoint for mobile view
+
+            function isMobile() {
+                return window.innerWidth <= breakpoint;
             }
-        }
+            const viewportWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
-        // Reverse children order for the root node
-        reverseChildren(root);
+            let initialVerticalOffset = -180;
+            let initialHorizontalOffset = width / 2 + 19;
+            let initialHorizontalForMobile = 79;
 
-        collapse(root);
 
-        function collapse(d) {
-            if (d.children) {
-                d._children = d.children;
-                d._children.forEach(collapse);
-                d.children = null;
 
+            // Function to reverse children of each node
+            function reverseChildren(node) {
+                if (node.children) {
+                    node.children.reverse();
+                    node.children.forEach(reverseChildren);
+                }
             }
-        }
 
-        function expand(d) {
-            if (d._children) {
-                d.children = d._children;
-                d.children.forEach(expand);
-                d._children = null;
+            // Reverse children order for the root node
+            reverseChildren(root);
 
+            collapse(root);
+
+            function collapse(d) {
+                if (d.children) {
+                    d._children = d.children;
+                    d._children.forEach(collapse);
+                    d.children = null;
+
+                }
             }
-        }
 
-        function update(source, center = false) {
-
-            const treeData = tree(root);
-            const nodes = treeData.descendants();
-            const links = treeData.descendants().slice(1);
-
-            nodes.forEach(d => d.y = d.depth * 70);
-
-            // Calculate the minimum x-coordinate to adjust the tree position
-            const minX = Math.min(...nodes.map(d => d.x));
-            const adjustment = Math.max(0, 100 - minX); // Ensure minimum padding of 200
-
-            // Calculate the maximum x-coordinate to adjust the SVG height
-            const maxX = Math.max(...nodes.map(d => d.x));
-            const newHeight = maxX + 200; // Add padding of 200
-
-            // Adjust the tree position dynamically
-            svgGroup.attr("transform", `translate(${adjustment} , 230) scale(${zoomLevel})`);
-            // Adjust the SVG height dynamically
-            d3.select("svg").attr("height", newHeight);
-
-            const node = svgGroup.selectAll('g.node')
-                .data(nodes, d => d.id || (d.id = ++i));
-
-            const nodeEnter = node.enter().append('g')
-                .attr('class', 'node')
-                .attr('transform', d => {
-                    if (isMobile()) {
-                        // Adjustments for mobile view
-                        return `translate(${source.x + initialHorizontalForMobile},${source.y0 + initialVerticalOffset})`;
-                    } else {
-                        // Adjustments for desktop view
-                        return `translate(${source.x + initialHorizontalOffset},${source.y0 + initialVerticalOffset})`;
-                    }
-                })
-                .on('click', click);
-
-            nodeEnter.append('rect')
-                .attr('width', 100)
-                .attr('height', 40)
-                .attr('x', -50)
-                .attr('y', -15)
-                .attr('rx', 10)
-                .attr('ry', 10)
-                .attr('class', 'node')
-                .style('fill', d => d._children ? "lightsteelblue" : "#fff");
-
-            nodeEnter.append('text')
-                .attr('dy', '.23em')
-                .attr('x', 0)
-                .attr('text-anchor', 'middle')
-                .attr("font-family", 'Noto Naskh Arabic, sans-serif')
-                .attr("font-size", "20px")
-                .text(d => d.data.name);
-
-            nodeEnter.append('text')
-                .attr('dy', '.35em')
-                .attr('x', 50)
-                .attr('y', -15)
-                .attr('text-anchor', 'start')
-                .attr("font-family", 'Noto Naskh Arabic, sans-serif')
-                .attr("font-size", "13px")
-                .style('fill', 'red')
-                .text(d => d.children || d._children ? `(${d.children ? d.children.length : d._children.length})` : '');
-
-            const nodeUpdate = nodeEnter.merge(node);
-
-            nodeUpdate.transition()
-                .duration(d => d.depth === 0 ? 0 : duration)
-                .attr('transform', d => {
-                    if (isMobile()) {
-                        // Adjustments for mobile view
-                        return `translate(${d.x + initialHorizontalForMobile},${d.y + initialVerticalOffset})`;
-                    } else {
-                        // Adjustments for desktop view
-                        return `translate(${d.x + initialHorizontalOffset},${d.y + initialVerticalOffset})`;
-
-                    }
-                });
-            nodeUpdate.select('rect')
-                .attr('width', 100)
-                .attr('height', 30)
-                .attr('x', -50)
-                .attr('y', -15)
-                .attr('rx', 10)
-                .attr('ry', 10)
-                .attr('class', d => d._children ? 'has-children' : '')
-                .style('fill', d => d._children ? "lightsteelblue" : "#fff");
-
-            const nodeExit = node.exit().transition()
-                .duration(duration)
-                .attr('transform', d => {
-                    if (isMobile()) {
-                        // Adjustments for mobile view
-                        return `translate(${source.x + initialHorizontalForMobile},${source.y + initialVerticalOffset})`;
-
-                    } else {
-                        // Adjustments for desktop view
-                        return `translate(${source.x + initialHorizontalOffset},${source.y + initialVerticalOffset})`;
-
-
-                    }
-                })
-                .remove();
-
-            nodeExit.select('rect')
-                .attr('width', 100)
-                .attr('height', 30)
-                .attr('x', -50)
-                .attr('y', -15)
-                .attr('rx', 10)
-                .attr('ry', 10);
-
-            const link = svgGroup.selectAll('path.link')
-                .data(links, d => d.id);
-
-            const linkEnter = link.enter().insert('path', 'g')
-                .attr('class', 'link')
-                .attr('d', d => {
-                    const o = { x: source.x, y: source.y };
-                    if (isMobile()) {
-                        // Adjustments for mobile view
-                        return `M${o.x + initialHorizontalForMobile},${o.y + initialVerticalOffset}V${o.y + initialVerticalOffset}H${d.x + initialHorizontalForMobile}V${d.y + initialVerticalOffset}`;
-
-                    } else {
-                        // Adjustments for desktop view
-                        return `M${o.x + initialHorizontalOffset},${o.y + initialVerticalOffset}V${o.y + initialVerticalOffset}H${d.x + initialHorizontalOffset}V${d.y + initialVerticalOffset}`;
-
-
-                    }
-                });
-
-            const linkUpdate = linkEnter.merge(link);
-
-            linkUpdate.transition()
-                .duration(duration)
-                .attr('d', d => {
-                    if (isMobile()) {
-                        // Adjustments for mobile view
-                        return `M${d.parent.x + initialHorizontalForMobile},${d.parent.y + initialVerticalOffset}V${d.parent.y + 35 + initialVerticalOffset}H${d.x + initialHorizontalForMobile}V${d.y + initialVerticalOffset}`;
-
-
-                    } else {
-                        // Adjustments for desktop view
-                        return `M${d.parent.x + initialHorizontalOffset},${d.parent.y + initialVerticalOffset}V${d.parent.y + 35 + initialVerticalOffset}H${d.x + initialHorizontalOffset}V${d.y + initialVerticalOffset}`;
-                    }
-                });
-            const linkExit = link.exit()
-                .attr('d', d => {
-                    const o = { x: source.x, y: source.y };
-                    if (isMobile()) {
-                        // Adjustments for mobile view
-                        return `M${o.x + initialHorizontalForMobile},${o.y + initialVerticalOffset}V${o.y}H${d.x}V${d.y + initialVerticalOffset}`;
-
-                    } else {
-                        // Adjustments for desktop view
-                        return `M${o.x + initialHorizontalOffset},${o.y + initialVerticalOffset}V${o.y}H${d.x}V${d.y + initialVerticalOffset}`;
-
-
-                    }
-                })
-                .remove();
-
-            nodes.forEach(d => {
-                d.x0 = d.x;
-                d.y0 = d.y;
-            });
-
-            if (center) {
-                centerTopNode();
-            }
-        }
-
-        function click(event, d) {
-            let hasChanges = false;
-
-            if (d.children) {
-                d._children = d.children.concat(d._children || []);
-                d.children = null;
-                hasChanges = true;
-                centerTopNode();
-
-            } else {
+            function expand(d) {
                 if (d._children) {
                     d.children = d._children;
+                    d.children.forEach(expand);
                     d._children = null;
-                    hasChanges = true;
-                    centerTopNode();
 
-                    d.children.forEach(child => {
-                        if (child.children) {
-                            child._children = child.children;
-                            child.children = null;
+                }
+            }
+
+            function update(source, center = false) {
+
+                const treeData = tree(root);
+                const nodes = treeData.descendants();
+                const links = treeData.descendants().slice(1);
+
+                nodes.forEach(d => d.y = d.depth * 70);
+
+                // Calculate the minimum x-coordinate to adjust the tree position
+                const minX = Math.min(...nodes.map(d => d.x));
+                const adjustment = Math.max(0, 100 - minX); // Ensure minimum padding of 200
+
+                // Calculate the maximum x-coordinate to adjust the SVG height
+                const maxX = Math.max(...nodes.map(d => d.x));
+                const newHeight = maxX + 200; // Add padding of 200
+
+                // Adjust the tree position dynamically
+                svgGroup.attr("transform", `translate(${adjustment} , 230) scale(${zoomLevel})`);
+                // Adjust the SVG height dynamically
+                d3.select("svg").attr("height", newHeight);
+
+                const node = svgGroup.selectAll('g.node')
+                    .data(nodes, d => d.id || (d.id = ++i));
+
+                const nodeEnter = node.enter().append('g')
+                    .attr('class', 'node')
+                    .attr('transform', d => {
+                        if (isMobile()) {
+                            // Adjustments for mobile view
+                            return `translate(${source.x + initialHorizontalForMobile},${source.y0 + initialVerticalOffset})`;
+                        } else {
+                            // Adjustments for desktop view
+                            return `translate(${source.x + initialHorizontalOffset},${source.y0 + initialVerticalOffset})`;
+                        }
+                    })
+                    .attr('data-id', d => d.id) // Assign data-id attribute
+                    .on('click', click);
+
+                nodeEnter.append('rect')
+                    .attr('width', 100)
+                    .attr('height', 40)
+                    .attr('x', -50)
+                    .attr('y', -15)
+                    .attr('rx', 10)
+                    .attr('ry', 10)
+                    .attr('class', 'node')
+                    .style('fill', d => d._children ? "lightsteelblue" : "#fff");
+
+                nodeEnter.append('text')
+                    .attr('dy', '.23em')
+                    .attr('x', 0)
+                    .attr('text-anchor', 'middle')
+                    .attr("font-family", 'Noto Naskh Arabic, sans-serif')
+                    .attr("font-size", "20px")
+                    .text(d => d.data.name);
+
+                nodeEnter.append('text')
+                    .attr('dy', '.35em')
+                    .attr('x', 50)
+                    .attr('y', -15)
+                    .attr('text-anchor', 'start')
+                    .attr("font-family", 'Noto Naskh Arabic, sans-serif')
+                    .attr("font-size", "13px")
+                    .style('fill', 'red')
+                    .text(d => d.children || d._children ? `(${d.children ? d.children.length : d._children.length})` : '');
+
+                const nodeUpdate = nodeEnter.merge(node);
+
+                nodeUpdate.transition()
+                    .duration(d => d.depth === 0 ? 0 : duration)
+                    .attr('transform', d => {
+                        if (isMobile()) {
+                            // Adjustments for mobile view
+                            return `translate(${d.x + initialHorizontalForMobile},${d.y + initialVerticalOffset})`;
+                        } else {
+                            // Adjustments for desktop view
+                            return `translate(${d.x + initialHorizontalOffset},${d.y + initialVerticalOffset})`;
 
                         }
                     });
+                nodeUpdate.select('rect')
+                    .attr('width', 100)
+                    .attr('height', 30)
+                    .attr('x', -50)
+                    .attr('y', -15)
+                    .attr('rx', 10)
+                    .attr('ry', 10)
+                    .attr('class', d => d._children ? 'has-children' : '')
+                    .style('fill', d => d._children ? "lightsteelblue" : "#fff");
+
+                const nodeExit = node.exit().transition()
+                    .duration(duration)
+                    .attr('transform', d => {
+                        if (isMobile()) {
+                            // Adjustments for mobile view
+                            return `translate(${source.x + initialHorizontalForMobile},${source.y + initialVerticalOffset})`;
+
+                        } else {
+                            // Adjustments for desktop view
+                            return `translate(${source.x + initialHorizontalOffset},${source.y + initialVerticalOffset})`;
+
+
+                        }
+                    })
+                    .remove();
+
+                nodeExit.select('rect')
+                    .attr('width', 100)
+                    .attr('height', 30)
+                    .attr('x', -50)
+                    .attr('y', -15)
+                    .attr('rx', 10)
+                    .attr('ry', 10);
+
+                const link = svgGroup.selectAll('path.link')
+                    .data(links, d => d.id);
+
+                const linkEnter = link.enter().insert('path', 'g')
+                    .attr('class', 'link')
+                    .attr('d', d => {
+                        const o = { x: source.x, y: source.y };
+                        if (isMobile()) {
+                            // Adjustments for mobile view
+                            return `M${o.x + initialHorizontalForMobile},${o.y + initialVerticalOffset}V${o.y + initialVerticalOffset}H${d.x + initialHorizontalForMobile}V${d.y + initialVerticalOffset}`;
+
+                        } else {
+                            // Adjustments for desktop view
+                            return `M${o.x + initialHorizontalOffset},${o.y + initialVerticalOffset}V${o.y + initialVerticalOffset}H${d.x + initialHorizontalOffset}V${d.y + initialVerticalOffset}`;
+
+
+                        }
+                    });
+
+                const linkUpdate = linkEnter.merge(link);
+
+                linkUpdate.transition()
+                    .duration(duration)
+                    .attr('d', d => {
+                        if (isMobile()) {
+                            // Adjustments for mobile view
+                            return `M${d.parent.x + initialHorizontalForMobile},${d.parent.y + initialVerticalOffset}V${d.parent.y + 35 + initialVerticalOffset}H${d.x + initialHorizontalForMobile}V${d.y + initialVerticalOffset}`;
+
+
+                        } else {
+                            // Adjustments for desktop view
+                            return `M${d.parent.x + initialHorizontalOffset},${d.parent.y + initialVerticalOffset}V${d.parent.y + 35 + initialVerticalOffset}H${d.x + initialHorizontalOffset}V${d.y + initialVerticalOffset}`;
+                        }
+                    });
+                const linkExit = link.exit()
+                    .attr('d', d => {
+                        const o = { x: source.x, y: source.y };
+                        if (isMobile()) {
+                            // Adjustments for mobile view
+                            return `M${o.x + initialHorizontalForMobile},${o.y + initialVerticalOffset}V${o.y}H${d.x}V${d.y + initialVerticalOffset}`;
+
+                        } else {
+                            // Adjustments for desktop view
+                            return `M${o.x + initialHorizontalOffset},${o.y + initialVerticalOffset}V${o.y}H${d.x}V${d.y + initialVerticalOffset}`;
+
+
+                        }
+                    })
+                    .remove();
+
+                nodes.forEach(d => {
+                    d.x0 = d.x;
+                    d.y0 = d.y;
+                });
+
+                if (center) {
+                    centerTopNode();
                 }
             }
-            if (hasChanges) {
-                update(d);
+
+            function click(event, d) {
+                let hasChanges = false;
+
+                if (d.children) {
+                    d._children = d.children.concat(d._children || []);
+                    d.children = null;
+                    hasChanges = true;
+                    centerTopNode();
+
+                } else {
+                    if (d._children) {
+                        d.children = d._children;
+                        d._children = null;
+                        hasChanges = true;
+                        centerTopNode();
+
+                        d.children.forEach(child => {
+                            if (child.children) {
+                                child._children = child.children;
+                                child.children = null;
+
+                            }
+                        });
+                    }
+                }
+                if (hasChanges) {
+                    update(d);
+                    centerTopNode();
+                }
+            }
+
+            // Handle clicks from search results
+            function focusOnNodeFromSearch(fullName) {
+                console.log('Find the node corresponding to the fullName:', fullName);
+
+                // Split the fullName to traverse the tree hierarchy
+                const nameParts = fullName.split(' بن ').reverse();
+                let currentNode = root;
+                let pathNodes = [root]; // Track the path from root to the target node
+
+                console.log('nameParts:', nameParts);
+                let counter = 1; // Initialize the counter
+
+                // Traverse the tree according to nameParts
+                for (let part of nameParts) {
+
+                    // Check if the length of nameParts is 1
+                    if (nameParts.length === 1) {
+                        console.log('Single name in nameParts:', nameParts[0]);
+                        console.log('The searched name matches the root node');
+                        // Center the root node
+                        centerNode(currentNode);
+                        return;
+
+                    }
+                    console.log(`Current node: ${currentNode.data.name}, looking for child: ${nameParts[counter]}`);
+
+                    // Check if currentNode has children
+                    if (!currentNode.children || currentNode.children.length === 0) {
+                        console.log('No children found for:', currentNode.data.name);
+                        // Try to expand the node to load children
+                        if (currentNode._children) {
+                            currentNode.children = currentNode._children;
+                            currentNode._children = null; // Mark them as expanded
+                            update(root);
+                            console.log('Expanded node:', currentNode.data.name);
+                        } else {
+                            return; // No children and no _children to expand
+                        }
+                    }
+
+                    // Find the child whose name matches the current part
+                    let matchingChild = currentNode.children.find(child => child.data.name === nameParts[counter]);
+
+                    // Log and return if no matching child is found
+                    if (!matchingChild) {
+                        console.log('No matching node found for part:', part);
+                        return;
+                    }
+
+                    // Update currentNode to the found child
+                    currentNode = matchingChild;
+                    pathNodes.push(currentNode); // Add current node to path
+                    counter++;
+
+                    // If this is the last part, stop expanding
+                    if (counter === nameParts.length) {
+                        console.log('Reached the last element in nameParts, will not expand this node:', currentNode.data.name);
+                        break;
+                    }
+                    expandNode(currentNode);
+                    update(root);
+
+                }
+
+                // Expand all nodes along the path to the target node
+                //pathNodes.forEach(node => expandNode(node));
+
+                // Update the tree to reflect the changes
+                //update(root);
+
+                // Center on the found node
+                console.log('Centering on node:', currentNode.data.name);
+                setTimeout(() => {
+                    console.log('Centering on node:', currentNode.data.name);
+                    centerNode(currentNode);
+                }, delay); // Adjust the delay as needed                
+            }
+
+            // Expand a single node
+            function expandNode(node) {
+                if (!node.children && node._children) {
+                    node.children = node._children; // Expand the children
+                    node._children = null; // Mark them as expanded
+                    console.log('Expanded node:', node.data.name);
+                }
+            }
+
+
+            function isTreeFullyExpanded(node) {
+                // If the node has _children, it's not fully expanded
+                if (node._children) return false;
+
+                // Recursively check children
+                if (node.children) {
+                    for (let child of node.children) {
+                        if (!isTreeFullyExpanded(child)) return false;
+                    }
+                }
+
+                // If no _children are found, it's fully expanded
+                return true;
+            }
+
+            function centerNode(source) {
+                const nodeElement = d3.select(`[data-id='${source.id}']`);
+                const rectElement = nodeElement.select('rect').node(); // Select <rect> by data-id
+                const textElement = nodeElement.select('text').node(); // Select <text> by data-id
+                const treeContainer = document.getElementById('tree-container');
+
+                if (rectElement && textElement && treeContainer) {
+
+                    // Scroll the node into view
+                    nodeElement.node().scrollIntoView({ behavior: 'auto', block: 'center', inline: 'center' });
+
+                    // Temporarily add the highlight class to the rect and text elements
+                    rectElement.classList.add('highlight');
+                    textElement.classList.add('highlight');
+
+                    // Remove the highlight class after a delay
+                    setTimeout(() => {
+                        rectElement.classList.remove('highlight');
+                        textElement.classList.remove('highlight');
+
+                    }, firstHighlightDelay); // Adjust delay as necessary (2000ms = 2 seconds)
+
+                    setTimeout(() => {
+                        rectElement.classList.add('highlight');
+                        textElement.classList.add('highlight');
+
+                    }, firstHighlightDelay * 2); // Adjust delay as necessary (2000ms = 2 seconds)
+
+                    // Remove the highlight class after a delay
+                    setTimeout(() => {
+                        rectElement.classList.remove('highlight');
+                        textElement.classList.remove('highlight');
+
+                    }, firstHighlightDelay * 3); // Adjust delay as necessary (2000ms = 2 seconds)
+
+                    setTimeout(() => {
+                        rectElement.classList.add('highlight');
+                        textElement.classList.add('highlight');
+
+                    }, firstHighlightDelay * 4); // Adjust delay as necessary (2000ms = 2 seconds)
+
+                    // Remove the highlight class after a delay
+                    setTimeout(() => {
+                        rectElement.classList.remove('highlight');
+                        textElement.classList.remove('highlight');
+
+                    }, firstHighlightDelay * 5); // Adjust delay as necessary (2000ms = 2 seconds)
+
+
+                }
+            }
+
+
+            function displaySearchResults(query) {
+                const searchResults = document.getElementById('search-results');
+                searchResults.innerHTML = '';
+                if (query.length < 1) {
+                    searchResults.style.display = 'none';
+                    return;
+                }
+                const matchedNames = searchTreeNames(data, query);
+                matchedNames.forEach(fullName => {
+                    const li = document.createElement('li');
+                    li.innerText = fullName;
+                    li.addEventListener('click', function () {
+                        focusOnNodeFromSearch(fullName);
+                        searchResults.style.display = 'none';
+                    });
+                    searchResults.appendChild(li);
+                });
+                searchResults.style.display = matchedNames.length ? 'block' : 'none';
+            }
+
+            function searchTreeNames(node, query, fullName = "", matches = []) {
+                const currentFullName = fullName ? `${node.name} بن ${fullName}` : node.name;
+                if (currentFullName.toLowerCase().startsWith(query)) {
+                    matches.push(currentFullName);
+                }
+                if (node.children) {
+                    node.children.forEach(child => searchTreeNames(child, query, currentFullName, matches));
+                }
+                return matches;
+            }
+
+            function centerTopNode() {
+                const topNode = d3.select('.node').node();
+                const treeContainer = document.getElementById('tree-container');
+                if (topNode && treeContainer) {
+                    const topNodeBox = topNode.getBoundingClientRect();
+                    const containerBox = treeContainer.getBoundingClientRect();
+                    const scrollLeft = topNodeBox.left - containerBox.left + (topNodeBox.width / 2) - (containerBox.width / 2);
+                    const scrollTop = topNodeBox.top - containerBox.top + (topNodeBox.height / 2) - (containerBox.height / 2);
+                    treeContainer.scrollLeft = scrollLeft;
+                    treeContainer.scrollTop = scrollTop;
+                }
+            }
+
+            function toggleTree() {
+                if (root.children) {
+                    collapseAll(root);
+                } else {
+                    expandAll(root);
+                }
+                update(root);
                 centerTopNode();
             }
-        }
 
-        let expanded = true;
-
-        function toggleTree() {
-            if (root.children) {
-                collapseAll(root);
-            } else {
-                expandAll(root);
+            function collapseAll(d) {
+                if (d.children) {
+                    d.children.forEach(collapseAll);
+                    d._children = d.children;
+                    d.children = null;
+                }
             }
-            update(root); // Center after toggling
-            centerTopNode();
-        }
 
-        function collapseAll(d) {
-            if (d.children) {
-                d.children.forEach(collapseAll);
-                d._children = d.children;
-                d.children = null;
+            function expandAll(d) {
+                if (d._children) {
+                    d.children = d._children;
+                    d.children.forEach(expandAll);
+                    d._children = null;
+                }
             }
-        }
 
-        function expandAll(d) {
-            if (d._children) {
-                d.children = d._children;
-                d.children.forEach(expandAll);
-                d._children = null;
+            function zoomIn() {
+                zoomLevel = Math.min(zoomLevel + 0.1, 1);
+                update(root, true);
+                centerTopNode();
             }
-        }
 
-        function zoomIn() {
-            zoomLevel = Math.min(zoomLevel + 0.1, 1); // Limit max zoom level to 1
-            update(root, true); // Center after zoom
-            centerTopNode();
-        }
-
-        function zoomOut() {
-            zoomLevel = Math.max(zoomLevel - 0.1, 0.2); // Limit min zoom level to 0.5
-            update(root, true); // Center after zoom
-            centerTopNode();
-        }
-
-        function centerTopNode() {
-            const topNode = d3.select('.node').node();
-            const treeContainer = document.getElementById('tree-container');
-            if (topNode && treeContainer) {
-                const topNodeBox = topNode.getBoundingClientRect();
-                const containerBox = treeContainer.getBoundingClientRect();
-                const scrollLeft = topNodeBox.left - containerBox.left + (topNodeBox.width / 2) - (containerBox.width / 2);
-                const scrollTop = topNodeBox.top - containerBox.top + (topNodeBox.height / 2) - (containerBox.height / 2);
-                treeContainer.scrollLeft = scrollLeft;
-                treeContainer.scrollTop = scrollTop;
+            function zoomOut() {
+                zoomLevel = Math.max(zoomLevel - 0.1, 0.2);
+                update(root, true);
+                centerTopNode();
             }
-        }
 
-
-        document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('view-stats-btn').addEventListener('click', function () {
-                location.href = 'statistics.html';
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('view-stats-btn').addEventListener('click', function () {
+                    location.href = 'statistics.html';
+                });
             });
-        });
 
-        document.getElementById('expand-collapse-btn').addEventListener('click', toggleTree);
-        document.getElementById('zoom-in-btn').addEventListener('click', zoomIn);
-        document.getElementById('zoom-out-btn').addEventListener('click', zoomOut);
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('search-box').addEventListener('input', function () {
+                    const query = this.value.toLowerCase();
+                    displaySearchResults(query);
+                });
 
-        update(root);
+                document.addEventListener('click', function (event) {
+                    if (!document.getElementById('search-box').contains(event.target)) {
+                        document.getElementById('search-results').style.display = 'none';
+                    }
+                });
+            });
 
-    </script>
+            document.getElementById('expand-collapse-btn').addEventListener('click', toggleTree);
+            document.getElementById('zoom-in-btn').addEventListener('click', zoomIn);
+            document.getElementById('zoom-out-btn').addEventListener('click', zoomOut);
+
+            update(root);
+        </script>
 </body>
 
 </html>
