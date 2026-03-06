@@ -1,664 +1,1289 @@
-const data = {
-    name: "سياط",
-    children: [
-        {
-            name: "سالم",
-            children: [
-                { name: "عودة" },
-                { name: "خلف" }
-            ]
-        },
-        {
-            name: "مختار",
-            children: [
-                {
-                    name: "حمود",
-                    children: [
-                        {
-                            name: "راشد",
-                            children: [
-                                {
-                                    name: "بريكان",
-                                    children: [
-                                        {
-                                            name: "مزيد",
-                                            children: [
-                                                { name: "حماد" },
-                                                { name: "راشد" }
-                                            ]
-                                        },
-                                        {
-                                            name: "زيدان",
-                                            children: [
-                                                { name: "أحمد" },
-                                                { name: "علي" }
-                                            ]
-                                        },
-                                        {
-                                            name: "زيد",
-                                            children: [
-                                                { name: "حمود" },
-                                                { name: "حسين" }
-                                            ]
-                                        },
-                                        {
-                                            name: "سليمان",
-                                            children: [
-                                                {
-                                                    name: "مرزوق",
-                                                    children: [
-                                                        {
-                                                            name: "مسفر",
-                                                            children: [
-                                                                { name: "موسى" }
-                                                            ]
-                                                        },
-                                                        {
-                                                            name: "حماد",
-                                                            children: [
-                                                                {
-                                                                    name: "مطير",
-                                                                    children: [
-                                                                        { name: "موسى" },
-                                                                        { name: "يوسف" }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            name: "عجاج",
-                                                            children: [
-                                                                {
-                                                                    name: "علي",
-                                                                    children: [
-                                                                        { name: "ماشي" },
-                                                                        {
-                                                                            name: "محمد",
-                                                                            children: [
-                                                                                {
-                                                                                    name: "مرزوق",
-                                                                                    children: [
-                                                                                        {
-                                                                                            name: "عبدالعزيز",
-                                                                                            children: [
-                                                                                                { name: "مرزوق" }
-                                                                                            ]
-                                                                                        },
-
-                                                                                        {
-                                                                                            name: "حاتم",
-                                                                                            children: [
-                                                                                                { name: "شهاب" },
-                                                                                                { name: "عبدالعزيز" },
-                                                                                                { name: "سليمان" },
-                                                                                                { name: "عدي" }
-                                                                                            ]
-                                                                                        },
-                                                                                        {
-                                                                                            name: "محمد",
-                                                                                            children: [
-                                                                                                { name: "بتال" },
-                                                                                                { name: "عاصف" },
-                                                                                                { name: "سياط" }
-                                                                                            ]
-                                                                                        }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "سليمان",
-                                                                                    children: [
-                                                                                        {
-                                                                                            name: "خالد",
-                                                                                            children: [
-                                                                                                { name: "سليمان" }
-                                                                                            ]
-                                                                                        },
-                                                                                        {
-                                                                                            name: "فهد",
-                                                                                            children: [
-                                                                                                { name: "عجاج" }
-                                                                                            ]
-                                                                                        },
-                                                                                        {
-                                                                                            name: "نايف",
-                                                                                            children: [
-                                                                                                { name: "خالد" }
-                                                                                            ]
-                                                                                        },
-                                                                                        {
-                                                                                            name: "أحمد",
-                                                                                            children: [
-                                                                                                { name: "فهد" },
-                                                                                                { name: "مقرن" }
-                                                                                            ]
-                                                                                        },
-                                                                                        { name: "عبدالله" },
-                                                                                        {
-                                                                                            name: "عبدالرحمن",
-                                                                                            children: [
-                                                                                                { name: "نايف" }
-                                                                                            ]
-                                                                                        }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "يوسف",
-                                                                                    children: [
-                                                                                        { name: "محمد" },
-                                                                                        { name: "إبراهيم" }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "إبراهيم",
-                                                                                    children: [
-                                                                                        {
-                                                                                            name: "نواف",
-                                                                                            children: [
-                                                                                                { name: "إبراهيم" },
-                                                                                                { name: "ضاري" }
-                                                                                            ]
-                                                                                        },
-                                                                                        {
-                                                                                            name: "نايف",
-                                                                                            children: [
-                                                                                                { name: "نواف" },
-                                                                                                { name: "مطلق" }
-                                                                                            ]
-                                                                                        },
-                                                                                        { name: "صالح" },
-                                                                                        { name: "أحمد" }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "صالح",
-                                                                                    children: [
-                                                                                        { name: "غيث" },
-                                                                                        { name: "حاتم" },
-                                                                                        { name: "مرزوق" },
-                                                                                        { name: "هتان" }
-
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "علي",
-                                                                                    children: [
-                                                                                        { name: "ريان" },
-                                                                                        { name: "سلامة" },
-                                                                                        { name: "بدر" }
-
-
-                                                                                    ]
-                                                                                }
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            name: "عجب",
-                                                            children: [
-                                                                {
-                                                                    name: "سميحان",
-                                                                    children: [
-                                                                        {
-                                                                            name: "سعود",
-                                                                            children: [
-                                                                                { name: "طارق" },
-                                                                                {
-                                                                                    name: "هاني",
-                                                                                    children: [
-                                                                                        { name: "معاذ" },
-                                                                                        { name: "أسامة" },
-                                                                                        { name: "معتز" },
-                                                                                        { name: "مشاري" }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "هيثم",
-                                                                                    children: [
-                                                                                        { name: "عبدالعزيز" },
-                                                                                        { name: "سعود" }
-                                                                                    ]
-                                                                                },
-                                                                                { name: "أسامة" },
-                                                                                {
-                                                                                    name: "سامي",
-                                                                                    children: [
-                                                                                        { name: "نايف" },
-                                                                                        { name: "سعود" },
-                                                                                        { name: "خالد" }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "أنس",
-                                                                                    children: [
-                                                                                        { name: "سلام" }
-                                                                                    ]
-                                                                                },
-                                                                                { name: "عاصم" },
-                                                                                { name: "مصعب" }
-                                                                            ]
-                                                                        },
-                                                                        {
-                                                                            name: "صالح",
-                                                                            children: [
-                                                                                {
-                                                                                    name: "محمد",
-                                                                                    children: [
-
-
-                                                                                        { name: "عبدالرحمن" }
-                                                                                    ]
-                                                                                },
-                                                                                { name: "هشام" },
-                                                                                { name: "معتصم" },
-                                                                                { name: "عبدالملك" }
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                },
-                                                                {
-                                                                    name: "سحيمان",
-                                                                    children: [
-                                                                        { name: "موسى" },
-                                                                        { name: "عبدالله" },
-                                                                        {
-                                                                            name: "علي",
-                                                                            children: [
-                                                                                { name: "حسين" },
-                                                                                { name: "موسى" },
-                                                                                { name: "عبدالله" }
-
-                                                                            ]
-                                                                        },
-                                                                        { name: "عبدالرحمن" }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    name: "سالم",
-                                                    children: [
-                                                        {
-                                                            name: "فارس",
-                                                            children: [
-                                                                {
-                                                                    name: "مطلق",
-                                                                    children: [
-                                                                        { name: "أحمد" }
-                                                                    ]
-                                                                },
-                                                                { name: "فهيد" }
-                                                            ]
-                                                        },
-                                                        {
-                                                            name: "عطاالله",
-                                                            children: [
-                                                                {
-                                                                    name: "عواد",
-                                                                    children: [
-                                                                        {
-                                                                            name: "عطاالله",
-                                                                            children: [
-                                                                                {
-                                                                                    name: "إبراهيم",
-                                                                                    children: [
-                                                                                        { name: "أحمد" },
-                                                                                        { name: "طارق" },
-                                                                                        { name: "حاتم" }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "خليل",
-                                                                                    children: [
-                                                                                        { name: "محمد" },
-                                                                                        { name: "عبدالله" },
-                                                                                        { name: "ماجد" }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "ماجد",
-                                                                                    children: [
-                                                                                        { name: "فارس" },
-                                                                                        { name: "باسل" },
-                                                                                        { name: "سيف" }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "عواد",
-                                                                                    children: [
-                                                                                        { name: "راكان" }
-                                                                                    ]
-                                                                                }
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            name: "حنيظل",
-                                                            children: [
-                                                                { name: "سليمان" },
-                                                                {
-                                                                    name: "سلمان",
-                                                                    children: [
-                                                                        {
-                                                                            name: "هلال",
-                                                                            children: [
-                                                                                {
-                                                                                    name: "سلمان",
-                                                                                    children: [
-                                                                                        {
-                                                                                            name: "أديب",
-                                                                                            children: [
-                                                                                                { name: "سلمان" },
-                                                                                                { name: "سياط" },
-                                                                                                { name: "سامي" }
-                                                                                            ]
-                                                                                        },
-                                                                                        {
-                                                                                            name: "أمجد",
-                                                                                            children: [
-                                                                                                { name: "سلمان" },
-                                                                                                { name: "عبدالرحمن" }
-                                                                                            ]
-                                                                                        },
-                                                                                        {
-                                                                                            name: "مجدي",
-                                                                                            children: [
-                                                                                                { name: "عبدالعزيز" }
-                                                                                            ]
-                                                                                        },
-                                                                                        {
-                                                                                            name: "ماجد",
-                                                                                            children: [
-                                                                                                { name: "أصيل" },
-                                                                                                { name: "ريان" },
-                                                                                                { name: "غيث" }
-                                                                                            ]
-                                                                                        },
-                                                                                        {
-                                                                                            name: "عبدالمجيد",
-                                                                                            children: [
-                                                                                                { name: "سلمان" },
-                                                                                                { name: "فارس" }
-                                                                                            ]
-                                                                                        },
-                                                                                        { name: "محمد" },
-                                                                                        { name: "أحمد" }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "عبدالرحمن",
-                                                                                    children: [
-                                                                                        { name: "حسام" },
-                                                                                        {
-                                                                                            name: "سامر",
-                                                                                            children: [
-                                                                                                { name: "يوسف" }
-                                                                                            ]
-                                                                                        },
-                                                                                        { name: "باسم" }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "يوسف",
-                                                                                    children: [
-                                                                                        { name: "مهند" },
-                                                                                        { name: "هلال" }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "موسى",
-                                                                                    children: [
-                                                                                        {
-                                                                                            name: "أحمد",
-                                                                                            children: [
-                                                                                                { name: "مشعل" },
-                                                                                                { name: "عبدالله" },
-                                                                                                { name: "سطام" }
-                                                                                            ]
-                                                                                        },
-                                                                                        { name: "عبدالله" },
-                                                                                        {
-                                                                                            name: "محمد",
-                                                                                            children: [
-                                                                                                { name: "عبدالله" }
-                                                                                            ]
-                                                                                        },
-                                                                                        { name: "خالد" }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "محمد",
-                                                                                    children: [
-                                                                                        {
-                                                                                            name: "خالد",
-                                                                                            children: [
-                                                                                                { name: "أحمد" }
-                                                                                            ]
-                                                                                        },
-                                                                                        { name: "فيصل" },
-                                                                                        { name: "نواف" }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "بدر",
-                                                                                    children: [
-                                                                                        { name: "هلال" }
-                                                                                    ]
-                                                                                }
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                },
-                                                                {
-                                                                    name: "محمد",
-                                                                    children: [
-                                                                        {
-                                                                            name: "حمود",
-                                                                            children: [
-                                                                                {
-                                                                                    name: "عبدالهادي",
-                                                                                    children: [
-                                                                                        {
-                                                                                            name: "تركي",
-                                                                                            children: [
-                                                                                                { name: "نايف" }
-                                                                                            ]
-                                                                                        },
-                                                                                        { name: "سلطان" }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "عبدالرحمن",
-                                                                                    children: [
-                                                                                        { name: "مشاري" },
-                                                                                        { name: "عبدالعزيز" },
-                                                                                        { name: "سعود" },
-                                                                                        { name: "حمود" },
-                                                                                        { name: "فيصل" }
-                                                                                    ]
-                                                                                }
-                                                                            ]
-                                                                        },
-                                                                        {
-                                                                            name: "الحميدي",
-                                                                            children: [
-                                                                                {
-                                                                                    name: "عبدالله",
-                                                                                    children: [
-                                                                                        { name: "سياط" },
-                                                                                        { name: "محمد" },
-                                                                                        { name: "يوسف" }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "محمد",
-                                                                                    children: [
-                                                                                        { name: "نواف" },
-                                                                                        { name: "عبدالله" },
-                                                                                        { name: "معن" },
-                                                                                        { name: "فيصل" }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "خالد",
-                                                                                    children: [
-                                                                                        { name: "عاطف" }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "بدر",
-                                                                                    children: [
-                                                                                        { name: "عبدالله" },
-                                                                                        { name: "محمد" }
-                                                                                    ]
-                                                                                }
-
-
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                },
-                                                                {
-                                                                    name: "خميس",
-                                                                    children: [
-                                                                        {
-                                                                            name: "عطاء",
-                                                                            children: [
-                                                                                {
-                                                                                    name: "عبدالله",
-                                                                                    children: [
-                                                                                        { name: "فيصل" },
-                                                                                        { name: "مساعد" }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "خالد",
-                                                                                    children: [
-                                                                                        { name: "وليد" },
-                                                                                        { name: "معاذ" }
-
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "خميس",
-                                                                                    children: [
-                                                                                        { name: "إلياس" },
-                                                                                        { name: "ساري" }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "أيمن",
-                                                                                    children: [
-                                                                                        { name: "حاتم" }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "محمد",
-                                                                                    children: [
-                                                                                        { name: "عبدالعزيز" },
-                                                                                        { name: "عمر" },
-                                                                                        { name: "حمد" },
-                                                                                        { name: "عبدالملك" }
-                                                                                    ]
-                                                                                },
-                                                                                { name: "عادل" },
-                                                                                {
-                                                                                    name: "أحمد",
-                                                                                    children: [
-                                                                                        { name: "روّاف" },
-                                                                                        { name: "ريّاف" }
-                                                                                    ]
-                                                                                },
-                                                                                {
-                                                                                    name: "أشرف",
-                                                                                    children: [
-                                                                                        { name: "مشعل" }
-                                                                                    ]
-                                                                                }
-                                                                            ]
-                                                                        },
-                                                                        {
-                                                                            name: "ونيس",
-                                                                            children: [
-                                                                                {
-                                                                                    name: "ونيس",
-                                                                                    children: [
-                                                                                        {
-                                                                                            name: "أحمد",
-                                                                                            children: [
-                                                                                                { name: "سياط" },
-                                                                                                { name: "يزيد" },
-                                                                                                { name: "عبدالله" }
-                                                                                            ]
-                                                                                        },
-                                                                                        {
-                                                                                            name: "محمد",
-                                                                                            children: [
-                                                                                                { name: "سلطان" },
-                                                                                                { name: "أكرم" }
-                                                                                            ]
-                                                                                        },
-                                                                                        {
-                                                                                            name: "عبدالعزيز",
-                                                                                            children: [
-                                                                                                { name: "فارس" },
-                                                                                                { name: "روّاف" }
-                                                                                            ]
-                                                                                        },
-                                                                                        { name: "خالد" },
-                                                                                        { name: "نواف" },
-                                                                                        { name: "أكرم" }
-                                                                                    ]
-                                                                                }
-                                                                            ]
-                                                                        },
-
-
-
-                                                                        { name: "عبدالله" }
-                                                                    ]
-                                                                },
-                                                                { name: "فويران" }
-                                                            ]
-                                                        },
-                                                        { name: "حنظول" }
-                                                    ]
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            name: "فهيد",
-                                            children: [
-                                                { name: "صالح" }
-                                            ]
-                                        },
-                                        {
-                                            name: "فهد",
-                                            children: [
-                                                { name: "فهاد" },
-                                                { name: "عواد" }
-                                            ]
-                                        }
-                                    ]
-                                },
-                                { name: "مطلق" }
-                            ]
-                        },
-                        { name: "فهيد" }
-                    ]
-                },
-                { name: "سلمان" }
-            ]
-        },
-        { name: "حماد" },
-    ]
-};
+const data = [
+    {
+        "id": "1",
+        "name": "سياط",
+        "parent": ""
+    },
+    {
+        "id": "2",
+        "name": "سالم",
+        "parent": "1"
+    },
+    {
+        "id": "3",
+        "name": "عودة",
+        "parent": "2"
+    },
+    {
+        "id": "4",
+        "name": "خلف",
+        "parent": "2"
+    },
+    {
+        "id": "5",
+        "name": "مختار",
+        "parent": "1"
+    },
+    {
+        "id": "6",
+        "name": "حمود",
+        "parent": "5"
+    },
+    {
+        "id": "7",
+        "name": "راشد",
+        "parent": "6"
+    },
+    {
+        "id": "8",
+        "name": "بريكان",
+        "parent": "7"
+    },
+    {
+        "id": "9",
+        "name": "مزيد",
+        "parent": "8"
+    },
+    {
+        "id": "10",
+        "name": "حماد",
+        "parent": "9"
+    },
+    {
+        "id": "11",
+        "name": "راشد",
+        "parent": "9"
+    },
+    {
+        "id": "12",
+        "name": "زيدان",
+        "parent": "8"
+    },
+    {
+        "id": "13",
+        "name": "أحمد",
+        "parent": "12"
+    },
+    {
+        "id": "14",
+        "name": "علي",
+        "parent": "12"
+    },
+    {
+        "id": "15",
+        "name": "زيد",
+        "parent": "8"
+    },
+    {
+        "id": "16",
+        "name": "حمود",
+        "parent": "15"
+    },
+    {
+        "id": "17",
+        "name": "حسين",
+        "parent": "15"
+    },
+    {
+        "id": "18",
+        "name": "سليمان",
+        "parent": "8"
+    },
+    {
+        "id": "19",
+        "name": "مرزوق",
+        "parent": "18"
+    },
+    {
+        "id": "20",
+        "name": "مسفر",
+        "parent": "19"
+    },
+    {
+        "id": "21",
+        "name": "موسى",
+        "parent": "20"
+    },
+    {
+        "id": "22",
+        "name": "حماد",
+        "parent": "19"
+    },
+    {
+        "id": "23",
+        "name": "مطير",
+        "parent": "22"
+    },
+    {
+        "id": "24",
+        "name": "موسى",
+        "parent": "23"
+    },
+    {
+        "id": "25",
+        "name": "يوسف",
+        "parent": "23"
+    },
+    {
+        "id": "26",
+        "name": "عجاج",
+        "parent": "19"
+    },
+    {
+        "id": "27",
+        "name": "علي",
+        "parent": "26"
+    },
+    {
+        "id": "28",
+        "name": "ماشي",
+        "parent": "27"
+    },
+    {
+        "id": "29",
+        "name": "محمد",
+        "parent": "27"
+    },
+    {
+        "id": "30",
+        "name": "مرزوق",
+        "parent": "29"
+    },
+    {
+        "id": "31",
+        "name": "عبدالعزيز",
+        "parent": "30"
+    },
+    {
+        "id": "32",
+        "name": "مرزوق",
+        "parent": "31"
+    },
+    {
+        "id": "33",
+        "name": "حاتم",
+        "parent": "30"
+    },
+    {
+        "id": "34",
+        "name": "شهاب",
+        "parent": "33"
+    },
+    {
+        "id": "35",
+        "name": "عبدالعزيز",
+        "parent": "33"
+    },
+    {
+        "id": "36",
+        "name": "سليمان",
+        "parent": "33"
+    },
+    {
+        "id": "37",
+        "name": "عدي",
+        "parent": "33"
+    },
+    {
+        "id": "38",
+        "name": "محمد",
+        "parent": "30"
+    },
+    {
+        "id": "39",
+        "name": "بتال",
+        "parent": "38"
+    },
+    {
+        "id": "40",
+        "name": "عاصف",
+        "parent": "38"
+    },
+    {
+        "id": "41",
+        "name": "سياط",
+        "parent": "38"
+    },
+    {
+        "id": "42",
+        "name": "سليمان",
+        "parent": "29"
+    },
+    {
+        "id": "43",
+        "name": "خالد",
+        "parent": "42"
+    },
+    {
+        "id": "44",
+        "name": "سليمان",
+        "parent": "43"
+    },
+    {
+        "id": "45",
+        "name": "فهد",
+        "parent": "42"
+    },
+    {
+        "id": "46",
+        "name": "عجاج",
+        "parent": "45"
+    },
+    {
+        "id": "47",
+        "name": "نايف",
+        "parent": "42"
+    },
+    {
+        "id": "48",
+        "name": "خالد",
+        "parent": "47"
+    },
+    {
+        "id": "49",
+        "name": "أحمد",
+        "parent": "42"
+    },
+    {
+        "id": "50",
+        "name": "فهد",
+        "parent": "49"
+    },
+    {
+        "id": "51",
+        "name": "مقرن",
+        "parent": "49"
+    },
+    {
+        "id": "52",
+        "name": "عبدالله",
+        "parent": "42"
+    },
+    {
+        "id": "53",
+        "name": "عبدالرحمن",
+        "parent": "42"
+    },
+    {
+        "id": "54",
+        "name": "نايف",
+        "parent": "53"
+    },
+    {
+        "id": "55",
+        "name": "يوسف",
+        "parent": "29"
+    },
+    {
+        "id": "56",
+        "name": "محمد",
+        "parent": "55"
+    },
+    {
+        "id": "57",
+        "name": "إبراهيم",
+        "parent": "55"
+    },
+    {
+        "id": "58",
+        "name": "إبراهيم",
+        "parent": "29"
+    },
+    {
+        "id": "59",
+        "name": "نواف",
+        "parent": "58"
+    },
+    {
+        "id": "60",
+        "name": "إبراهيم",
+        "parent": "59"
+    },
+    {
+        "id": "61",
+        "name": "ضاري",
+        "parent": "59"
+    },
+    {
+        "id": "62",
+        "name": "نايف",
+        "parent": "58"
+    },
+    {
+        "id": "63",
+        "name": "نواف",
+        "parent": "62"
+    },
+    {
+        "id": "64",
+        "name": "مطلق",
+        "parent": "62"
+    },
+    {
+        "id": "65",
+        "name": "صالح",
+        "parent": "58"
+    },
+    {
+        "id": "66",
+        "name": "أحمد",
+        "parent": "58"
+    },
+    {
+        "id": "67",
+        "name": "صالح",
+        "parent": "29"
+    },
+    {
+        "id": "68",
+        "name": "غيث",
+        "parent": "67"
+    },
+    {
+        "id": "69",
+        "name": "حاتم",
+        "parent": "67"
+    },
+    {
+        "id": "70",
+        "name": "مرزوق",
+        "parent": "67"
+    },
+    {
+        "id": "71",
+        "name": "هتان",
+        "parent": "67"
+    },
+    {
+        "id": "72",
+        "name": "علي",
+        "parent": "29"
+    },
+    {
+        "id": "73",
+        "name": "ريان",
+        "parent": "72"
+    },
+    {
+        "id": "74",
+        "name": "سلامة",
+        "parent": "72"
+    },
+    {
+        "id": "75",
+        "name": "بدر",
+        "parent": "72"
+    },
+    {
+        "id": "76",
+        "name": "عجب",
+        "parent": "19"
+    },
+    {
+        "id": "77",
+        "name": "سميحان",
+        "parent": "76"
+    },
+    {
+        "id": "78",
+        "name": "سعود",
+        "parent": "77"
+    },
+    {
+        "id": "79",
+        "name": "طارق",
+        "parent": "78"
+    },
+    {
+        "id": "80",
+        "name": "هاني",
+        "parent": "78"
+    },
+    {
+        "id": "81",
+        "name": "معاذ",
+        "parent": "80"
+    },
+    {
+        "id": "82",
+        "name": "أسامة",
+        "parent": "80"
+    },
+    {
+        "id": "83",
+        "name": "معتز",
+        "parent": "80"
+    },
+    {
+        "id": "84",
+        "name": "مشاري",
+        "parent": "80"
+    },
+    {
+        "id": "85",
+        "name": "هيثم",
+        "parent": "78"
+    },
+    {
+        "id": "86",
+        "name": "عبدالعزيز",
+        "parent": "85"
+    },
+    {
+        "id": "87",
+        "name": "سعود",
+        "parent": "85"
+    },
+    {
+        "id": "88",
+        "name": "أسامة",
+        "parent": "78"
+    },
+    {
+        "id": "89",
+        "name": "سامي",
+        "parent": "78"
+    },
+    {
+        "id": "90",
+        "name": "نايف",
+        "parent": "89"
+    },
+    {
+        "id": "91",
+        "name": "سعود",
+        "parent": "89"
+    },
+    {
+        "id": "92",
+        "name": "خالد",
+        "parent": "89"
+    },
+    {
+        "id": "93",
+        "name": "أنس",
+        "parent": "78"
+    },
+    {
+        "id": "94",
+        "name": "سلام",
+        "parent": "93"
+    },
+    {
+        "id": "95",
+        "name": "عاصم",
+        "parent": "78"
+    },
+    {
+        "id": "96",
+        "name": "مصعب",
+        "parent": "78"
+    },
+    {
+        "id": "97",
+        "name": "صالح",
+        "parent": "77"
+    },
+    {
+        "id": "98",
+        "name": "محمد",
+        "parent": "97"
+    },
+    {
+        "id": "99",
+        "name": "عبدالرحمن",
+        "parent": "98"
+    },
+    {
+        "id": "100",
+        "name": "هشام",
+        "parent": "97"
+    },
+    {
+        "id": "101",
+        "name": "معتصم",
+        "parent": "97"
+    },
+    {
+        "id": "102",
+        "name": "عبدالملك",
+        "parent": "97"
+    },
+    {
+        "id": "103",
+        "name": "سحيمان",
+        "parent": "76"
+    },
+    {
+        "id": "104",
+        "name": "موسى",
+        "parent": "103"
+    },
+    {
+        "id": "105",
+        "name": "عبدالله",
+        "parent": "103"
+    },
+    {
+        "id": "106",
+        "name": "علي",
+        "parent": "103"
+    },
+    {
+        "id": "107",
+        "name": "حسين",
+        "parent": "106"
+    },
+    {
+        "id": "108",
+        "name": "موسى",
+        "parent": "106"
+    },
+    {
+        "id": "109",
+        "name": "عبدالله",
+        "parent": "106"
+    },
+    {
+        "id": "110",
+        "name": "عبدالرحمن",
+        "parent": "103"
+    },
+    {
+        "id": "111",
+        "name": "سالم",
+        "parent": "18"
+    },
+    {
+        "id": "112",
+        "name": "فارس",
+        "parent": "111"
+    },
+    {
+        "id": "113",
+        "name": "مطلق",
+        "parent": "112"
+    },
+    {
+        "id": "114",
+        "name": "أحمد",
+        "parent": "113"
+    },
+    {
+        "id": "115",
+        "name": "فهيد",
+        "parent": "112"
+    },
+    {
+        "id": "116",
+        "name": "عطاالله",
+        "parent": "111"
+    },
+    {
+        "id": "117",
+        "name": "عواد",
+        "parent": "116"
+    },
+    {
+        "id": "118",
+        "name": "عطاالله",
+        "parent": "117"
+    },
+    {
+        "id": "119",
+        "name": "إبراهيم",
+        "parent": "118"
+    },
+    {
+        "id": "120",
+        "name": "أحمد",
+        "parent": "119"
+    },
+    {
+        "id": "121",
+        "name": "طارق",
+        "parent": "119"
+    },
+    {
+        "id": "122",
+        "name": "حاتم",
+        "parent": "119"
+    },
+    {
+        "id": "123",
+        "name": "خليل",
+        "parent": "118"
+    },
+    {
+        "id": "124",
+        "name": "محمد",
+        "parent": "123"
+    },
+    {
+        "id": "125",
+        "name": "عبدالله",
+        "parent": "123"
+    },
+    {
+        "id": "126",
+        "name": "ماجد",
+        "parent": "123"
+    },
+    {
+        "id": "127",
+        "name": "ماجد",
+        "parent": "118"
+    },
+    {
+        "id": "128",
+        "name": "فارس",
+        "parent": "127"
+    },
+    {
+        "id": "129",
+        "name": "باسل",
+        "parent": "127"
+    },
+    {
+        "id": "130",
+        "name": "سيف",
+        "parent": "127"
+    },
+    {
+        "id": "131",
+        "name": "عواد",
+        "parent": "118"
+    },
+    {
+        "id": "132",
+        "name": "راكان",
+        "parent": "131"
+    },
+    {
+        "id": "133",
+        "name": "حنيظل",
+        "parent": "111"
+    },
+    {
+        "id": "134",
+        "name": "سليمان",
+        "parent": "133"
+    },
+    {
+        "id": "135",
+        "name": "سلمان",
+        "parent": "133"
+    },
+    {
+        "id": "136",
+        "name": "هلال",
+        "parent": "135"
+    },
+    {
+        "id": "137",
+        "name": "سلمان",
+        "parent": "136"
+    },
+    {
+        "id": "138",
+        "name": "أديب",
+        "parent": "137"
+    },
+    {
+        "id": "139",
+        "name": "سلمان",
+        "parent": "138"
+    },
+    {
+        "id": "140",
+        "name": "سياط",
+        "parent": "138"
+    },
+    {
+        "id": "141",
+        "name": "سامي",
+        "parent": "138"
+    },
+    {
+        "id": "142",
+        "name": "أمجد",
+        "parent": "137"
+    },
+    {
+        "id": "143",
+        "name": "سلمان",
+        "parent": "142"
+    },
+    {
+        "id": "144",
+        "name": "عبدالرحمن",
+        "parent": "142"
+    },
+    {
+        "id": "145",
+        "name": "مجدي",
+        "parent": "137"
+    },
+    {
+        "id": "146",
+        "name": "عبدالعزيز",
+        "parent": "145"
+    },
+    {
+        "id": "147",
+        "name": "ماجد",
+        "parent": "137"
+    },
+    {
+        "id": "148",
+        "name": "أصيل",
+        "parent": "147"
+    },
+    {
+        "id": "149",
+        "name": "ريان",
+        "parent": "147"
+    },
+    {
+        "id": "150",
+        "name": "غيث",
+        "parent": "147"
+    },
+    {
+        "id": "151",
+        "name": "عبدالمجيد",
+        "parent": "137"
+    },
+    {
+        "id": "152",
+        "name": "سلمان",
+        "parent": "151"
+    },
+    {
+        "id": "153",
+        "name": "فارس",
+        "parent": "151"
+    },
+    {
+        "id": "154",
+        "name": "محمد",
+        "parent": "137"
+    },
+    {
+        "id": "155",
+        "name": "أحمد",
+        "parent": "137"
+    },
+    {
+        "id": "156",
+        "name": "عبدالرحمن",
+        "parent": "136"
+    },
+    {
+        "id": "157",
+        "name": "حسام",
+        "parent": "156"
+    },
+    {
+        "id": "158",
+        "name": "سامر",
+        "parent": "156"
+    },
+    {
+        "id": "159",
+        "name": "يوسف",
+        "parent": "158"
+    },
+    {
+        "id": "160",
+        "name": "باسم",
+        "parent": "156"
+    },
+    {
+        "id": "161",
+        "name": "يوسف",
+        "parent": "136"
+    },
+    {
+        "id": "162",
+        "name": "مهند",
+        "parent": "161"
+    },
+    {
+        "id": "163",
+        "name": "هلال",
+        "parent": "161"
+    },
+    {
+        "id": "164",
+        "name": "موسى",
+        "parent": "136"
+    },
+    {
+        "id": "165",
+        "name": "أحمد",
+        "parent": "164"
+    },
+    {
+        "id": "166",
+        "name": "مشعل",
+        "parent": "165"
+    },
+    {
+        "id": "167",
+        "name": "عبدالله",
+        "parent": "165"
+    },
+    {
+        "id": "168",
+        "name": "سطام",
+        "parent": "165"
+    },
+    {
+        "id": "169",
+        "name": "عبدالله",
+        "parent": "164"
+    },
+    {
+        "id": "170",
+        "name": "محمد",
+        "parent": "164"
+    },
+    {
+        "id": "171",
+        "name": "عبدالله",
+        "parent": "170"
+    },
+    {
+        "id": "172",
+        "name": "خالد",
+        "parent": "164"
+    },
+    {
+        "id": "173",
+        "name": "محمد",
+        "parent": "136"
+    },
+    {
+        "id": "174",
+        "name": "خالد",
+        "parent": "173"
+    },
+    {
+        "id": "175",
+        "name": "أحمد",
+        "parent": "174"
+    },
+    {
+        "id": "176",
+        "name": "فيصل",
+        "parent": "173"
+    },
+    {
+        "id": "177",
+        "name": "نواف",
+        "parent": "173"
+    },
+    {
+        "id": "178",
+        "name": "بدر",
+        "parent": "136"
+    },
+    {
+        "id": "179",
+        "name": "هلال",
+        "parent": "178"
+    },
+    {
+        "id": "180",
+        "name": "محمد",
+        "parent": "133"
+    },
+    {
+        "id": "181",
+        "name": "حمود",
+        "parent": "180"
+    },
+    {
+        "id": "182",
+        "name": "عبدالهادي",
+        "parent": "181"
+    },
+    {
+        "id": "183",
+        "name": "تركي",
+        "parent": "182"
+    },
+    {
+        "id": "184",
+        "name": "نايف",
+        "parent": "183"
+    },
+    {
+        "id": "185",
+        "name": "سلطان",
+        "parent": "182"
+    },
+    {
+        "id": "186",
+        "name": "عبدالرحمن",
+        "parent": "181"
+    },
+    {
+        "id": "187",
+        "name": "مشاري",
+        "parent": "186"
+    },
+    {
+        "id": "188",
+        "name": "عبدالعزيز",
+        "parent": "186"
+    },
+    {
+        "id": "189",
+        "name": "سعود",
+        "parent": "186"
+    },
+    {
+        "id": "190",
+        "name": "حمود",
+        "parent": "186"
+    },
+    {
+        "id": "191",
+        "name": "فيصل",
+        "parent": "186"
+    },
+    {
+        "id": "192",
+        "name": "الحميدي",
+        "parent": "180"
+    },
+    {
+        "id": "193",
+        "name": "عبدالله",
+        "parent": "192"
+    },
+    {
+        "id": "194",
+        "name": "سياط",
+        "parent": "193"
+    },
+    {
+        "id": "195",
+        "name": "محمد",
+        "parent": "193"
+    },
+    {
+        "id": "196",
+        "name": "يوسف",
+        "parent": "193"
+    },
+    {
+        "id": "197",
+        "name": "محمد",
+        "parent": "192"
+    },
+    {
+        "id": "198",
+        "name": "نواف",
+        "parent": "197"
+    },
+    {
+        "id": "199",
+        "name": "عبدالله",
+        "parent": "197"
+    },
+    {
+        "id": "200",
+        "name": "معن",
+        "parent": "197"
+    },
+    {
+        "id": "201",
+        "name": "فيصل",
+        "parent": "197"
+    },
+    {
+        "id": "202",
+        "name": "خالد",
+        "parent": "192"
+    },
+    {
+        "id": "203",
+        "name": "عاطف",
+        "parent": "202"
+    },
+    {
+        "id": "204",
+        "name": "بدر",
+        "parent": "192"
+    },
+    {
+        "id": "205",
+        "name": "عبدالله",
+        "parent": "204"
+    },
+    {
+        "id": "206",
+        "name": "محمد",
+        "parent": "204"
+    },
+    {
+        "id": "207",
+        "name": "خميس",
+        "parent": "133"
+    },
+    {
+        "id": "208",
+        "name": "عطاء",
+        "parent": "207"
+    },
+    {
+        "id": "209",
+        "name": "عبدالله",
+        "parent": "208"
+    },
+    {
+        "id": "210",
+        "name": "فيصل",
+        "parent": "209"
+    },
+    {
+        "id": "211",
+        "name": "مساعد",
+        "parent": "209"
+    },
+    {
+        "id": "212",
+        "name": "خالد",
+        "parent": "208"
+    },
+    {
+        "id": "213",
+        "name": "وليد",
+        "parent": "212"
+    },
+    {
+        "id": "214",
+        "name": "معاذ",
+        "parent": "212"
+    },
+    {
+        "id": "215",
+        "name": "خميس",
+        "parent": "208"
+    },
+    {
+        "id": "216",
+        "name": "إلياس",
+        "parent": "215"
+    },
+    {
+        "id": "217",
+        "name": "ساري",
+        "parent": "215"
+    },
+    {
+        "id": "218",
+        "name": "أيمن",
+        "parent": "208"
+    },
+    {
+        "id": "219",
+        "name": "حاتم",
+        "parent": "218"
+    },
+    {
+        "id": "220",
+        "name": "محمد",
+        "parent": "208"
+    },
+    {
+        "id": "221",
+        "name": "عبدالعزيز",
+        "parent": "220"
+    },
+    {
+        "id": "222",
+        "name": "عمر",
+        "parent": "220"
+    },
+    {
+        "id": "223",
+        "name": "حمد",
+        "parent": "220"
+    },
+    {
+        "id": "224",
+        "name": "عبدالملك",
+        "parent": "220"
+    },
+    {
+        "id": "225",
+        "name": "عادل",
+        "parent": "208"
+    },
+    {
+        "id": "226",
+        "name": "أحمد",
+        "parent": "208"
+    },
+    {
+        "id": "227",
+        "name": "روّاف",
+        "parent": "226"
+    },
+    {
+        "id": "228",
+        "name": "ريّاف",
+        "parent": "226"
+    },
+    {
+        "id": "229",
+        "name": "أشرف",
+        "parent": "208"
+    },
+    {
+        "id": "230",
+        "name": "مشعل",
+        "parent": "229"
+    },
+    {
+        "id": "231",
+        "name": "ونيس",
+        "parent": "207"
+    },
+    {
+        "id": "232",
+        "name": "ونيس",
+        "parent": "231"
+    },
+    {
+        "id": "233",
+        "name": "أحمد",
+        "parent": "232"
+    },
+    {
+        "id": "234",
+        "name": "سياط",
+        "parent": "233"
+    },
+    {
+        "id": "235",
+        "name": "يزيد",
+        "parent": "233"
+    },
+    {
+        "id": "236",
+        "name": "عبدالله",
+        "parent": "233"
+    },
+    {
+        "id": "237",
+        "name": "محمد",
+        "parent": "232"
+    },
+    {
+        "id": "238",
+        "name": "سلطان",
+        "parent": "237"
+    },
+    {
+        "id": "239",
+        "name": "أكرم",
+        "parent": "237"
+    },
+    {
+        "id": "240",
+        "name": "عبدالعزيز",
+        "parent": "232"
+    },
+    {
+        "id": "241",
+        "name": "فارس",
+        "parent": "240"
+    },
+    {
+        "id": "242",
+        "name": "روّاف",
+        "parent": "240"
+    },
+    {
+        "id": "243",
+        "name": "خالد",
+        "parent": "232"
+    },
+    {
+        "id": "244",
+        "name": "نواف",
+        "parent": "232"
+    },
+    {
+        "id": "245",
+        "name": "أكرم",
+        "parent": "232"
+    },
+    {
+        "id": "246",
+        "name": "عبدالله",
+        "parent": "207"
+    },
+    {
+        "id": "247",
+        "name": "فويران",
+        "parent": "133"
+    },
+    {
+        "id": "248",
+        "name": "حنظول",
+        "parent": "111"
+    },
+    {
+        "id": "249",
+        "name": "فهيد",
+        "parent": "8"
+    },
+    {
+        "id": "250",
+        "name": "صالح",
+        "parent": "249"
+    },
+    {
+        "id": "251",
+        "name": "فهد",
+        "parent": "8"
+    },
+    {
+        "id": "252",
+        "name": "فهاد",
+        "parent": "251"
+    },
+    {
+        "id": "253",
+        "name": "عواد",
+        "parent": "251"
+    },
+    {
+        "id": "254",
+        "name": "مطلق",
+        "parent": "7"
+    },
+    {
+        "id": "255",
+        "name": "فهيد",
+        "parent": "6"
+    },
+    {
+        "id": "256",
+        "name": "سلمان",
+        "parent": "5"
+    },
+    {
+        "id": "257",
+        "name": "حماد",
+        "parent": "1"
+    }
+    ];
 
 export default data;
