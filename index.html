@@ -380,248 +380,226 @@
         <div id="tree-container">
             <svg></svg>
         </div>
-        <script type="module">
-            import data from './alseyat.js';
+       <script type="module">
+    import data from './alseyat.js';
 
-            const margin = { top: 200, right: 20, bottom: 20, left: 300 }; // Adjusted top margin to 200px for spacing below the button
-            let width = 1200, height = 2000;
+    const margin = { top: 200, right: 20, bottom: 20, left: 300 };
+    let width = 1200, height = 2000;
 
-            let i = 0, duration = 50, delay = 50;
-            let firstHighlightDelay = 250, secondHighlightDelay = 800, thirdHighlightDelay = 1200, fourthHighlightDelay = 300;
+    let i = 0, duration = 50, delay = 50;
+    let zoomLevel = 1;
 
-            let zoomLevel = 1; // Initial zoom level
+    const svg = d3.select("svg")
+        .attr("width", width)
+        .attr("height", height);
 
-            const svg = d3.select("svg")
-                .attr("width", width)
-                .attr("height", height);
+    const svgGroup = svg.append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
 
-            const svgGroup = svg.append("g")
-                .attr("transform", `translate(${margin.left},${margin.top})`); // Initial translation with increased top padding
+    const tree = d3.tree().nodeSize([120, 50])
+        .separation((a, b) => a.parent === b.parent ? 1 : 1.25);
 
-            const tree = d3.tree().nodeSize([120, 50])
-                .separation((a, b) => a.parent === b.parent ? 1 : 1.25);
+    // --- NEW STRATIFY LOGIC HERE ---
+    const stratify = d3.stratify()
+        .id(d => d.id)
+        .parentId(d => d.parent);
+    
+    let root = stratify(data); // Converts the flat array back into a nested tree!
+    // -------------------------------
 
-            let root = d3.hierarchy(data);
-            root.x0 = width / 2;
-            root.y0 = 0;
+    root.x0 = width / 2;
+    root.y0 = 0;
 
-            const breakpoint = 768; // Define the breakpoint for mobile view
+    const breakpoint = 768;
+    function isMobile() {
+        return window.innerWidth <= breakpoint;
+    }
 
-            function isMobile() {
-                return window.innerWidth <= breakpoint;
-            }
-            const viewportWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    let initialVerticalOffset = -180;
+    let initialHorizontalOffset = width / 2 + 19;
+    let initialHorizontalForMobile = 79;
 
-            let initialVerticalOffset = -180;
-            let initialHorizontalOffset = width / 2 + 19;
-            let initialHorizontalForMobile = 79;
+    function reverseChildren(node) {
+        if (node.children) {
+            node.children.reverse();
+            node.children.forEach(reverseChildren);
+        }
+    }
 
+    reverseChildren(root);
+    collapse(root);
 
+    function collapse(d) {
+        if (d.children) {
+            d._children = d.children;
+            d._children.forEach(collapse);
+            d.children = null;
+        }
+    }
 
-            // Function to reverse children of each node
-            function reverseChildren(node) {
-                if (node.children) {
-                    node.children.reverse();
-                    node.children.forEach(reverseChildren);
+    function expand(d) {
+        if (d._children) {
+            d.children = d._children;
+            d.children.forEach(expand);
+            d._children = null;
+        }
+    }
+
+    function update(source, center = false) {
+        const treeData = tree(root);
+        const nodes = treeData.descendants();
+        const links = treeData.descendants().slice(1);
+
+        nodes.forEach(d => d.y = d.depth * 70);
+
+        const minX = Math.min(...nodes.map(d => d.x));
+        const adjustment = Math.max(0, 100 - minX);
+        const maxX = Math.max(...nodes.map(d => d.x));
+        const newHeight = maxX + 200;
+
+        svgGroup.attr("transform", `translate(${adjustment} , 230) scale(${zoomLevel})`);
+        d3.select("svg").attr("height", newHeight);
+
+        const node = svgGroup.selectAll('g.node')
+            .data(nodes, d => d.id || (d.id = ++i));
+
+        const nodeEnter = node.enter().append('g')
+            .attr('class', 'node')
+            .attr('transform', d => {
+                if (isMobile()) {
+                    return `translate(${source.x + initialHorizontalForMobile},${source.y0 + initialVerticalOffset})`;
+                } else {
+                    return `translate(${source.x + initialHorizontalOffset},${source.y0 + initialVerticalOffset})`;
                 }
-            }
-
-            // Reverse children order for the root node
-            reverseChildren(root);
-
-            collapse(root);
-
-            function collapse(d) {
+            })
+            .attr('data-id', d => d.id)
+            .on('click', (event, d) => {
                 if (d.children) {
                     d._children = d.children;
-                    d._children.forEach(collapse);
                     d.children = null;
-
-                }
-            }
-
-            function expand(d) {
-                if (d._children) {
+                } else {
                     d.children = d._children;
-                    d.children.forEach(expand);
                     d._children = null;
-
                 }
+                update(d);
+                if (!isMobile()) centerNode(d);
+            });
+
+        nodeEnter.append('rect')
+            .attr('width', 90)
+            .attr('height', 40)
+            .attr('x', -45)
+            .attr('y', -20)
+            .attr('rx', 10)
+            .attr('ry', 10)
+            .attr('class', d => d._children ? 'collapsed' : (d.children ? 'has-children' : ''));
+
+        nodeEnter.append('text')
+            .attr('dy', 5)
+            .attr('x', 0)
+            .attr('text-anchor', 'middle')
+            .text(d => d.data.name); // Still safely grabs the 'name' property!
+
+        // Function to count all children (calculates nested children lengths)
+        function countChildren(d) {
+            let count = 0;
+            if (d.children) {
+                count += d.children.length;
+                d.children.forEach(child => count += countChildren(child));
+            } else if (d._children) {
+                count += d._children.length;
+                d._children.forEach(child => count += countChildren(child));
             }
+            return count;
+        }
 
-            function update(source, center = false) {
+        nodeEnter.append('text')
+            .attr('class', 'children-count')
+            .attr('dy', -25)
+            .attr('x', 0)
+            .attr('text-anchor', 'middle')
+            .style('fill', 'red')
+            .text(d => {
+                const count = countChildren(d);
+                return count > 0 ? count : '';
+            });
 
-                const treeData = tree(root);
-                const nodes = treeData.descendants();
-                const links = treeData.descendants().slice(1);
+        const nodeUpdate = nodeEnter.merge(node);
 
-                nodes.forEach(d => d.y = d.depth * 70);
-
-                // Calculate the minimum x-coordinate to adjust the tree position
-                const minX = Math.min(...nodes.map(d => d.x));
-                const adjustment = Math.max(0, 100 - minX); // Ensure minimum padding of 200
-
-                // Calculate the maximum x-coordinate to adjust the SVG height
-                const maxX = Math.max(...nodes.map(d => d.x));
-                const newHeight = maxX + 200; // Add padding of 200
-
-                // Adjust the tree position dynamically
-                svgGroup.attr("transform", `translate(${adjustment} , 230) scale(${zoomLevel})`);
-                // Adjust the SVG height dynamically
-                d3.select("svg").attr("height", newHeight);
-
-                const node = svgGroup.selectAll('g.node')
-                    .data(nodes, d => d.id || (d.id = ++i));
-
-                const nodeEnter = node.enter().append('g')
-                    .attr('class', 'node')
-                    .attr('transform', d => {
-                        if (isMobile()) {
-                            // Adjustments for mobile view
-                            return `translate(${source.x + initialHorizontalForMobile},${source.y0 + initialVerticalOffset})`;
-                        } else {
-                            // Adjustments for desktop view
-                            return `translate(${source.x + initialHorizontalOffset},${source.y0 + initialVerticalOffset})`;
-                        }
-                    })
-                    .attr('data-id', d => d.id) // Assign data-id attribute
-                    .on('click', click);
-
-                nodeEnter.append('rect')
-                    .attr('width', 100)
-                    .attr('height', 40)
-                    .attr('x', -50)
-                    .attr('y', -15)
-                    .attr('rx', 10)
-                    .attr('ry', 10)
-                    .attr('class', 'node')
-                    .style('fill', d => d._children ? "lightsteelblue" : "#fff");
-
-                nodeEnter.append('text')
-                    .attr('dy', '.23em')
-                    .attr('x', 0)
-                    .attr('text-anchor', 'middle')
-                    .attr("font-family", 'Noto Naskh Arabic, sans-serif')
-                    .attr("font-size", "20px")
-                    .text(d => d.data.name);
-
-                nodeEnter.append('text')
-                    .attr('dy', '.35em')
-                    .attr('x', 50)
-                    .attr('y', -15)
-                    .attr('text-anchor', 'start')
-                    .attr("font-family", 'Noto Naskh Arabic, sans-serif')
-                    .attr("font-size", "13px")
-                    .style('fill', 'red')
-                    .text(d => d.children || d._children ? `(${d.children ? d.children.length : d._children.length})` : '');
-
-                const nodeUpdate = nodeEnter.merge(node);
-
-                nodeUpdate.transition()
-                    .duration(d => d.depth === 0 ? 0 : duration)
-                    .attr('transform', d => {
-                        if (isMobile()) {
-                            // Adjustments for mobile view
-                            return `translate(${d.x + initialHorizontalForMobile},${d.y + initialVerticalOffset})`;
-                        } else {
-                            // Adjustments for desktop view
-                            return `translate(${d.x + initialHorizontalOffset},${d.y + initialVerticalOffset})`;
-
-                        }
-                    });
-                nodeUpdate.select('rect')
-                    .attr('width', 100)
-                    .attr('height', 30)
-                    .attr('x', -50)
-                    .attr('y', -15)
-                    .attr('rx', 10)
-                    .attr('ry', 10)
-                    .attr('class', d => d._children ? 'has-children' : '')
-                    .style('fill', d => d._children ? "lightsteelblue" : "#fff");
-
-                const nodeExit = node.exit().transition()
-                    .duration(duration)
-                    .attr('transform', d => {
-                        if (isMobile()) {
-                            // Adjustments for mobile view
-                            return `translate(${source.x + initialHorizontalForMobile},${source.y + initialVerticalOffset})`;
-
-                        } else {
-                            // Adjustments for desktop view
-                            return `translate(${source.x + initialHorizontalOffset},${source.y + initialVerticalOffset})`;
-
-
-                        }
-                    })
-                    .remove();
-
-                nodeExit.select('rect')
-                    .attr('width', 100)
-                    .attr('height', 30)
-                    .attr('x', -50)
-                    .attr('y', -15)
-                    .attr('rx', 10)
-                    .attr('ry', 10);
-
-                const link = svgGroup.selectAll('path.link')
-                    .data(links, d => d.id);
-
-                const linkEnter = link.enter().insert('path', 'g')
-                    .attr('class', 'link')
-                    .attr('d', d => {
-                        const o = { x: source.x, y: source.y };
-                        if (isMobile()) {
-                            // Adjustments for mobile view
-                            return `M${o.x + initialHorizontalForMobile},${o.y + initialVerticalOffset}V${o.y + initialVerticalOffset}H${d.x + initialHorizontalForMobile}V${d.y + initialVerticalOffset}`;
-
-                        } else {
-                            // Adjustments for desktop view
-                            return `M${o.x + initialHorizontalOffset},${o.y + initialVerticalOffset}V${o.y + initialVerticalOffset}H${d.x + initialHorizontalOffset}V${d.y + initialVerticalOffset}`;
-
-
-                        }
-                    });
-
-                const linkUpdate = linkEnter.merge(link);
-
-                linkUpdate.transition()
-                    .duration(duration)
-                    .attr('d', d => {
-                        if (isMobile()) {
-                            // Adjustments for mobile view
-                            return `M${d.parent.x + initialHorizontalForMobile},${d.parent.y + initialVerticalOffset}V${d.parent.y + 35 + initialVerticalOffset}H${d.x + initialHorizontalForMobile}V${d.y + initialVerticalOffset}`;
-
-
-                        } else {
-                            // Adjustments for desktop view
-                            return `M${d.parent.x + initialHorizontalOffset},${d.parent.y + initialVerticalOffset}V${d.parent.y + 35 + initialVerticalOffset}H${d.x + initialHorizontalOffset}V${d.y + initialVerticalOffset}`;
-                        }
-                    });
-                const linkExit = link.exit()
-                    .attr('d', d => {
-                        const o = { x: source.x, y: source.y };
-                        if (isMobile()) {
-                            // Adjustments for mobile view
-                            return `M${o.x + initialHorizontalForMobile},${o.y + initialVerticalOffset}V${o.y}H${d.x}V${d.y + initialVerticalOffset}`;
-
-                        } else {
-                            // Adjustments for desktop view
-                            return `M${o.x + initialHorizontalOffset},${o.y + initialVerticalOffset}V${o.y}H${d.x}V${d.y + initialVerticalOffset}`;
-
-
-                        }
-                    })
-                    .remove();
-
-                nodes.forEach(d => {
-                    d.x0 = d.x;
-                    d.y0 = d.y;
-                });
-
-                if (center) {
-                    centerTopNode();
+        nodeUpdate.transition()
+            .duration(duration)
+            .attr('transform', d => {
+                if (isMobile()) {
+                    return `translate(${d.x + initialHorizontalForMobile},${d.y + initialVerticalOffset})`;
+                } else {
+                    return `translate(${d.x + initialHorizontalOffset},${d.y + initialVerticalOffset})`;
                 }
-            }
+            });
+
+        nodeUpdate.select('rect')
+            .attr('class', d => d._children ? 'collapsed highlightable' : (d.children ? 'has-children highlightable' : 'highlightable'));
+
+        const nodeExit = node.exit().transition()
+            .duration(duration)
+            .attr('transform', d => {
+                if (isMobile()) {
+                    return `translate(${source.x + initialHorizontalForMobile},${source.y + initialVerticalOffset})`;
+                } else {
+                    return `translate(${source.x + initialHorizontalOffset},${source.y + initialVerticalOffset})`;
+                }
+            })
+            .remove();
+
+        const link = svgGroup.selectAll('path.link')
+            .data(links, d => d.id);
+
+        const linkEnter = link.enter().insert('path', "g")
+            .attr("class", "link")
+            .attr('d', d => {
+                const o = { x: source.x0, y: source.y0 };
+                return diagonal(o, o);
+            });
+
+        const linkUpdate = linkEnter.merge(link);
+
+        linkUpdate.transition()
+            .duration(duration)
+            .attr('d', d => {
+                if (isMobile()) {
+                    return diagonal(
+                        { x: d.x + initialHorizontalForMobile, y: d.y + initialVerticalOffset },
+                        { x: d.parent.x + initialHorizontalForMobile, y: d.parent.y + initialVerticalOffset }
+                    );
+                } else {
+                    return diagonal(
+                        { x: d.x + initialHorizontalOffset, y: d.y + initialVerticalOffset },
+                        { x: d.parent.x + initialHorizontalOffset, y: d.parent.y + initialVerticalOffset }
+                    );
+                }
+            });
+
+        const linkExit = link.exit().transition()
+            .duration(duration)
+            .attr('d', d => {
+                const o = { x: source.x, y: source.y };
+                return diagonal(
+                    { x: o.x + (isMobile() ? initialHorizontalForMobile : initialHorizontalOffset), y: o.y + initialVerticalOffset },
+                    { x: o.x + (isMobile() ? initialHorizontalForMobile : initialHorizontalOffset), y: o.y + initialVerticalOffset }
+                );
+            })
+            .remove();
+
+        nodes.forEach(d => {
+            d.x0 = d.x;
+            d.y0 = d.y;
+        });
+
+        if (center) {
+            centerTopNode();
+        }
+    }
+
+    // The rest of your functions (diagonal, centerNode, toggleTree, displaySearchResults) stay exactly the same!
 
             function click(event, d) {
                 let hasChanges = false;
