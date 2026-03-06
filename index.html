@@ -917,31 +917,7 @@
 
             update(root);
         </script>
-        <script type="module">
-    import data from './alseyat.js';
-    
-    const flatData = [];
-    let idCounter = 1;
-
-    function flatten(node, parentId = "") {
-        const currentId = idCounter.toString();
-        idCounter++;
         
-        flatData.push({
-            id: currentId,
-            name: node.name,
-            parent: parentId
-        });
-        
-        if (node.children) {
-            node.children.forEach(child => flatten(child, currentId));
-        }
-    }
-
-    flatten(data);
-    console.log("COPY THIS FLAT DATA:");
-    console.log(JSON.stringify(flatData, null, 4));
-</script>
 </body>
 
 </html>
