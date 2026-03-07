@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>إحصائيات شجرة أسرة السياط</title>
-    <link rel="icon" href="/favicon_io/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="https://raw.githubusercontent.com/alseyat/FamilyTree/main/favicon_io/favicon.ico" type="image/x-icon">
 
     <!-- For .png format -->
-    <link rel="icon" href="/favicon_io/favicon-32x32.png" type="image/png">
+    <link rel="icon" href="https://raw.githubusercontent.com/alseyat/FamilyTree/main/favicon_io/favicon-32x32.png" type="image/png">
+
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -99,44 +100,92 @@
         <h2>أكثر الأسماء تكراراً</h2>
         <ul id="top-names" class="top-names"></ul>
 
-         <h2>ًأكثر الأفراد أبناء</h2>
+       <!-- <h2>ًأكثر الأفراد أبناء</h2> -->
         <ul id="top-children" class="top-children"></ul>
     </div>
 
     <script type="module">
         import data from './alseyat.js';
 
-        function prepareStatistics(flatData) {
-            const nameCounts = {};
-            let totalMembers = flatData.length;
+        function prepareStatistics(data) {
+            const nameCount = {};
+            const childrenCount = [];
+            let totalMembers = 0;
 
-            flatData.forEach(member => {
-                // Count how many times each name appears
-                if (nameCounts[member.name]) {
-                    nameCounts[member.name]++;
+            function computeStatistics(node, fullName = "") {
+                totalMembers++;
+
+                const currentFullName = fullName ? `${node.name} بن ${fullName}` : node.name;
+
+                if (nameCount[node.name]) {
+                    nameCount[node.name]++;
                 } else {
-                    nameCounts[member.name] = 1;
+                    nameCount[node.name] = 1;
                 }
+
+                const numChildren = node.children ? node.children.length : 0;
+                if (numChildren > 0) {
+                    childrenCount.push({ fullName: currentFullName, children: numChildren });
+                }
+
+                if (node.children) {
+                    node.children.forEach(child => computeStatistics(child, currentFullName));
+                }
+            }
+
+            computeStatistics(data);
+
+            const groupedNames = {};
+            Object.entries(nameCount).forEach(([name, count]) => {
+                if (!groupedNames[count]) {
+                    groupedNames[count] = [];
+                }
+                groupedNames[count].push(name);
             });
 
-            // Sort names by frequency
-            const topNames = Object.entries(nameCounts)
+            const topNames = Object.entries(groupedNames)
+                .map(([count, names]) => [names.join('، '), parseInt(count)])
                 .sort((a, b) => b[1] - a[1]);
 
-            return { topNames, totalMembers };
+            const groupedChildren = {};
+            childrenCount.forEach(({ fullName, children }) => {
+                if (!groupedChildren[children]) {
+                    groupedChildren[children] = [];
+                }
+                groupedChildren[children].push(fullName);
+            });
+
+            const topChildren = Object.entries(groupedChildren)
+                .map(([children, names]) => ({ names, children: parseInt(children) }))
+                .sort((a, b) => b.children - a.children);
+
+            return { topNames, topChildren, totalMembers };
         }
 
         function displayStatistics(statistics) {
-            const { topNames, totalMembers } = statistics;
+            const { topNames, topChildren, totalMembers } = statistics;
 
             document.getElementById('total-members').innerText = `إجمالي عدد أفراد الأسرة: ${totalMembers}`;
 
             const topNamesList = document.getElementById('top-names');
-            topNames.forEach(([name, count]) => {
+            topNames.forEach(([names, count]) => {
                 const li = document.createElement('li');
-                li.innerHTML = `<div class="name">${name}</div><div class="count">${count}</div>`;
+                li.innerHTML = `<div class="name">${names}</div><div class="count">${count}</div>`;
                 topNamesList.appendChild(li);
             });
+
+      //      const topChildrenList = document.getElementById('top-children');
+        //    topChildren.forEach(({ names, children }) => {
+          //      const li = document.createElement('li');
+            //    li.innerHTML = `<div class="count">عدد الأبناء: ${children}</div>`;
+              //  names.forEach(name => {
+                //    const nameDiv = document.createElement('div');
+                  //  nameDiv.className = 'name';
+               //     nameDiv.innerText = `- ${name}.`;
+                 //   li.appendChild(nameDiv);
+              //  });
+              //  topChildrenList.appendChild(li);
+         //   });
         }
 
         const statistics = prepareStatistics(data);
