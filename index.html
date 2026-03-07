@@ -16,6 +16,24 @@
         @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Reem+Kufi+Ink:wght@400;700&display=swap');
 
+        body {
+            font-family: 'Reem Kufi Ink', serif; /* Use the main font as default */
+            direction: rtl;
+            
+            /* Base Cream Color */
+            background-color: #FDFBF7;
+            
+            /* Optional: Simple radial gradient to mimic old paper aging from center */
+            background-image: radial-gradient(circle at center, #FFFEFD 0%, #FDFBF7 80%, #F9F4EC 100%);
+            
+            /* Highly Recommended: Use a very subtle, light, repeating noise or paper grain pattern image */
+            /* You can download a light noise image like 'lightpaper.png' and put it in your root directory */
+            /* background-image: url('lightpaper.png'); */
+            /* background-repeat: repeat; */
+
+            overflow-x: hidden;
+            color: #333;
+        }
       /* Basic Node grouping style */
         .node {
             cursor: pointer;
