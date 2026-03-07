@@ -517,16 +517,20 @@ function getFullName(d) {
     .on('click', click)
     // --- ADD THE LINES BELOW FOR THE TOOLTIP ---
     .on('mouseover', function(event, d) {
+        let xOffset = 0; // Move 15 pixels to the right of the cursor
+        let yOffset = 20; // Move 20 pixels below the cursor (use negative to go above)
         tooltip.transition()
             .duration(200)
             .style("opacity", .9);
         tooltip.html(getFullName(d)) // Use the function we created to get the full name
-            .style("left", (event.pageX + 15) + "px") // Offset slightly from cursor
-            .style("top", (event.pageY - 28) + "px");
+            .style("left", (event.pageX + xOffset) + "px") // Offset slightly from cursor
+            .style("top", (event.pageY + yOffset) + "px");
     })
     .on('mousemove', function(event) {
-        tooltip.style("left", (event.pageX + 15) + "px")
-               .style("top", (event.pageY - 28) + "px");
+        let xOffset = 0; // Keep these the same as above
+        let yOffset = 20;
+        tooltip.style("left", (event.pageX + xOffset) + "px")
+               .style("top", (event.pageY + yOffset) + "px");
     })
     .on('mouseout', function(d) {
         tooltip.transition()
