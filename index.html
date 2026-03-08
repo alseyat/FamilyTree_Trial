@@ -373,6 +373,7 @@ background: rgba(255, 255, 255, 0.65); /* Becomes slightly more solid on hover *
             padding: 10px;
             cursor: pointer;
             direction: rtl;
+            border-bottom: 1px solid rgba(139, 115, 85, 0.3); /* Soft warm divider line */
             /* Ensure items also follow right-to-left */
             text-align: right;
             /* Align text to the right */
@@ -998,11 +999,17 @@ function getFullName(d) {
                     return;
                 }
                 const matchedNames = searchTreeNames(data, query);
-                matchedNames.forEach(fullName => {
+                
+                // Add the index to the loop
+                matchedNames.forEach((fullName, index) => {
                     const li = document.createElement('li');
-                    li.innerText = fullName;
+                    
+                    // Format the output to include the number: "1- الاسم"
+                    li.innerText = `${index + 1}- ${fullName}`; 
+                    
                     li.addEventListener('click', function () {
-                        focusOnNodeFromSearch(fullName);
+                        // Keep using the original fullName for the search logic!
+                        focusOnNodeFromSearch(fullName); 
                         searchResults.style.display = 'none';
                     });
                     searchResults.appendChild(li);
