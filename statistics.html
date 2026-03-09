@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>إحصائيات شجرة أسرة السياط</title>
+    <link rel="icon" href="https://raw.githubusercontent.com/alseyat/FamilyTree/main/favicon_io/favicon.ico" type="image/x-icon">
+
+    <link rel="icon" href="https://raw.githubusercontent.com/alseyat/FamilyTree/main/favicon_io/favicon-32x32.png" type="image/png">
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Reem+Kufi+Ink:wght@400;700&display=swap');
+
+        /* إعدادات الصفحة الأساسية المتوافقة مع الشجرة */
+        body {
+            font-family: 'Noto Naskh Arabic', sans-serif;
+            direction: rtl;
+            background-color: #f4efdf;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            color: #4a3b32;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* الترويسة */
+        .header {
+            text-align: center;
+            padding: 30px 20px 10px;
+        }
+
+        .header img {
+            max-height: 500px;
+            margin-bottom: 10px;
+        }
+
+        /* حاوية المحتوى (البطاقة الشفافة) */
+        .content-container {
+            max-width: 800px;
+            width: 85%;
+            margin: 20px auto 40px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 115, 85, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            flex-grow: 1;
+        }
+
+        /* تنسيق العناوين والإحصائيات */
+        .content-container h2 {
+            text-align: center;
+            color: #8b7355;
+            font-size: 22px;
+            border-bottom: 2px solid rgba(139, 115, 85, 0.2);
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        .total-members {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #4a3b32;
+            background: rgba(139, 115, 85, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(139, 115, 85, 0.2);
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .top-names li {
+            background: rgba(255, 255, 255, 0.8);
+            margin: 8px 0;
+            padding: 12px 20px;
+            border: 1px solid rgba(139, 115, 85, 0.2);
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+            font-size: 16px;
+        }
+
+        .name {
+            flex: 1;
+            text-align: right;
+            font-weight: bold;
+            color: #4a3b32;
+        }
+
+        .count {
+            text-align: center;
+            background: #8b7355;
+            color: #f4efdf;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            min-width: 30px;
+        }
+
+        /* زر العودة للشجرة */
+        .back-btn-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: #4a3b32;
+            color: #f4efdf;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn:hover {
+            background: #6a5646;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* الفوتر السفلي */
+        .bottom-footer {
+            text-align: center;
+            padding: 15px;
+            background: #4a3b32;
+            color: #f4efdf;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: auto;
+        }
+
+        /* توافق الشاشات الصغيرة (الجوال) */
+        @media (max-width: 768px) {
+            .content-container {
+                margin: 15px auto;
+                padding: 25px;
+                width: 90%;
+            }
+
+            .header img {
+                max-height: 300px;
+            }
+
+            .top-names li {
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <img src="logo.png" alt="شعار أسرة السياط">
+    </div>
+
+    <div class="content-container">
+        <div class="total-members" id="total-members"></div>
+        
+        <h2>أكثر الأسماء تكراراً</h2>
+        <ul id="top-names" class="top-names"></ul>
+
+        <ul id="top-children" class="top-children"></ul>
+
+        <div class="back-btn-container">
+            <a href="index.html" class="back-btn">العودة إلى شجرة الأسرة</a>
+        </div>
+    </div>
+
+    <footer class="bottom-footer">
+        إعداد وتصميم: م. أنس بن سعود السياط
+    </footer>
+
+    <script type="module">
+        import data from './alseyat.js';
+
+        function prepareStatistics(data) {
+            const nameCount = {};
+            const childrenCount = [];
+            let totalMembers = 0;
+
+            function computeStatistics(node, fullName = "") {
+                totalMembers++;
+
+                const currentFullName = fullName ? `${node.name} بن ${fullName}` : node.name;
+
+                if (nameCount[node.name]) {
+                    nameCount[node.name]++;
+                } else {
+                    nameCount[node.name] = 1;
+                }
+
+                const numChildren = node.children ? node.children.length : 0;
+                if (numChildren > 0) {
+                    childrenCount.push({ fullName: currentFullName, children: numChildren });
+                }
+
+                if (node.children) {
+                    node.children.forEach(child => computeStatistics(child, currentFullName));
+                }
+            }
+
+            computeStatistics(data);
+
+            const groupedNames = {};
+            Object.entries(nameCount).forEach(([name, count]) => {
+                if (!groupedNames[count]) {
+                    groupedNames[count] = [];
+                }
+                groupedNames[count].push(name);
+            });
+
+            const topNames = Object.entries(groupedNames)
+                .map(([count, names]) => [names.join('، '), parseInt(count)])
+                .sort((a, b) => b[1] - a[1]);
+
+            const groupedChildren = {};
+            childrenCount.forEach(({ fullName, children }) => {
+                if (!groupedChildren[children]) {
+                    groupedChildren[children] = [];
+                }
+                groupedChildren[children].push(fullName);
+            });
+
+            const topChildren = Object.entries(groupedChildren)
+                .map(([children, names]) => ({ names, children: parseInt(children) }))
+                .sort((a, b) => b.children - a.children);
+
+            return { topNames, topChildren, totalMembers };
+        }
+
+        function displayStatistics(statistics) {
+            const { topNames, topChildren, totalMembers } = statistics;
+
+            document.getElementById('total-members').innerText = `إجمالي عدد أفراد الأسرة: ${totalMembers}`;
+
+            const topNamesList = document.getElementById('top-names');
+            topNames.forEach(([names, count]) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<div class="name">${names}</div><div class="count">${count}</div>`;
+                topNamesList.appendChild(li);
+            });
+
+        }
+
+        const statistics = prepareStatistics(data);
+        displayStatistics(statistics);
+    </script>
+</body>
+</html>

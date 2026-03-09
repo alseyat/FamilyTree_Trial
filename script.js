@@ -1,0 +1,584 @@
+import data from './alseyat.js';
+
+const margin = { top: 200, right: 20, bottom: 20, left: 300 };
+let width = 1200, height = 2000;
+
+let i = 0, duration = 150, delay = 50;
+let firstHighlightDelay = 250, secondHighlightDelay = 800, thirdHighlightDelay = 1200, fourthHighlightDelay = 300;
+
+let zoomLevel = 1;
+let currentAdjustment = 0;
+
+const svg = d3.select("#tree-container").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+const svgGroup = svg.append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+const tree = d3.tree().nodeSize([120, 50])
+    .separation((a, b) => a.parent === b.parent ? 1 : 1.25);
+
+let root = d3.hierarchy(data);
+root.x0 = width / 2;
+root.y0 = 0;
+
+const breakpoint = 768;
+
+function isMobile() {
+    return window.innerWidth <= breakpoint;
+}
+const viewportWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+let initialVerticalOffset = -180;
+let initialHorizontalOffset = width / 2 + 19;
+let initialHorizontalForMobile = 79;
+
+const tooltip = d3.select("body").append("div")
+    .attr("id", "tooltip")
+    .style("opacity", 0);
+
+function getFullName(d) {
+    let names = [];
+    let current = d;
+    while (current) {
+        names.push(current.data.name);
+        current = current.parent;
+    }
+    return names.join(' بن ');
+}
+
+function reverseChildren(node) {
+    if (node.children) {
+        node.children.reverse();
+        node.children.forEach(reverseChildren);
+    }
+}
+
+reverseChildren(root);
+collapse(root);
+
+function collapse(d) {
+    if (d.children) {
+        d._children = d.children;
+        d._children.forEach(collapse);
+        d.children = null;
+    }
+}
+
+function expand(d) {
+    if (d._children) {
+        d.children = d._children;
+        d.children.forEach(expand);
+        d._children = null;
+    }
+}
+
+function update(source, center = false) {
+    const treeData = tree(root);
+    const nodes = treeData.descendants();
+    const links = treeData.descendants().slice(1);
+
+    nodes.forEach(d => d.y = d.depth * 80);
+
+    const minX = Math.min(...nodes.map(d => d.x));
+    currentAdjustment = Math.max(0, 100 - minX);
+
+    const maxX = Math.max(...nodes.map(d => d.x));
+    const newHeight = maxX + 200;
+
+    svgGroup.attr("transform", `translate(${currentAdjustment} , 230) scale(${zoomLevel})`);
+    d3.select("svg").attr("height", newHeight);
+
+    const node = svgGroup.selectAll('g.node')
+        .data(nodes, d => d.id || (d.id = ++i));
+
+    const nodeEnter = node.enter().append('g')
+        .attr('class', 'node')
+        .attr('transform', d => {
+            if (isMobile()) {
+                return `translate(${source.x + initialHorizontalForMobile},${source.y0 + initialVerticalOffset})`;
+            } else {
+                return `translate(${source.x + initialHorizontalOffset},${source.y0 + initialVerticalOffset})`;
+            }
+        })
+        .attr('data-id', d => d.id)
+        .on('click', click)
+
+    nodeEnter.append('rect')
+        .attr('width', 100)
+        .attr('height', 40)
+        .attr('x', -50)
+        .attr('y', -15)
+        .attr('rx', 10)
+        .attr('ry', 10)
+        .attr('class', 'node')
+        .style('fill', d => d._children ? "#e3d8bc" : "#ffffff");
+        
+    nodeEnter.append('text')
+        .attr('dy', '.23em')
+        .attr('x', 0)
+        .attr('text-anchor', 'middle')
+        .attr("font-family", 'Noto Naskh Arabic, sans-serif')
+        .attr("font-size", "20px")
+        .text(d => d.data.name);
+
+    const badge = nodeEnter.append('g')
+        .attr('class', 'children-badge')
+        .attr('transform', 'translate(0, 24)')
+        .style('display', d => (d.children || d._children) ? null : 'none');
+
+    badge.append('circle')
+        .attr('r', 10)
+        .style('fill', '#ea5050')
+        .style('stroke', '#fff')
+        .style('stroke-width', '2px');
+
+    badge.append('text')
+        .attr('dy', '0.35em')
+        .attr('text-anchor', 'middle')
+        .attr('font-family', 'Noto Naskh Arabic, sans-serif')
+        .attr('font-size', '11px')
+        .attr('font-weight', 'bold')
+        .style('fill', '#fff')
+        .text(d => d.children ? d.children.length : (d._children ? d._children.length : ''));
+
+    const nodeUpdate = nodeEnter.merge(node);
+
+    nodeUpdate.transition()
+        .duration(d => d.depth === 0 ? 0 : duration)
+        .attr('transform', d => {
+            if (isMobile()) {
+                return `translate(${d.x + initialHorizontalForMobile},${d.y + initialVerticalOffset})`;
+            } else {
+                return `translate(${d.x + initialHorizontalOffset},${d.y + initialVerticalOffset})`;
+            }
+        });
+        
+    nodeUpdate.select('rect')
+        .attr('width', 100)
+        .attr('height', 40)
+        .attr('x', -50)
+        .attr('y', -20)
+        .attr('rx', 10)
+        .attr('ry', 10)
+        .attr('class', d => d._children ? 'has-children' : '')
+        .style('fill', d => d._children ? "#e3d8bc" : "#ffffff");
+        
+    nodeUpdate.select('.children-badge circle')
+        .style('fill', d => d._children ? "#ea5050" : "#95a5a6");
+
+    const nodeExit = node.exit().transition()
+        .duration(duration)
+        .attr('transform', d => {
+            if (isMobile()) {
+                return `translate(${source.x + initialHorizontalForMobile},${source.y + initialVerticalOffset})`;
+            } else {
+                return `translate(${source.x + initialHorizontalOffset},${source.y + initialVerticalOffset})`;
+            }
+        })
+        .remove();
+
+    nodeExit.select('rect')
+        .attr('width', 100)
+        .attr('height', 30)
+        .attr('x', -50)
+        .attr('y', -15)
+        .attr('rx', 10)
+        .attr('ry', 10);
+
+    const link = svgGroup.selectAll('path.link')
+        .data(links, d => d.id);
+
+    const linkEnter = link.enter().insert('path', 'g')
+        .attr('class', 'link')
+        .attr('d', d => {
+            const o = { x: source.x, y: source.y };
+            if (isMobile()) {
+                return `M${o.x + initialHorizontalForMobile},${o.y + initialVerticalOffset}V${o.y + initialVerticalOffset}H${d.x + initialHorizontalForMobile}V${d.y + initialVerticalOffset}`;
+            } else {
+                return `M${o.x + initialHorizontalOffset},${o.y + initialVerticalOffset}V${o.y + initialVerticalOffset}H${d.x + initialHorizontalOffset}V${d.y + initialVerticalOffset}`;
+            }
+        });
+
+    const linkUpdate = linkEnter.merge(link);
+
+    linkUpdate.transition()
+        .duration(duration)
+        .attr('d', d => {
+            if (isMobile()) {
+                return `M${d.parent.x + initialHorizontalForMobile},${d.parent.y + initialVerticalOffset}V${d.parent.y + 45 + initialVerticalOffset}H${d.x + initialHorizontalForMobile}V${d.y + initialVerticalOffset}`;
+            } else {
+                return `M${d.parent.x + initialHorizontalOffset},${d.parent.y + initialVerticalOffset}V${d.parent.y + 45 + initialVerticalOffset}H${d.x + initialHorizontalOffset}V${d.y + initialVerticalOffset}`;
+            }
+        });
+        
+    const linkExit = link.exit()
+        .attr('d', d => {
+            const o = { x: source.x, y: source.y };
+            if (isMobile()) {
+                return `M${o.x + initialHorizontalForMobile},${o.y + initialVerticalOffset}V${o.y}H${d.x}V${d.y + initialVerticalOffset}`;
+            } else {
+                return `M${o.x + initialHorizontalOffset},${o.y + initialVerticalOffset}V${o.y}H${d.x}V${d.y + initialVerticalOffset}`;
+            }
+        })
+        .remove();
+
+    nodes.forEach(d => {
+        d.x0 = d.x;
+        d.y0 = d.y;
+    });
+
+    if (center) {
+        centerTopNode();
+    }
+}
+
+function click(event, d) {
+    let hasChanges = false;
+
+    if (d.children) {
+        d._children = d.children.concat(d._children || []);
+        d.children = null;
+        hasChanges = true;
+    } else {
+        if (d._children) {
+            d.children = d._children;
+            d._children = null;
+            hasChanges = true;
+
+            d.children.forEach(child => {
+                if (child.children) {
+                    child._children = child.children;
+                    child.children = null;
+                }
+            });
+        }
+    }
+
+    if (hasChanges) {
+        const horizontalOffset = isMobile() ? initialHorizontalForMobile : initialHorizontalOffset;
+        const oldX = (currentAdjustment + d.x0 + horizontalOffset) * zoomLevel;
+        const oldY = (230 + d.y0 + initialVerticalOffset) * zoomLevel;
+
+        update(d);
+
+        const newX = (currentAdjustment + d.x + horizontalOffset) * zoomLevel;
+        const newY = (230 + d.y + initialVerticalOffset) * zoomLevel;
+
+        const treeContainer = document.getElementById('tree-container');
+        treeContainer.scrollLeft += (newX - oldX);
+        treeContainer.scrollTop += (newY - oldY);
+    }
+}
+
+function focusOnNodeFromSearch(fullName) {
+    const nameParts = fullName.split(' بن ').reverse();
+    let currentNode = root;
+    let pathNodes = [root];
+
+    let counter = 1;
+
+    for (let part of nameParts) {
+        if (nameParts.length === 1) {
+            centerNode(currentNode);
+            return;
+        }
+
+        if (!currentNode.children || currentNode.children.length === 0) {
+            if (currentNode._children) {
+                currentNode.children = currentNode._children;
+                currentNode._children = null;
+                update(root);
+            } else {
+                return;
+            }
+        }
+
+        let matchingChild = currentNode.children.find(child => child.data.name === nameParts[counter]);
+
+        if (!matchingChild) {
+            return;
+        }
+
+        currentNode = matchingChild;
+        pathNodes.push(currentNode);
+        counter++;
+
+        if (counter === nameParts.length) {
+            break;
+        }
+        expandNode(currentNode);
+        update(root);
+    }
+
+    setTimeout(() => {
+        centerNode(currentNode);
+    }, delay);
+}
+
+function expandNode(node) {
+    if (!node.children && node._children) {
+        node.children = node._children;
+        node._children = null;
+    }
+}
+
+function isTreeFullyExpanded(node) {
+    if (node._children) return false;
+    if (node.children) {
+        for (let child of node.children) {
+            if (!isTreeFullyExpanded(child)) return false;
+        }
+    }
+    return true;
+}
+
+function centerNode(source) {
+    const nodeElement = d3.select(`[data-id='${source.id}']`);
+    const rectElement = nodeElement.select('rect').node();
+    const textElement = nodeElement.select('text').node();
+    const treeContainer = document.getElementById('tree-container');
+
+    if (rectElement && textElement && treeContainer) {
+        nodeElement.node().scrollIntoView({ behavior: 'auto', block: 'center', inline: 'center' });
+
+        rectElement.classList.add('highlight');
+        textElement.classList.add('highlight');
+
+        setTimeout(() => {
+            rectElement.classList.remove('highlight');
+            textElement.classList.remove('highlight');
+        }, firstHighlightDelay);
+
+        setTimeout(() => {
+            rectElement.classList.add('highlight');
+            textElement.classList.add('highlight');
+        }, firstHighlightDelay * 2);
+
+        setTimeout(() => {
+            rectElement.classList.remove('highlight');
+            textElement.classList.remove('highlight');
+        }, firstHighlightDelay * 3);
+
+        setTimeout(() => {
+            rectElement.classList.add('highlight');
+            textElement.classList.add('highlight');
+        }, firstHighlightDelay * 4);
+
+        setTimeout(() => {
+            rectElement.classList.remove('highlight');
+            textElement.classList.remove('highlight');
+        }, firstHighlightDelay * 5);
+    }
+}
+
+function displaySearchResults(query) {
+    const searchResults = document.getElementById('search-results');
+    searchResults.innerHTML = '';
+    if (query.length < 1) {
+        searchResults.style.display = 'none';
+        return;
+    }
+    const matchedNames = searchTreeNames(data, query);
+
+    matchedNames.forEach((fullName, index) => {
+        const li = document.createElement('li');
+        li.innerText = `${index + 1}- ${fullName}`;
+
+        li.addEventListener('click', function () {
+            focusOnNodeFromSearch(fullName);
+            searchResults.style.display = 'none';
+        });
+        searchResults.appendChild(li);
+    });
+    searchResults.style.display = matchedNames.length ? 'block' : 'none';
+}
+
+function searchTreeNames(node, query, fullName = "", matches = []) {
+    const currentFullName = fullName ? `${node.name} بن ${fullName}` : node.name;
+    if (currentFullName.toLowerCase().startsWith(query)) {
+        matches.push(currentFullName);
+    }
+    if (node.children) {
+        node.children.forEach(child => searchTreeNames(child, query, currentFullName, matches));
+    }
+    return matches;
+}
+
+function centerTopNode() {
+    const topNode = d3.select('.node').node();
+    const treeContainer = document.getElementById('tree-container');
+    if (topNode && treeContainer) {
+        const topNodeBox = topNode.getBoundingClientRect();
+        const containerBox = treeContainer.getBoundingClientRect();
+
+        treeContainer.scrollLeft += (topNodeBox.left - containerBox.left) - (containerBox.width / 2) + (topNodeBox.width / 2);
+        treeContainer.scrollTop += (topNodeBox.top - containerBox.top) - (containerBox.height / 2) + (topNodeBox.height / 2);
+    }
+}
+
+function toggleTree() {
+    let originalDuration = duration;
+    duration = 0;
+
+    if (root.children) {
+        collapseAll(root);
+    } else {
+        expandAll(root);
+    }
+
+    update(root);
+    centerTopNode();
+    duration = originalDuration;
+}
+
+function collapseAll(d) {
+    if (d.children) {
+        d.children.forEach(collapseAll);
+        d._children = d.children;
+        d.children = null;
+    }
+}
+
+function expandAll(d) {
+    if (d._children) {
+        d.children = d._children;
+        d.children.forEach(expandAll);
+        d._children = null;
+    }
+}
+
+function zoomIn() {
+    zoomLevel = Math.min(zoomLevel + 0.1, 1);
+    update(root, true);
+    centerTopNode();
+}
+
+function zoomOut() {
+    zoomLevel = Math.max(zoomLevel - 0.1, 0.2);
+    update(root, true);
+    centerTopNode();
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('view-stats-btn').addEventListener('click', function () {
+        location.href = 'statistics.html';
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('search-box').addEventListener('input', function () {
+        const query = this.value.toLowerCase();
+        displaySearchResults(query);
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!document.getElementById('search-box').contains(event.target)) {
+            document.getElementById('search-results').style.display = 'none';
+        }
+    });
+});
+
+document.getElementById('expand-collapse-btn').addEventListener('click', toggleTree);
+document.getElementById('zoom-in-btn').addEventListener('click', zoomIn);
+document.getElementById('zoom-out-btn').addEventListener('click', zoomOut);
+
+update(root);
+
+const topHeader = document.querySelector('.top-header');
+
+let maxHeaderHeight = topHeader.offsetHeight;
+if (maxHeaderHeight < 150) maxHeaderHeight = 350; 
+
+let currentScroll = 0; 
+let lastTouchY = 0;
+
+function isTreeAtTop() {
+    const svg = document.querySelector('#tree-container svg');
+    const g = svg ? svg.querySelector('g') : null;
+    if (!svg || !g) return true;
+    
+    const svgRect = svg.getBoundingClientRect();
+    const gRect = g.getBoundingClientRect();
+    
+    return gRect.top >= (svgRect.top - 30); 
+}
+
+function updateHeaderAppearance() {
+    let percentage = 1 - (currentScroll / maxHeaderHeight);
+    
+    topHeader.style.opacity = Math.max(0, percentage);
+    topHeader.style.maxHeight = Math.max(0, maxHeaderHeight * percentage) + 'px';
+    topHeader.style.paddingTop = Math.max(0, 15 * percentage) + 'px';
+    topHeader.style.paddingBottom = Math.max(0, 15 * percentage) + 'px';
+    
+    if (percentage <= 0) {
+        topHeader.style.borderBottom = 'none';
+    } else {
+        topHeader.style.borderBottom = '1px solid rgba(139, 115, 85, 0.3)';
+    }
+}
+
+function handleScroll(delta) {
+    if (delta > 0) { 
+        if (currentScroll < maxHeaderHeight) {
+            currentScroll += delta;
+            if (currentScroll > maxHeaderHeight) currentScroll = maxHeaderHeight;
+            updateHeaderAppearance();
+            return true; 
+        }
+        return false; 
+        
+    } else if (delta < 0) { 
+        if (isTreeAtTop()) {
+            if (currentScroll > 0) {
+                currentScroll += delta;
+                if (currentScroll < 0) currentScroll = 0;
+                updateHeaderAppearance();
+                return true; 
+            }
+            return false; 
+        }
+        return false; 
+    }
+    return false;
+}
+
+window.addEventListener('wheel', function(event) {
+    let absorbed = handleScroll(event.deltaY * 0.8);
+    if (absorbed) {
+        event.preventDefault(); 
+        event.stopPropagation(); 
+    }
+}, { passive: false, capture: true });
+
+window.addEventListener('touchstart', function(event) {
+    lastTouchY = event.touches[0].clientY;
+    if (currentScroll === 0) {
+        maxHeaderHeight = Math.max(topHeader.offsetHeight, 350);
+    }
+}, { passive: true });
+
+window.addEventListener('touchmove', function(event) {
+    let currentY = event.touches[0].clientY;
+    let deltaY = lastTouchY - currentY; 
+    
+    let absorbed = handleScroll(deltaY * 1.2); 
+    if (absorbed) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    lastTouchY = currentY;
+}, { passive: false, capture: true });
+
+window.addEventListener('pointermove', function(event) {
+    if (event.buttons === 1) { 
+        let deltaY = -event.movementY;
+        let absorbed = handleScroll(deltaY);
+        if (absorbed) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    }
+}, { passive: false, capture: true });

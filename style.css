@@ -1,0 +1,273 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Reem+Kufi+Ink:wght@400;700&display=swap');
+
+body {
+    font-family: 'Noto Naskh Arabic', sans-serif;
+    direction: rtl;
+    background-color: #f4efdf;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* 1. الترويسة العلوية (الهيدر) */
+.top-header {
+    text-align: center;
+    padding: 15px;
+    background: rgba(244, 239, 223, 0.85);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(139, 115, 85, 0.3);
+    flex-shrink: 0;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.top-header.hidden {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+    border-bottom: none;
+}
+
+.top-header img {
+    max-height: 500px;
+    width: auto;
+}
+
+.top-header h1 {
+    margin: 0;
+    font-family: 'Reem Kufi Ink', sans-serif;
+    font-size: 35px;
+    color: #4a3b32;
+}
+
+/* 2. شريط الأدوات الثابت (Nav Bar) */
+.nav-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    z-index: 999;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+
+.nav-bar button, .nav-bar a, .nav-bar input {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(139, 115, 85, 0.4);
+    color: #4a3b32;
+    font-family: 'Noto Naskh Arabic', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    outline: none;
+}
+
+.nav-bar button:hover, .nav-bar a:hover {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 8px rgba(139, 115, 85, 0.15);
+    transform: translateY(-2px);
+}
+
+.search-wrapper {
+    position: relative;
+    display: flex;
+}
+
+.search-wrapper input {
+    width: 220px;
+    text-align: right;
+    cursor: text;
+}
+
+.node {
+    filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3));
+    transition: filter 0.2s ease;
+}
+
+.node:hover {
+    filter: drop-shadow(4px 6px 10px rgba(0, 0, 0, 0.7));
+    cursor: pointer;
+}
+
+.node rect {
+    fill: #ffffff;
+    stroke: #2c3e50;
+    stroke-width: 3px;
+}
+
+.node rect.highlight {
+    fill: rgb(215, 218, 222) !important;
+    stroke: rgb(0, 0, 0);
+}
+
+.node text {
+    font-family: 'Noto Naskh Arabic', sans-serif;
+}
+
+.node text.highlight {
+    fill: rgb(9, 0, 0) !important;
+}
+
+.link {
+    fill: none;
+    stroke: #747a7a;
+    stroke-width: 2.5px;
+}
+
+.node.has-children rect {
+    fill: #e8f0f2;
+}
+
+.node.collapsed rect {
+    fill: rgb(194, 194, 205);
+}
+
+#tree-container {
+    direction: ltr;
+    flex-grow: 1;
+    overflow: auto;
+    position: relative;
+}
+
+/* 4. الفوتر السفلي الثابت */
+.bottom-footer {
+    text-align: center;
+    padding: 12px;
+    background: #4a3b32;
+    color: #f4efdf;
+    font-family: 'Noto Naskh Arabic', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    flex-shrink: 0;
+    z-index: 1000;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+}
+
+svg {
+    width: 50000px;
+    height: 10000px;
+}
+
+/* Tooltip Styles */
+#tooltip {
+    position: absolute;
+    text-align: center;
+    padding: 8px 12px;
+    font-family: 'Noto Naskh Arabic', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    pointer-events: none;
+    opacity: 0;
+    direction: rtl;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 2000;
+    width: 250px;
+    white-space: normal;
+    word-wrap: break-word;
+    line-height: 1.6;
+}
+
+/* Input Box */
+.search-container input[type="text"] {
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(139, 115, 85, 0.4);
+    color: #4a3b32;
+    font-family: 'Noto Naskh Arabic', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    outline: none;
+    width: 30%;
+    margin: 0 auto;
+    display: block;
+    direction: rtl;
+    text-align: right;
+}
+
+/* Search Results Container */
+ul#search-results {
+    top: 100%;
+    right: 0;
+    position: absolute;
+    width: 100%;
+    margin-top: 5px;
+    font-family: 'Noto Naskh Arabic', sans-serif;
+    list-style-type: none;
+    padding: 0;
+    display: none;
+    z-index: 1000;
+    background: rgba(244, 239, 223, 0.9) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(139, 115, 85, 0.3) !important;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    left: 25%;
+}
+
+ul#search-results li {
+    padding: 10px;
+    cursor: pointer;
+    direction: rtl;
+    border-bottom: 1px solid rgba(139, 115, 85, 0.3);
+    text-align: right;
+}
+
+ul#search-results li:hover {
+    background: rgba(255, 255, 255, 0.5) !important;
+}
+
+#search-box:focus {
+    background: rgba(255, 255, 255, 0.85);
+    border: 2px solid #8b7355;
+    box-shadow: 0 0 10px rgba(139, 115, 85, 0.3);
+    outline: none;
+}
+
+@media (max-width: 600px) {
+    .search-container {
+        margin-top: 240px;
+    }
+
+    .search-container input[type="text"] {
+        width: 70%;
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    ul#search-results {
+        width: 80%;
+        left: 10%;
+    }
+
+    .top-header {
+        padding: 10px 5px;
+    }
+    
+    .top-header img {
+        max-height: 300px;
+        margin-bottom: 5px;
+    }
+}
