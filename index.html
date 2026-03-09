@@ -106,11 +106,14 @@
 .search-wrapper {
     position: relative;
     display: flex;
+
 }
 
 .search-wrapper input {
     width: 220px;
     text-align: right;
+            cursor: text;
+
 }
 
         .node {
@@ -511,8 +514,7 @@ const svg = d3.select("#tree-container").append("svg")                .attr("wid
                     .attr('rx', 10)
                     .attr('ry', 10)
                     .attr('class', 'node')
-                    .style('fill', d => d._children ? "lightsteelblue" : "#fff");
-
+.style('fill', d => d._children ? "#e3d8bc" : "#ffffff");
                 nodeEnter.append('text')
                     .attr('dy', '.23em')
                     .attr('x', 0)
@@ -566,9 +568,7 @@ const svg = d3.select("#tree-container").append("svg")                .attr("wid
                     .attr('rx', 10)
                     .attr('ry', 10)
                     .attr('class', d => d._children ? 'has-children' : '')
-                    .style('fill', d => d._children ? "lightsteelblue" : "#fff");
-
-                // Change the badge circle color dynamically
+.style('fill', d => d._children ? "#e3d8bc" : "#ffffff");                // Change the badge circle color dynamically
                 nodeUpdate.select('.children-badge circle')
                     .style('fill', d => d._children ? "#ea5050" : "#95a5a6"); // Red if collapsed, Gray if expanded
 
