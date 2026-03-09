@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+    <meta charset="UTF-8">
+    <title>نبذة عن أسرة السياط</title>
+
+    <link rel="icon" href="https://raw.githubusercontent.com/alseyat/FamilyTree/main/favicon_io/favicon.ico"
+        type="image/x-icon">
+    <link rel="icon" href="https://raw.githubusercontent.com/alseyat/FamilyTree/main/favicon_io/favicon-32x32.png"
+        type="image/png">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Reem+Kufi+Ink:wght@400;700&display=swap');
+
+        /* إعدادات الصفحة الأساسية المتوافقة مع الشجرة */
+        body {
+            font-family: 'Noto Naskh Arabic', sans-serif;
+            direction: rtl;
+            background-color: #f4efdf;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            color: #4a3b32;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* الترويسة */
+        .header {
+            text-align: center;
+            padding: 30px 20px 10px;
+        }
+
+        .header img {
+            max-height: 500px;
+            /* يمكنك تعديل حجم الشعار من هنا */
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-family: 'Reem Kufi Ink', sans-serif;
+            font-size: 32px;
+            margin: 0;
+            color: #4a3b32;
+        }
+
+        /* حاوية المحتوى (البطاقة الشفافة) */
+        .content-container {
+            max-width: 800px;
+            margin: 20px auto 40px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 115, 85, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            flex-grow: 1;
+            /* لتمديد المساحة ودفع الفوتر للأسفل */
+        }
+
+        /* تنسيق النصوص والعناوين الداخلية */
+        .content-container h2 {
+            color: #8b7355;
+            font-size: 22px;
+            border-bottom: 2px solid rgba(139, 115, 85, 0.2);
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        .content-container h2:first-of-type {
+            margin-top: 0;
+        }
+
+        .content-container p {
+            font-size: 16px;
+            line-height: 2;
+            text-align: justify;
+            margin-bottom: 15px;
+        }
+
+        /* زر العودة للشجرة */
+        .back-btn-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: #4a3b32;
+            color: #f4efdf;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn:hover {
+            background: #6a5646;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* الفوتر السفلي */
+        .bottom-footer {
+            text-align: center;
+            padding: 15px;
+            background: #4a3b32;
+            color: #f4efdf;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: auto;
+        }
+
+        /* توافق الشاشات الصغيرة (الجوال) */
+        @media (max-width: 768px) {
+            .content-container {
+                margin: 15px;
+                padding: 25px;
+            }
+
+            .header img {
+                max-height: 100px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <img src="logo1.png" alt="شعار أسرة السياط">
+    </div>
+
+    <div class="content-container">
+
+        <h2>نبذة عن الأسرة</h2>
+        <p>
+            يعود نسب أسرة السياط إلى عشيرة أهل الحجلا من الزقاريط من عبدة من قبيلة شمر الطائية العريقة، وهم يرجعون إلى
+            جدّهم/ سياط بن عودة بن محمد بن علّيق بن محمد بن سليمان (جد الحجلا) بن نافع بن عمار بن زقروط الربيعي العبدي
+            الشمري، وهو أول من سكن مدينة سكاكا من السكان الحاليين وذلك قبل أكثر من 400 عام والتي استوطن فيها فيما بعد
+            العديد من القبائل والعوائل.
+        </p>
+        <p>
+            والشواهد على أسبقية سياط في استيطان سكاكا كثيرة، فمسكنه القديم تحت قلعة زعبل الأثرية لازال قائمًا، وقد اختار
+            السكن تحتها كي يحتمي بها هو وأبناؤه، وقد حفر أول بئر ماء في سكاكا وزرع نخلته التي جاء بها وعُرفت إلى يومنا
+            هذا باسم "السياطية" ومن مزاياها أنها أول ما يستوي من النخل بالصيف.
+        </p>
+        <p>
+            وقد زوّج سياط ابنته سلمى لقريش الخالدي الذي أنجب مختار، ومختار أنجب ضويحي وعلي، ومنهما سلالة القرشة من بني
+            خالد الآن بمنطقة الجوف وهم آل ضويحي وآل علي، وبعد استيطان السياط في الجوف صار لهم علاقات مصاهرة ونسب مع كثير
+            من القبائل الأخرى.
+        </p>
+
+
+        <div class="back-btn-container">
+            <a href="index.html" class="back-btn">العودة إلى شجرة الأسرة</a>
+        </div>
+
+    </div>
+
+    <footer class="bottom-footer">
+        إعداد وتصميم: م. أنس بن سعود السياط
+    </footer>
+
+</body>
+
+</html>
