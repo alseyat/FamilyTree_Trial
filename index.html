@@ -4,10 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <title>شجرة أسرة السياط</title>
-    <link rel="icon" href="https://raw.githubusercontent.com/alseyat/FamilyTree/main/favicon_io/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="https://raw.githubusercontent.com/alseyat/FamilyTree/main/favicon_io/favicon.ico"
+        type="image/x-icon">
 
     <!-- For .png format -->
-    <link rel="icon" href="https://raw.githubusercontent.com/alseyat/FamilyTree/main/favicon_io/favicon-32x32.png" type="image/png">
+    <link rel="icon" href="https://raw.githubusercontent.com/alseyat/FamilyTree/main/favicon_io/favicon-32x32.png"
+        type="image/png">
 
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,20 +19,109 @@
         @import url('https://fonts.googleapis.com/css2?family=Reem+Kufi+Ink:wght@400;700&display=swap');
 
         body {
-            font-family: 'Noto Naskh Arabic', sans-serif;
-            direction: rtl; 
-            background-color: #f4efdf; /* Warm parchment base */
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+    font-family: 'Noto Naskh Arabic', sans-serif;
+    direction: rtl;
+    background-color: #f4efdf;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* ملء الشاشة عمودياً */
+    overflow: hidden; /* إخفاء شريط التمرير للصفحة، سيتم تطبيقه على الشجرة فقط */
+}
+
+/* 1. الترويسة العلوية (الهيدر) */
+/* عدل الترويسة العلوية لتصبح هكذا */
+.top-header {
+    text-align: center;
+    padding: 15px;
+    background: rgba(244, 239, 223, 0.85);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(139, 115, 85, 0.3);
+    flex-shrink: 0;
+    z-index: 1000;
+    
+    /* الأسطر الجديدة المسؤولة عن النعومة والحركة */
+    overflow: hidden;
+}
+
+/* أضف هذا الكلاس الجديد في أي مكان داخل قسم style */
+.top-header.hidden {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+    border-bottom: none;
+}
+
+.top-header img {
+    max-height: 500px; /* إذا كان لديك صورة شعار يمكنك وضعها هنا */
+    width: auto; /* للحفاظ على أبعاد الصورة دون تشويه */
+    /* display: none; */ 
+}
+
+.top-header h1 {
+    margin: 0;
+    font-family: 'Reem Kufi Ink', sans-serif;
+    font-size: 35px;
+    color: #4a3b32;
+}
+
+/* 2. شريط الأدوات الثابت (Nav Bar) */
+.nav-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    z-index: 999;
+    flex-shrink: 0;
+    flex-wrap: wrap; /* للسماح بالتفاف العناصر في شاشات الجوال */
+}
+
+.nav-bar button, .nav-bar a, .nav-bar input {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(139, 115, 85, 0.4);
+    color: #4a3b32;
+    font-family: 'Noto Naskh Arabic', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    outline: none;
+}
+
+.nav-bar button:hover, .nav-bar a:hover {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 8px rgba(139, 115, 85, 0.15);
+    transform: translateY(-2px);
+}
+
+/* إعدادات مربع البحث داخل الشريط */
+.search-wrapper {
+    position: relative;
+    display: flex;
+}
+
+.search-wrapper input {
+    width: 220px;
+    text-align: right;
+}
+
+        .node {
+            filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3));
+            transition: filter 0.2s ease;
         }
 
-.node {
-    filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3));
-    transition: filter 0.2s ease;
-}
+        .node:hover {
+            filter: drop-shadow(4px 6px 10px rgba(0, 0, 0, 0.7));
+        }
 
-.node:hover {
-    filter: drop-shadow(4px 6px 10px rgba(0, 0, 0, 0.7));
-}
         .node rect {
             fill: #ffffff;
             stroke: #2c3e50;
@@ -39,7 +130,7 @@
 
         /* Highlight style */
         .node rect.highlight {
-            fill: rgb(75, 119, 170) !important;
+            fill: rgb(215, 218, 222) !important;
             stroke: rgb(0, 0, 0);
         }
 
@@ -55,8 +146,9 @@
 
         .link {
             fill: none;
-    stroke: #747a7a; /* A soft, elegant slate gray */
-    stroke-width: 2.5px;
+            stroke: #747a7a;
+            /* A soft, elegant slate gray */
+            stroke-width: 2.5px;
         }
 
         .node:hover {
@@ -68,268 +160,93 @@
         }
 
         .node.collapsed rect {
-            fill: blue;
+            fill: rgb(194, 194, 205);
         }
 
         #tree-container {
-            direction: ltr; /* <--- This single line fixes the disappearing node */
-            overflow-x: auto;
-            overflow-y: auto;
-            width: 100%;
-            height: 100%;
+            direction: ltr;
+    flex-grow: 1; /* تتمدد لتأخذ كل المساحة المتبقية */
+    overflow: auto; /* إضافة شريط التمرير هنا فقط */
+    position: relative;
         }
+
+        /* 4. الفوتر السفلي الثابت */
+.bottom-footer {
+    text-align: center;
+    padding: 12px;
+    background: #4a3b32;
+    color: #f4efdf;
+    font-family: 'Noto Naskh Arabic', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    flex-shrink: 0;
+    z-index: 1000;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+}
 
         svg {
             width: 50000px;
             height: 10000px;
         }
-#expand-collapse-btn {
-            background: rgba(255, 255, 255, 0.35); /* Semi-transparent white */
-            backdrop-filter: blur(8px); /* Frosted glass blur effect */
-            -webkit-backdrop-filter: blur(8px); /* For Safari support */
-            border: 1px solid rgba(139, 115, 85, 0.4); /* Soft, warm vintage brown border */
-            color: #4a3b32; /* Deep warm brown text to match the parchment vibe */
-            font-family: 'Noto Naskh Arabic', sans-serif;
-            font-size: 14px;
-            font-weight: bold;
-            padding: 10px 16px;
-            border-radius: 8px; /* Smooth, modern rounded corners */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Very soft shadow */
-            transition: all 0.3s ease; /* Smooth transition for hovering */
-            cursor: pointer;
-            outline: none;
-        }
-        #expand-collapse-btn:hover {
-            background: rgba(255, 255, 255, 0.65); /* Becomes slightly more solid on hover */
-            box-shadow: 0 6px 12px rgba(139, 115, 85, 0.15); /* Warmer, slightly larger shadow */
-            transform: translateY(-1px); /* Slight lift effect */
-        }
 
-        #page-title {
+
+        /* Tooltip Styles */
+        #tooltip {
             position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
             text-align: center;
-            font-family: 'Reem Kufi Ink', sans-serif;
-            font-size: 45px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        #page-subtitle {
-            position: absolute;
-            top: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            font-family: 'Noto Naskh Arabic', sans-serif;
-            font-size: 18px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        #page-subsubtitle {
-            position: absolute;
-            top: 135px;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            font-family: 'Noto Naskh Arabic', sans-serif;
-            font-size: 15px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        
-        #button-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            top: 160px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-        }
-
-        .zoom-btn {
-            background: rgba(255, 255, 255, 0.35); /* Semi-transparent white */
-            backdrop-filter: blur(8px); /* Frosted glass blur effect */
-            -webkit-backdrop-filter: blur(8px); /* For Safari support */
-            border: 1px solid rgba(139, 115, 85, 0.4); /* Soft, warm vintage brown border */
-            color: #4a3b32; /* Deep warm brown text to match the parchment vibe */
+            padding: 8px 12px;
             font-family: 'Noto Naskh Arabic', sans-serif;
             font-size: 14px;
             font-weight: bold;
-            padding: 10px 16px;
-            border-radius: 8px; /* Smooth, modern rounded corners */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Very soft shadow */
-            transition: all 0.3s ease; /* Smooth transition for hovering */
-            cursor: pointer;
-            outline: none;
-        }
-
-        #expand-collapse-btn {
-            background: rgba(255, 255, 255, 0.35); /* Semi-transparent white */
-            backdrop-filter: blur(8px); /* Frosted glass blur effect */
-            -webkit-backdrop-filter: blur(8px); /* For Safari support */
-            border: 1px solid rgba(139, 115, 85, 0.4); /* Soft, warm vintage brown border */
-            color: #4a3b32; /* Deep warm brown text to match the parchment vibe */
-            font-family: 'Noto Naskh Arabic', sans-serif;
-            font-size: 14px;
-            font-weight: bold;
-            padding: 10px 16px;
-            border-radius: 8px; /* Smooth, modern rounded corners */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Very soft shadow */
-            transition: all 0.3s ease; /* Smooth transition for hovering */
-            cursor: pointer;
-            outline: none;
-        }
-
-        #zoom-in-btn {
-            background: rgba(255, 255, 255, 0.35); /* Semi-transparent white */
-            backdrop-filter: blur(8px); /* Frosted glass blur effect */
-            -webkit-backdrop-filter: blur(8px); /* For Safari support */
-            border: 1px solid rgba(139, 115, 85, 0.4); /* Soft, warm vintage brown border */
-            color: #4a3b32; /* Deep warm brown text to match the parchment vibe */
-            font-family: 'Noto Naskh Arabic', sans-serif;
-            font-size: 14px;
-            font-weight: bold;
-            padding: 10px 16px;
-            border-radius: 8px; /* Smooth, modern rounded corners */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Very soft shadow */
-            transition: all 0.3s ease; /* Smooth transition for hovering */
-            cursor: pointer;
-            outline: none;
-            top: 180px;
-            left: 70%;
-        }
-
-        #zoom-in-btn:hover {
-background: rgba(255, 255, 255, 0.65); /* Becomes slightly more solid on hover */
-            box-shadow: 0 6px 12px rgba(139, 115, 85, 0.15); /* Warmer, slightly larger shadow */
-            transform: translateY(-1px); /* Slight lift effect */        }
-
-        #zoom-out-btn {
-             background: rgba(255, 255, 255, 0.35); /* Semi-transparent white */
-            backdrop-filter: blur(8px); /* Frosted glass blur effect */
-            -webkit-backdrop-filter: blur(8px); /* For Safari support */
-            border: 1px solid rgba(139, 115, 85, 0.4); /* Soft, warm vintage brown border */
-            color: #4a3b32; /* Deep warm brown text to match the parchment vibe */
-            font-family: 'Noto Naskh Arabic', sans-serif;
-            font-size: 14px;
-            font-weight: bold;
-            padding: 10px 16px;
-            border-radius: 8px; /* Smooth, modern rounded corners */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Very soft shadow */
-            transition: all 0.3s ease; /* Smooth transition for hovering */
-            cursor: pointer;
-            outline: none;
-            top: 180px;
-            left: 30%;
-        }
-
-        #zoom-out-btn:hover {
-background: rgba(255, 255, 255, 0.65); /* Becomes slightly more solid on hover */
-            box-shadow: 0 6px 12px rgba(139, 115, 85, 0.15); /* Warmer, slightly larger shadow */
-            transform: translateY(-1px); /* Slight lift effect */        }
-
-        #view-stats-btn {
-            background: rgba(255, 255, 255, 0.35); /* Semi-transparent white */
-            backdrop-filter: blur(8px); /* Frosted glass blur effect */
-            -webkit-backdrop-filter: blur(8px); /* For Safari support */
-            border: 1px solid rgba(139, 115, 85, 0.4); /* Soft, warm vintage brown border */
-            color: #4a3b32; /* Deep warm brown text to match the parchment vibe */
-            font-family: 'Noto Naskh Arabic', sans-serif;
-            font-size: 14px;
-            font-weight: bold;
-            padding: 10px 16px;
-            border-radius: 8px; /* Smooth, modern rounded corners */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Very soft shadow */
-            transition: all 0.3s ease; /* Smooth transition for hovering */
-            cursor: pointer;
-            outline: none;
-            position: absolute !important;
-            top: 240px !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            z-index: 10;
-            
-        }
-
-        #view-stats-btn:hover {
-            background: rgba(255, 255, 255, 0.65); /* Becomes slightly more solid on hover */
-            box-shadow: 0 6px 12px rgba(139, 115, 85, 0.15); /* Warmer, slightly larger shadow */
-            transform: translateY(-1px); /* Slight lift effect */
+            color: #fff;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            pointer-events: none;
+            /* Prevents the tooltip from blocking mouse events */
+            opacity: 0;
+            /* Hidden by default */
+            direction: rtl;
+            /* Right-to-left text direction */
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 2000;
+            /* Ensures it stays on top of everything */
+            /* --- NEW RULES FOR SIZE AND TEXT WRAPPING --- */
+            width: 250px;
+            /* Set a fixed width. Adjust this number as needed */
+            /* max-width: 250px;  <-- Alternatively, use max-width if you want it to shrink for shorter names */
+            white-space: normal;
+            /* Forces the text to wrap to the next line */
+            word-wrap: break-word;
+            /* Ensures long words don't spill out of the box */
+            line-height: 1.6;
+            /* Adds a bit of vertical space between lines making Arabic text much easier to read */
         }
 
 
-        #instructions {
-            position: absolute;
-            top: 210px;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            font-family: 'Noto Naskh Arabic', sans-serif;
-            font-size: 15px;
-            color: blue;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-/* Tooltip Styles */
-#tooltip {
-    position: absolute;
-    text-align: center;
-    padding: 8px 12px;
-    font-family: 'Noto Naskh Arabic', sans-serif;
-    font-size: 14px;
-    font-weight: bold;
-    color: #fff;
-    background: rgba(0, 0, 0, 0.8);
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    pointer-events: none; /* Prevents the tooltip from blocking mouse events */
-    opacity: 0; /* Hidden by default */
-    direction: rtl; /* Right-to-left text direction */
-    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
-    z-index: 2000; /* Ensures it stays on top of everything */
-    /* --- NEW RULES FOR SIZE AND TEXT WRAPPING --- */
-    width: 250px; /* Set a fixed width. Adjust this number as needed */
-    /* max-width: 250px;  <-- Alternatively, use max-width if you want it to shrink for shorter names */
-    white-space: normal; /* Forces the text to wrap to the next line */
-    word-wrap: break-word; /* Ensures long words don't spill out of the box */
-    line-height: 1.6; /* Adds a bit of vertical space between lines making Arabic text much easier to read */
-}
-
-        /* Search Box Styles */
-        /* Container for Centering */
-        .search-container {
-            text-align: center;
-            /* Center text-aligned elements inside */
-            margin-top: 300px;
-            /* Adjust vertical position */
-        }
 
         /* Input Box */
         .search-container input[type="text"] {
-            background: rgba(255, 255, 255, 0.35); /* Semi-transparent white */
-            backdrop-filter: blur(8px); /* Frosted glass blur effect */
-            -webkit-backdrop-filter: blur(8px); /* For Safari support */
-            border: 1px solid rgba(139, 115, 85, 0.4); /* Soft, warm vintage brown border */
-            color: #4a3b32; /* Deep warm brown text to match the parchment vibe */
+            background: rgba(255, 255, 255, 0.35);
+            /* Semi-transparent white */
+            backdrop-filter: blur(8px);
+            /* Frosted glass blur effect */
+            -webkit-backdrop-filter: blur(8px);
+            /* For Safari support */
+            border: 1px solid rgba(139, 115, 85, 0.4);
+            /* Soft, warm vintage brown border */
+            color: #4a3b32;
+            /* Deep warm brown text to match the parchment vibe */
             font-family: 'Noto Naskh Arabic', sans-serif;
             font-size: 14px;
             font-weight: bold;
             padding: 10px 16px;
-            border-radius: 8px; /* Smooth, modern rounded corners */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Very soft shadow */
-            transition: all 0.3s ease; /* Smooth transition for hovering */
+            border-radius: 8px;
+            /* Smooth, modern rounded corners */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            /* Very soft shadow */
+            transition: all 0.3s ease;
+            /* Smooth transition for hovering */
             outline: none;
 
             font-family: 'Noto Naskh Arabic', sans-serif;
@@ -349,11 +266,16 @@ background: rgba(255, 255, 255, 0.65); /* Becomes slightly more solid on hover *
 
         /* Search Results Container */
         ul#search-results {
+            top: 100%;
+    right: 0;
+    position: absolute;
+    width: 100%;
+    margin-top: 5px;
+    /* احتفظ بباقي تنسيقات search-results السابقة هنا */
             font-family: 'Noto Naskh Arabic', sans-serif;
             list-style-type: none;
             padding: 0;
             display: none;
-            position: absolute;
             z-index: 1000;
             background: rgba(244, 239, 223, 0.9) !important;
             backdrop-filter: blur(10px);
@@ -362,7 +284,6 @@ background: rgba(255, 255, 255, 0.65); /* Becomes slightly more solid on hover *
             border-radius: 8px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            width: 50%;
             /* Match width of the input box */
             left: 25%;
             /* Centered relative to the input box */
@@ -373,7 +294,8 @@ background: rgba(255, 255, 255, 0.65); /* Becomes slightly more solid on hover *
             padding: 10px;
             cursor: pointer;
             direction: rtl;
-            border-bottom: 1px solid rgba(139, 115, 85, 0.3); /* Soft warm divider line */
+            border-bottom: 1px solid rgba(139, 115, 85, 0.3);
+            /* Soft warm divider line */
             /* Ensure items also follow right-to-left */
             text-align: right;
             /* Align text to the right */
@@ -381,15 +303,20 @@ background: rgba(255, 255, 255, 0.65); /* Becomes slightly more solid on hover *
 
         /* Search Results Items Hover Effect */
         ul#search-results li:hover {
-background: rgba(255, 255, 255, 0.5) !important; /* Highlight item on hover */
+            background: rgba(255, 255, 255, 0.5) !important;
+            /* Highlight item on hover */
         }
 
         /* Style the search box when it is clicked/focused */
         #search-box:focus {
-            background: rgba(255, 255, 255, 0.85); /* Becomes more solid and bright */
-            border: 2px solid #8b7355; /* A stronger, darker warm brown border */
-            box-shadow: 0 0 10px rgba(139, 115, 85, 0.3); /* A soft warm glow around the box */
-            outline: none; /* Prevents the default browser blue outline */
+            background: rgba(255, 255, 255, 0.85);
+            /* Becomes more solid and bright */
+            border: 2px solid #8b7355;
+            /* A stronger, darker warm brown border */
+            box-shadow: 0 0 10px rgba(139, 115, 85, 0.3);
+            /* A soft warm glow around the box */
+            outline: none;
+            /* Prevents the default browser blue outline */
         }
 
         @media (max-width: 600px) {
@@ -417,121 +344,46 @@ background: rgba(255, 255, 255, 0.5) !important; /* Highlight item on hover */
                 /* Centered relative to the input box */
             }
 
-
-            #page-title {
-                font-size: 20px !important;
-                top: 10px !important;
-                left: 50% !important;
-                transform: translateX(-50%) !important;
-                width: 90% !important;
-                margin: 0 auto !important;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-
-            #page-subtitle {
-                font-size: 13px !important;
-                top: 40px !important;
-                left: 50% !important;
-                transform: translateX(-50%) !important;
-                width: 90% !important;
-                margin: 0 auto !important;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-
-            #page-subsubtitle {
-                font-size: 12px !important;
-                top: 90px !important;
-                left: 50% !important;
-                transform: translateX(-50%) !important;
-                width: 90% !important;
-                margin: 0 auto !important;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-
-            #button-container {
-                top: 120px;
-                width: 90%; /* Increased from 60% to give the buttons more horizontal space */
-            }
-
-            #expand-collapse-btn {
-                font-size: 13px !important;
-                padding: 3px 3px !important; /* Added more padding for breathing room */
-                width: auto !important; /* Removed the restrictive 120px width */
-                max-width: 70%; /* Prevents it from taking up the entire screen */
-                height: auto !important; /* Removed the restrictive 35px height */
-                min-height: 40px; /* Ensures it's tall enough to easily tap */
-                border-radius: 10px;
-                display: flex !important; /* Activates Flexbox */
-                align-items: center !important; /* Centers text vertically */
-                justify-content: center !important; /* Centers text horizontally */
-                text-align: center !important;
-                line-height: 1.4 !important; /* Adds a bit of space between lines if the text wraps */
-            }
-
-            
-
-            #instructions {
-                top: 170px;
-                font-size: 10px;
-            }
-
-            #view-stats-btn {
-                top: 190px !important; /* Decrease this number to move it higher, increase to move it lower */                left: 50%;
-                transform: translateX(-50%);
-                /* Center horizontally */
-                font-size: 13px;
-                font-weight: bold;
-                /* Add bold styling */
-                height: auto !important; /* Removes any restrictive fixed height */
-                min-height: 40px; /* Ensures the button is tall enough to easily tap */
-                padding: 8px 16px !important; /* Adds safe breathing room around the text */
-                display: flex !important; /* Activates Flexbox layout */
-                align-items: center !important; /* Forces perfect vertical centering */
-                justify-content: center !important; /* Forces perfect horizontal centering */
-                line-height: normal !important; /* Allows the Arabic font to take its natural vertical space */
-            }
-
+            .top-header {
+        padding: 10px 5px; /* تقليل المساحات الفارغة حول الشعار في الجوال */
+    }
+    
+    .top-header img {
+        max-height: 300px; /* تصغير ارتفاع الشعار للجوال، يمكنك تغيير الرقم كما تراه مناسباً */
+        margin-bottom: 5px;
+    }
+  
         }
     </style>
 </head>
 
 <body>
-    <div id="page-title">
-        <div>شجرة أسرة السياط</div>
-    </div>
-    <div id="page-subtitle">
-        <div>من ذرية سياط بن عودة بن محمد بن علّيق بن محمد بن سليمان (جد الحجلا)</div>
-        <div>بن نافع بن عمار بن زقروط الربيعي العبدي الشمري</div>
-    </div>
-    <div id="page-subsubtitle">
-        <div><span style="color: rgb(135, 11, 11);font-weight: bold;">إعداد:</span> <span
-                style="color: rgb(7, 66, 147);font-weight: bold;">أنس بن سعود السياط</span></div>
-    </div>
-    <div id="button-container">
-        <div class="zoom-btn" id="zoom-out-btn">-</div>
-        <div id="expand-collapse-btn">اضغط هنا لعرض كامل الشجرة أو إغلاقها</div>
-        <div class="zoom-btn" id="zoom-in-btn">+</div>
-    </div>
-    <div id="instructions">
-        <div>اضغط على الاسم لإظهار الأبناء (الرقم الأحمر هو عدد الأبناء)، اضغط - أو + للتصغير أو التكبير</div>
-    </div>
-    <button id="view-stats-btn">عرض إحصائيات الشجرة</button>
+    <header class="top-header">
+        <img src="https://raw.githubusercontent.com/alseyat/FamilyTree/main/logo1.png" alt="شعار الشجرة">
+    </header>
 
-    <div class="search-container">
-        <input type="text" id="search-box" placeholder="ابحث عن اسم..." />
-        <ul id="search-results"></ul>
-
-
-        <div id="tree-container">
-            <svg></svg>
+    <nav class="nav-bar">
+        <a href="about.html" id="about-btn">نبذة عن الأسرة</a>
+        <button id="view-stats-btn">إحصائيات</button>
+        <button id="expand-collapse-btn">طي / تمديد الشجرة</button>
+        <button id="zoom-in-btn">تكبير (+)</button>
+        <button id="zoom-out-btn">تصغير (-)</button>
+        
+        <div class="search-wrapper">
+            <input type="text" id="search-box" placeholder="بحث عن اسم...">
+            <ul id="search-results"></ul>
         </div>
-        <script type="module">
+    </nav>
+
+    <div id="tree-container"></div>
+    <div id="tooltip"></div>
+
+    <footer class="bottom-footer">
+        إعداد وتصميم: م. أنس بن سعود السياط
+    </footer>
+
+    <script type="module">
+
             import data from './alseyat.js';
 
             const margin = { top: 200, right: 20, bottom: 20, left: 300 }; // Adjusted top margin to 200px for spacing below the button
@@ -541,9 +393,9 @@ background: rgba(255, 255, 255, 0.5) !important; /* Highlight item on hover */
             let firstHighlightDelay = 250, secondHighlightDelay = 800, thirdHighlightDelay = 1200, fourthHighlightDelay = 300;
 
             let zoomLevel = 1; // Initial zoom level
+            let currentAdjustment = 0; // Tracks horizontal layout shifts
 
-            const svg = d3.select("svg")
-                .attr("width", width)
+const svg = d3.select("#tree-container").append("svg")                .attr("width", width)
                 .attr("height", height);
 
             const svgGroup = svg.append("g")
@@ -567,21 +419,21 @@ background: rgba(255, 255, 255, 0.5) !important; /* Highlight item on hover */
             let initialHorizontalOffset = width / 2 + 19;
             let initialHorizontalForMobile = 79;
 
-// 1. Create the tooltip div and append it to the body
-const tooltip = d3.select("body").append("div")
-    .attr("id", "tooltip")
-    .style("opacity", 0);
+            // 1. Create the tooltip div and append it to the body
+            const tooltip = d3.select("body").append("div")
+                .attr("id", "tooltip")
+                .style("opacity", 0);
 
-// 2. Function to calculate the full lineage string (e.g. أنس بن سعود بن...)
-function getFullName(d) {
-    let names = [];
-    let current = d;
-    while (current) {
-        names.push(current.data.name);
-        current = current.parent;
-    }
-    return names.join(' بن ');
-}
+            // 2. Function to calculate the full lineage string (e.g. أنس بن سعود بن...)
+            function getFullName(d) {
+                let names = [];
+                let current = d;
+                while (current) {
+                    names.push(current.data.name);
+                    current = current.parent;
+                }
+                return names.join(' بن ');
+            }
 
             // Function to reverse children of each node
             function reverseChildren(node) {
@@ -624,14 +476,14 @@ function getFullName(d) {
 
                 // Calculate the minimum x-coordinate to adjust the tree position
                 const minX = Math.min(...nodes.map(d => d.x));
-                const adjustment = Math.max(0, 100 - minX); // Ensure minimum padding of 200
+                currentAdjustment = Math.max(0, 100 - minX); // Ensure minimum padding of 200
 
                 // Calculate the maximum x-coordinate to adjust the SVG height
                 const maxX = Math.max(...nodes.map(d => d.x));
                 const newHeight = maxX + 200; // Add padding of 200
 
                 // Adjust the tree position dynamically
-                svgGroup.attr("transform", `translate(${adjustment} , 230) scale(${zoomLevel})`);
+                svgGroup.attr("transform", `translate(${currentAdjustment} , 230) scale(${zoomLevel})`);
                 // Adjust the SVG height dynamically
                 d3.select("svg").attr("height", newHeight);
 
@@ -639,17 +491,17 @@ function getFullName(d) {
                     .data(nodes, d => d.id || (d.id = ++i));
 
                 const nodeEnter = node.enter().append('g')
-    .attr('class', 'node')
-    .attr('transform', d => {
-        if (isMobile()) {
-            return `translate(${source.x + initialHorizontalForMobile},${source.y0 + initialVerticalOffset})`;
-        } else {
-            return `translate(${source.x + initialHorizontalOffset},${source.y0 + initialVerticalOffset})`;
-        }
-    })
-    .attr('data-id', d => d.id) 
-    .on('click', click)
-    
+                    .attr('class', 'node')
+                    .attr('transform', d => {
+                        if (isMobile()) {
+                            return `translate(${source.x + initialHorizontalForMobile},${source.y0 + initialVerticalOffset})`;
+                        } else {
+                            return `translate(${source.x + initialHorizontalOffset},${source.y0 + initialVerticalOffset})`;
+                        }
+                    })
+                    .attr('data-id', d => d.id)
+                    .on('click', click)
+
 
                 nodeEnter.append('rect')
                     .attr('width', 100)
@@ -672,7 +524,7 @@ function getFullName(d) {
                 // Create a group for the children badge, positioned at the bottom middle (y = 15)
                 const badge = nodeEnter.append('g')
                     .attr('class', 'children-badge')
-                    .attr('transform', 'translate(0, 24)') 
+                    .attr('transform', 'translate(0, 24)')
                     .style('display', d => (d.children || d._children) ? null : 'none');
 
                 // Add the circle background
@@ -684,14 +536,14 @@ function getFullName(d) {
 
                 // Add the number text inside the circle
                 badge.append('text')
-                    .attr('dy', '0.35em') 
-                    .attr('text-anchor', 'middle') 
+                    .attr('dy', '0.35em')
+                    .attr('text-anchor', 'middle')
                     .attr('font-family', 'Noto Naskh Arabic, sans-serif')
                     .attr('font-size', '11px')
                     .attr('font-weight', 'bold')
                     .style('fill', '#fff') // White text
                     .text(d => d.children ? d.children.length : (d._children ? d._children.length : ''));
-               
+
                 const nodeUpdate = nodeEnter.merge(node);
 
                 nodeUpdate.transition()
@@ -716,7 +568,7 @@ function getFullName(d) {
                     .attr('class', d => d._children ? 'has-children' : '')
                     .style('fill', d => d._children ? "lightsteelblue" : "#fff");
 
-                    // Change the badge circle color dynamically
+                // Change the badge circle color dynamically
                 nodeUpdate.select('.children-badge circle')
                     .style('fill', d => d._children ? "#ea5050" : "#95a5a6"); // Red if collapsed, Gray if expanded
 
@@ -811,27 +663,37 @@ function getFullName(d) {
                     d._children = d.children.concat(d._children || []);
                     d.children = null;
                     hasChanges = true;
-                    centerTopNode();
-
                 } else {
                     if (d._children) {
                         d.children = d._children;
                         d._children = null;
                         hasChanges = true;
-                        centerTopNode();
 
                         d.children.forEach(child => {
                             if (child.children) {
                                 child._children = child.children;
                                 child.children = null;
-
                             }
                         });
                     }
                 }
+
                 if (hasChanges) {
-                    update(d);
-                    centerTopNode();
+                    // 1. Calculate the absolute X/Y of the clicked node BEFORE the layout updates
+                    const horizontalOffset = isMobile() ? initialHorizontalForMobile : initialHorizontalOffset;
+                    const oldX = (currentAdjustment + d.x0 + horizontalOffset) * zoomLevel;
+                    const oldY = (230 + d.y0 + initialVerticalOffset) * zoomLevel;
+
+                    update(d); // Triggers D3 to calculate the new tree shape
+
+                    // 2. Calculate the absolute X/Y of the clicked node AFTER the layout updates
+                    const newX = (currentAdjustment + d.x + horizontalOffset) * zoomLevel;
+                    const newY = (230 + d.y + initialVerticalOffset) * zoomLevel;
+
+                    // 3. Scroll the container by the exact difference to keep the node perfectly stationary
+                    const treeContainer = document.getElementById('tree-container');
+                    treeContainer.scrollLeft += (newX - oldX);
+                    treeContainer.scrollTop += (newY - oldY);
                 }
             }
 
@@ -999,17 +861,17 @@ function getFullName(d) {
                     return;
                 }
                 const matchedNames = searchTreeNames(data, query);
-                
+
                 // Add the index to the loop
                 matchedNames.forEach((fullName, index) => {
                     const li = document.createElement('li');
-                    
+
                     // Format the output to include the number: "1- الاسم"
-                    li.innerText = `${index + 1}- ${fullName}`; 
-                    
+                    li.innerText = `${index + 1}- ${fullName}`;
+
                     li.addEventListener('click', function () {
                         // Keep using the original fullName for the search logic!
-                        focusOnNodeFromSearch(fullName); 
+                        focusOnNodeFromSearch(fullName);
                         searchResults.style.display = 'none';
                     });
                     searchResults.appendChild(li);
@@ -1034,29 +896,29 @@ function getFullName(d) {
                 if (topNode && treeContainer) {
                     const topNodeBox = topNode.getBoundingClientRect();
                     const containerBox = treeContainer.getBoundingClientRect();
-                    const scrollLeft = topNodeBox.left - containerBox.left + (topNodeBox.width / 2) - (containerBox.width / 2);
-                    const scrollTop = topNodeBox.top - containerBox.top + (topNodeBox.height / 2) - (containerBox.height / 2);
-                    treeContainer.scrollLeft = scrollLeft;
-                    treeContainer.scrollTop = scrollTop;
+
+                    // Use += to adjust current scroll relative to the screen difference
+                    treeContainer.scrollLeft += (topNodeBox.left - containerBox.left) - (containerBox.width / 2) + (topNodeBox.width / 2);
+                    treeContainer.scrollTop += (topNodeBox.top - containerBox.top) - (containerBox.height / 2) + (topNodeBox.height / 2);
                 }
             }
 
             function toggleTree() {
                 // Temporarily store the original duration (50) and set it to 0 for instant rendering
                 let originalDuration = duration;
-                duration = 0; 
+                duration = 0;
 
                 if (root.children) {
                     collapseAll(root);
                 } else {
                     expandAll(root);
                 }
-                
+
                 update(root);
                 centerTopNode();
 
                 // Restore the original duration so single clicks stay smooth
-                duration = originalDuration; 
+                duration = originalDuration;
             }
 
             function collapseAll(d) {
@@ -1111,6 +973,118 @@ function getFullName(d) {
             document.getElementById('zoom-out-btn').addEventListener('click', zoomOut);
 
             update(root);
+
+            // --- كود الإخفاء التلقائي للشعار ---
+// --- كود الإخفاء التدريجي (الذكي والمتزامن مع الشجرة) ---
+const topHeader = document.querySelector('.top-header');
+
+// قراءة الارتفاع الفعلي للشعار تلقائياً لتجنب قصه (المشكلة الأولى)
+let maxHeaderHeight = topHeader.offsetHeight;
+if (maxHeaderHeight < 150) maxHeaderHeight = 350; // قيمة احتياطية
+
+let currentScroll = 0; 
+let lastTouchY = 0;
+
+// دالة تتحقق مما إذا كانت الشجرة في أعلى نقطة لها (المشكلة الثانية)
+function isTreeAtTop() {
+    const svg = document.querySelector('#tree-container svg');
+    const g = svg ? svg.querySelector('g') : null;
+    if (!svg || !g) return true;
+    
+    const svgRect = svg.getBoundingClientRect();
+    const gRect = g.getBoundingClientRect();
+    
+    // نتحقق إذا كان أعلى جزء من الشجرة مرئياً داخل الشاشة
+    // وضعنا -30 بكسل لتوفير مرونة وتجنب التعليق بسبب الهوامش
+    return gRect.top >= (svgRect.top - 30); 
+}
+
+function updateHeaderAppearance() {
+    let percentage = 1 - (currentScroll / maxHeaderHeight);
+    
+    topHeader.style.opacity = Math.max(0, percentage);
+    topHeader.style.maxHeight = Math.max(0, maxHeaderHeight * percentage) + 'px';
+    topHeader.style.paddingTop = Math.max(0, 15 * percentage) + 'px';
+    topHeader.style.paddingBottom = Math.max(0, 15 * percentage) + 'px';
+    
+    if (percentage <= 0) {
+        topHeader.style.borderBottom = 'none';
+    } else {
+        topHeader.style.borderBottom = '1px solid rgba(139, 115, 85, 0.3)';
+    }
+}
+
+// قلب الخوارزمية: توجيه الحركة إما للشعار أو للشجرة
+function handleScroll(delta) {
+    if (delta > 0) { 
+        // المستخدم يسحب لأسفل (النزول في الصفحة - إخفاء الشعار)
+        if (currentScroll < maxHeaderHeight) {
+            currentScroll += delta;
+            if (currentScroll > maxHeaderHeight) currentScroll = maxHeaderHeight;
+            updateHeaderAppearance();
+            return true; // نوقف الشجرة حتى يختفي الشعار بالكامل
+        }
+        return false; // الشعار اختفى، اسمح للشجرة بالحركة بحرية
+        
+    } else if (delta < 0) { 
+        // المستخدم يسحب لأعلى (الصعود في الصفحة - إظهار الشعار)
+        if (isTreeAtTop()) {
+            if (currentScroll > 0) {
+                currentScroll += delta;
+                if (currentScroll < 0) currentScroll = 0;
+                updateHeaderAppearance();
+                return true; // نوقف الشجرة ليظهر الشعار
+            }
+            return false; // الشعار ظاهر بالكامل، اسمح بسحب الشجرة لأسفل أكثر
+        }
+        return false; // الشجرة لم تصل للقمة بعد، اسمح لها بالصعود أولاً
+    }
+    return false;
+}
+
+// 1. التقاط عجلة الماوس
+window.addEventListener('wheel', function(event) {
+    let absorbed = handleScroll(event.deltaY * 0.8);
+    if (absorbed) {
+        event.preventDefault(); // إيقاف التمرير الافتراضي
+        event.stopPropagation(); // إيقاف حركة D3 الخاصة بالشجرة
+    }
+}, { passive: false, capture: true });
+
+// 2. التقاط اللمس للجوالات
+window.addEventListener('touchstart', function(event) {
+    lastTouchY = event.touches[0].clientY;
+    // تحديث ارتفاع الشعار إذا لزم الأمر
+    if (currentScroll === 0) {
+        maxHeaderHeight = Math.max(topHeader.offsetHeight, 350);
+    }
+}, { passive: true });
+
+window.addEventListener('touchmove', function(event) {
+    let currentY = event.touches[0].clientY;
+    let deltaY = lastTouchY - currentY; // قياس مسافة السحب
+    
+    let absorbed = handleScroll(deltaY * 1.2); 
+    if (absorbed) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    lastTouchY = currentY;
+}, { passive: false, capture: true });
+
+// 3. التقاط السحب بزر الماوس
+window.addEventListener('pointermove', function(event) {
+    if (event.buttons === 1) { 
+        let deltaY = -event.movementY;
+        let absorbed = handleScroll(deltaY);
+        if (absorbed) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    }
+}, { passive: false, capture: true });
+// ---------------------------------------------------
+
         </script>
 </body>
 
