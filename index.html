@@ -1,86 +1,120 @@
 <!DOCTYPE html>
-<html lang="Arabic">
+<html lang="ar" dir="rtl">
 
 <head>
-
     <link rel="preload" as="image" href="https://github.com/alseyat/FamilyTree_Trial/blob/main/logo.png?raw=true">
-    
-    <link rel="stylesheet" href="style.css">
+    <link rel="preload" as="image" href="https://github.com/alseyat/FamilyTree_Trial/blob/main/verse.png?raw=true">
     <meta charset="UTF-8">
-    <title>شجرة أسرة السياط</title>
-    
-    <link rel="icon" href="https://raw.githubusercontent.com/alseyat/FamilyTree/main/favicon_io/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="https://raw.githubusercontent.com/alseyat/FamilyTree/main/favicon_io/favicon-32x32.png" type="image/png">
-    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <script src="https://d3js.org/d3.v6.min.js"></script>
-    
+    <title>أسرة السياط</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* إعدادات التمركز وضمان عدم الاختفاء عند تغيير حجم النافذة */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh; /* يسمح للصفحة بالتمدد إذا كان المحتوى طويلاً */
+            margin: 0;
+            background-color: #f4efdf;
+            text-align: center;
+            overflow-y: auto; /* يظهر شريط التمرير فقط إذا دعت الحاجة */
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+
+        .intro-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        /* الحالة الافتراضية للعناصر (مخفية ومزاحة للأسفل قليلاً) */
+        .logo-intro, .verse-img, .enter-btn {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        /* تنسيق الشعار */
+        .logo-intro {
+            display: block;
+            width: 80vw;
+            height: auto;
+            max-width: 450px;
+            height: auto;
+        }
+
+        /* تنسيق صورة الآية */
+        .verse-img {
+                        display: block;
+
+            width: 80vw;
+            max-width: 500px;
+            height: auto;
+        }
+
+        /* تنسيق زر الدخول */
+        .enter-btn {
+            background-color: #4a3b32;
+            color: #f4efdf;
+            border: none;
+            padding: 15px 50px;
+            font-size: 1.3rem;
+            font-family: 'Noto Naskh Arabic', serif;
+            border-radius: 30px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            margin-top: 10px;
+        }
+
+        .enter-btn:hover {
+            background-color: #5d4a3f;
+            transform: scale(1.05);
+        }
+
+        /* تشغيل الحركات عند إضافة كلاس loaded بواسطة JavaScript */
+        body.loaded .logo-intro {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        body.loaded .verse-img {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.8s; /* تبدأ بعد ظهور الشعار قليلاً */
+        }
+
+        body.loaded .enter-btn {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 1.8s; /* تظهر في النهاية */
+        }
+    </style>
 </head>
-
 <body>
-    <div id="ui-wrapper">
-        
 
-        
+    <div class="intro-container">
+        <img src="https://github.com/alseyat/FamilyTree_Trial/blob/main/logo.png?raw=true" alt="شعار أسرة السياط" class="logo-intro">
+
+        <img src="https://github.com/alseyat/FamilyTree_Trial/blob/main/verse.png?raw=true" alt="آية قرآنية" class="verse-img">
+
+        <a href="tree.html" class="enter-btn">دخول</a>
     </div>
 
-    <div id="floating-search-container">
-        <button id="search-icon-btn" class="floating-btn">
-            <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-        </button>
-        
-        <div class="search-wrapper" id="search-wrapper-floating" style="display: none;">
-            <input type="text" id="search-box" placeholder="بحث عن اسم...">
-            <ul id="search-results"></ul>
-        </div>
-    </div>
+    <script>
+        // الانتظار حتى يتم تحميل كافة الموارد (الصور والخطوط) تماماً
+        window.addEventListener('load', function() {
+            // إضافة الكلاس للجسم لبدء الحركات المتتالية بسلاسة
+            document.body.classList.add('loaded');
+        });
+    </script>
 
-    <div id="floating-menu-container">
-    <button id="menu-icon-btn" class="floating-btn">
-        <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-        </svg>
-    </button>
-    
-    <div id="menu-dropdown">
-        <a href="index.html" class="menu-item">شجرة الأسرة</a>
-        <a href="about.html" class="menu-item">نبذة عن الأسرة</a>
-        <button id="view-stats-btn" class="menu-item">إحصائيات</button>
-    </div>
-</div>
-
-    <div class="zoom-controls">
-        <button id="zoom-in-btn" class="floating-btn">+</button>
-        <button id="zoom-out-btn" class="floating-btn">-</button>
-        
-        <button id="expand-collapse-btn" class="floating-btn" title="طي / تمديد الشجرة">
-            <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="3" width="6" height="6" rx="1"></rect>
-                <path d="M12 9v4"></path>
-                <path d="M12 13h-6v3"></path>
-                <path d="M12 13h6v3"></path>
-                <rect x="3" y="16" width="6" height="6" rx="1"></rect>
-                <rect x="15" y="16" width="6" height="6" rx="1"></rect>
-            </svg>
-        </button>
-    </div>
-
-    <div id="tree-container"></div>
-    <div id="tooltip"></div>
-
-    <footer class="bottom-footer">
-        إعداد وتصميم: م. أنس بن سعود السياط
-    </footer>
-
-    <script type="module" src="script.js"></script>
-    <script src="menu.js"></script>
 </body>
-
 </html>
