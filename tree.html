@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أسرة السياط</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* إعدادات التمركز في وسط الشاشة */
+        body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh; /* Changed from height to min-height */
+        margin: 0;
+        background-color: #f4efdf;
+        text-align: center;
+        overflow-y: auto;  /* Enable vertical scrolling if needed */
+        padding: 0px 0;   /* Add some breathing room at top/bottom */
+    }
+
+        .intro-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+        width: 100%;
+        max-width: 600px; /* Keeps everything centered and tight */
+    }
+
+        /* تنسيق الشعار */
+        .logo-intro {
+            display: block;
+            width: 80vw;
+            max-width: 450px;
+            height: auto;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInSlide 1s ease forwards;
+        }
+
+        /* تنسيق صورة الآية */
+        .verse-img {
+            display: block;
+            width: 80vw;
+            max-width: 500px;
+            height: auto;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInSlide 1s ease forwards;
+            animation-delay: 1s; /* تبدأ بعد ثانية واحدة من الشعار */
+        }
+
+        /* تنسيق زر الدخول */
+        .enter-btn {
+            background-color: #4a3b32; /* اللون البني الخاص بالشجرة */
+            color: #f4efdf;
+            border: none;
+            padding: 12px 40px;
+            font-size: 1.2rem;
+            font-family: 'Noto Naskh Arabic', serif;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 2.2s; /* يظهر بعد اكتمال حركات الصور */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .enter-btn:hover {
+            background-color: #5d4a3f;
+            transform: scale(1.05);
+        }
+
+        /* تعريف الحركات */
+        @keyframes fadeInSlide {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="intro-container">
+        <img src="https://github.com/alseyat/FamilyTree_Trial/blob/main/logo.png?raw=true" alt="شجرة أسرة السياط" class="logo-intro">
+
+        <img src="https://github.com/alseyat/FamilyTree_Trial/blob/main/verse.png?raw=true" alt="آية قرآنية" class="verse-img">
+
+        <a href="index.html" class="enter-btn">دخول</a>
+    </div>
+
+</body>
+</html>

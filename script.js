@@ -109,7 +109,7 @@ function update(source, center = false) {
     // Apply the transform
     // Adjust 150 for Mobile and 230 for Desktop
 // Adjust 150 for Mobile and 230 for Desktop
-const verticalStart = isMobile() ? 10 : 230;
+const verticalStart = isMobile() ? 10 : 10;
 svgGroup.attr("transform", `translate(${currentAdjustment} , ${verticalStart}) scale(${zoomLevel})`);
 
     // Use the specific ID to ensure we resize the TREE canvas, not the search icons!
