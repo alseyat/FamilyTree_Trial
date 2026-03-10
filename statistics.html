@@ -6,7 +6,7 @@
     <link rel="icon" href="https://raw.githubusercontent.com/alseyat/FamilyTree/main/favicon_io/favicon.ico" type="image/x-icon">
 
     <link rel="icon" href="https://raw.githubusercontent.com/alseyat/FamilyTree/main/favicon_io/favicon-32x32.png" type="image/png">
-
+<link rel="stylesheet" href="style.css">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -24,18 +24,16 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            overflow-y: auto;
         }
 
         /* الترويسة */
         .header {
             text-align: center;
-            padding: 30px 20px 10px;
+            padding: 30px 20px 0px;
         }
 
-        .header img {
-            max-height: 500px;
-            margin-bottom: 10px;
-        }
+       
 
         /* حاوية المحتوى (البطاقة الشفافة) */
         .content-container {
@@ -153,7 +151,7 @@
             }
 
             .header img {
-                max-height: 300px;
+                max-height: 200px;
             }
 
             .top-names li {
@@ -163,7 +161,21 @@
     </style>
 </head>
 <body>
-
+<div id="floating-menu-container">
+    <button id="menu-icon-btn" class="floating-btn">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+    </button>
+    
+    <div id="menu-dropdown">
+        <a href="index.html" class="menu-item">شجرة الأسرة</a>
+        <a href="about.html" class="menu-item">نبذة عن الأسرة</a>
+        <button id="view-stats-btn" class="menu-item">إحصائيات</button>
+    </div>
+</div>
     <div class="header">
         <img src="logo.png" alt="شعار أسرة السياط">
     </div>
@@ -260,5 +272,6 @@
         const statistics = prepareStatistics(data);
         displayStatistics(statistics);
     </script>
+    <script src="menu.js"></script>
 </body>
 </html>

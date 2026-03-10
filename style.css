@@ -34,7 +34,7 @@ body {
 }
 
 .top-header img {
-    max-height: 500px;
+    max-height: 400px;
     width: auto;
 }
 
@@ -101,24 +101,29 @@ body {
     cursor: pointer;
 }
 
+/* 1. Add this transition to your existing base node rect to make the color fade smoothly */
 .node rect {
     fill: #ffffff;
     stroke: #2c3e50;
     stroke-width: 3px;
+    transition: fill 0.4s ease, stroke 0.4s ease; /* This makes the flash smooth */
 }
 
+/* 2. Replace your existing highlight classes with these new colors */
 .node rect.highlight {
-    fill: rgb(215, 218, 222) !important;
-    stroke: rgb(0, 0, 0);
+    fill: #060606 !important; /* A bright golden yellow */
+    stroke: #070707 !important; /* A deep orange/red border */
+}
+
+.node text.highlight {
+    fill: #fbf9f9 !important; /* Matches the text to the border */
 }
 
 .node text {
     font-family: 'Noto Naskh Arabic', sans-serif;
 }
 
-.node text.highlight {
-    fill: rgb(9, 0, 0) !important;
-}
+
 
 .link {
     fill: none;
@@ -155,10 +160,6 @@ body {
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
 }
 
-svg {
-    width: 50000px;
-    height: 10000px;
-}
 
 /* Tooltip Styles */
 #tooltip {
@@ -267,7 +268,248 @@ ul#search-results li:hover {
     }
     
     .top-header img {
-        max-height: 300px;
+        max-height: 180px;
         margin-bottom: 5px;
     }
+
+
+
+
 }
+
+/* =========================================
+   UI Overlay & Floating Buttons Styling
+========================================= */
+
+/* Wrap the logo and nav to float them over the tree */
+#ui-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1000;
+    /* Added opacity fade and a smoother easing curve */
+transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+    transition-delay: 0.1s; /* Adds a tiny buffer to ignore accidental scroll bounces */
+    pointer-events: none;
+}
+
+#ui-wrapper.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition-delay: 0s; /* Hide immediately when scrolling down */
+}
+
+.top-header, .nav-bar {
+    pointer-events: auto; /* Re-enables clicking on the actual buttons/logo */
+}
+
+.top-header {
+    width: 100%;
+}
+
+/* Floating Zoom Controls */
+/* Floating Controls Container */
+
+/* Universal Floating Button Style */
+.floating-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(139, 115, 85, 0.4);
+    color: #4a3b32;
+    font-size: 28px;
+    font-weight: bold;
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    padding: 0;
+    line-height: 1;
+    touch-action: manipulation;
+    user-select: none;
+}
+
+.floating-btn:hover {
+    background: #ffffff;
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(139, 115, 85, 0.2);
+}
+
+/* Isolated Search Container */
+#floating-search-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1001;
+    display: flex;
+    justify-content: flex-end;
+    height: 45px;
+}
+
+/* Isolated Zoom Container */
+.zoom-controls {
+    position: absolute;
+    /* This 75px pushes the zoom buttons strictly below the search area, making overlap mathematically impossible */
+    top: 75px; 
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.zoom-controls button:hover {
+    background: #ffffff;
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(139, 115, 85, 0.2);
+}
+
+
+
+.search-wrapper {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 250px; /* How far it expands to the left */
+    z-index: 1001;
+}
+
+.search-wrapper input {
+    width: 100%;
+    height: 45px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 2px solid #8b7355;
+    color: #4a3b32;
+    font-family: 'Noto Naskh Arabic', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 0 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    outline: none;
+    direction: rtl;
+    text-align: right;
+}
+
+/* Search Results Dropdown */
+ul#search-results {
+    top: 50px;
+    right: 0;
+    position: absolute;
+    width: 100%;
+    margin: 0;
+    font-family: 'Noto Naskh Arabic', sans-serif;
+    list-style-type: none;
+    padding: 0;
+    display: none;
+    background: rgba(244, 239, 223, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(139, 115, 85, 0.4);
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+ul#search-results li {
+    padding: 12px 15px;
+    cursor: pointer;
+    direction: rtl;
+    border-bottom: 1px solid rgba(139, 115, 85, 0.2);
+    text-align: right;
+    font-size: 14px;
+}
+
+ul#search-results li:hover {
+    background: rgba(255, 255, 255, 0.6);
+}
+
+.floating-btn svg {
+    width: 20px !important;
+    height: 20px !important;
+    pointer-events: none; /* Stops the SVG itself from capturing clicks */
+}
+
+/* Floating Menu Container */
+#floating-menu-container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1001;
+}
+
+/* Menu Dropdown Styling with Transition */
+#menu-dropdown {
+    position: absolute;
+    top: 100%; /* Positions it right below the button */
+    left: 0;   /* Aligns it to the left edge so the button doesn't move */
+    margin-top: 10px;
+    background: rgba(244, 239, 223, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(139, 115, 85, 0.4);
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-width: 160px;
+    
+    /* Animation properties */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+}
+
+/* The class added by JavaScript to show the menu */
+#menu-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Individual Menu Items */
+.menu-item {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(139, 115, 85, 0.2);
+    color: #4a3b32;
+    font-family: 'Noto Naskh Arabic', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 12px 15px;
+    cursor: pointer;
+    text-align: right;
+    text-decoration: none;
+    width: 100%;
+    box-sizing: border-box;
+    display: block;
+    outline: none;
+}
+
+.menu-item:last-child {
+    border-bottom: none;
+}
+
+.menu-item:hover {
+    background: rgba(255, 255, 255, 0.6);
+}
+
+@media (max-width: 600px) {
+    .search-wrapper {
+        width: 210px; /* Slightly smaller on mobile screens */
+    }
+}
+

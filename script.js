@@ -4,7 +4,7 @@ const margin = { top: 200, right: 20, bottom: 20, left: 300 };
 let width = 1200, height = 2000;
 
 let i = 0, duration = 150, delay = 50;
-let firstHighlightDelay = 250, secondHighlightDelay = 800, thirdHighlightDelay = 1200, fourthHighlightDelay = 300;
+let firstHighlightDelay = 400, secondHighlightDelay = 800, thirdHighlightDelay = 1200, fourthHighlightDelay = 300;
 
 let zoomLevel = 1;
 let currentAdjustment = 0;
@@ -30,7 +30,7 @@ function isMobile() {
 }
 const viewportWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
-let initialVerticalOffset = -180;
+let initialVerticalOffset = 250;
 let initialHorizontalOffset = width / 2 + 19;
 let initialHorizontalForMobile = 79;
 
@@ -81,14 +81,41 @@ function update(source, center = false) {
 
     nodes.forEach(d => d.y = d.depth * 80);
 
+    // 1. Calculate boundaries based on both X (horizontal) and Y (vertical) depth
     const minX = Math.min(...nodes.map(d => d.x));
-    currentAdjustment = Math.max(0, 100 - minX);
-
     const maxX = Math.max(...nodes.map(d => d.x));
-    const newHeight = maxX + 200;
+    const maxY = Math.max(...nodes.map(d => d.y));
 
-    svgGroup.attr("transform", `translate(${currentAdjustment} , 230) scale(${zoomLevel})`);
-    d3.select("svg").attr("height", newHeight);
+    const horizontalOffset = isMobile() ? initialHorizontalForMobile : initialHorizontalOffset;
+
+    // 1. Calculate standard adjustment to prevent clipping on the left
+    let baseAdjustment = Math.max(0, 100 - (minX + horizontalOffset) * zoomLevel);
+
+    // 2. Calculate exactly where the root node is going to sit on the screen
+    const rootXPosition = baseAdjustment + (root.x + horizontalOffset) * zoomLevel;
+    const treeContainer = document.getElementById('tree-container');
+    const halfContainerWidth = treeContainer.clientWidth / 2;
+
+    // 3. If the tree is small and lacks a scrollbar, physically push the canvas to the center!
+    if (rootXPosition < halfContainerWidth) {
+        baseAdjustment += (halfContainerWidth - rootXPosition);
+    }
+    
+    currentAdjustment = baseAdjustment;
+    // Calculate exact SVG canvas size based on right-most and bottom-most points
+    const requiredWidth = currentAdjustment + (maxX + horizontalOffset) * zoomLevel + 300;
+    const requiredHeight = 230 + (maxY + initialVerticalOffset) * zoomLevel + 400;
+
+    // Apply the transform
+    // Adjust 150 for Mobile and 230 for Desktop
+// Adjust 150 for Mobile and 230 for Desktop
+const verticalStart = isMobile() ? 10 : 230;
+svgGroup.attr("transform", `translate(${currentAdjustment} , ${verticalStart}) scale(${zoomLevel})`);
+
+    // Use the specific ID to ensure we resize the TREE canvas, not the search icons!
+    d3.select("#tree-container svg")
+        .attr("width", Math.max(window.innerWidth, requiredWidth))
+        .attr("height", Math.max(window.innerHeight, requiredHeight));
 
     const node = svgGroup.selectAll('g.node')
         .data(nodes, d => d.id || (d.id = ++i));
@@ -258,13 +285,17 @@ function click(event, d) {
 
     if (hasChanges) {
         const horizontalOffset = isMobile() ? initialHorizontalForMobile : initialHorizontalOffset;
-        const oldX = (currentAdjustment + d.x0 + horizontalOffset) * zoomLevel;
-        const oldY = (230 + d.y0 + initialVerticalOffset) * zoomLevel;
+        
+        // Store old math using currentAdjustment BEFORE it changes
+        const oldAdjustment = currentAdjustment;
+        const oldX = oldAdjustment + (d.x0 + horizontalOffset) * zoomLevel;
+        const oldY = 230 + (d.y0 + initialVerticalOffset) * zoomLevel;
 
         update(d);
 
-        const newX = (currentAdjustment + d.x + horizontalOffset) * zoomLevel;
-        const newY = (230 + d.y + initialVerticalOffset) * zoomLevel;
+        // Calculate new position using the updated currentAdjustment and new d.x
+        const newX = currentAdjustment + (d.x + horizontalOffset) * zoomLevel;
+        const newY = 230 + (d.y + initialVerticalOffset) * zoomLevel;
 
         const treeContainer = document.getElementById('tree-container');
         treeContainer.scrollLeft += (newX - oldX);
@@ -341,8 +372,20 @@ function centerNode(source) {
     const treeContainer = document.getElementById('tree-container');
 
     if (rectElement && textElement && treeContainer) {
-        nodeElement.node().scrollIntoView({ behavior: 'auto', block: 'center', inline: 'center' });
+        
+        // 1. Calculate the exact pixel location of the node
+        const horizontalOffset = isMobile() ? initialHorizontalForMobile : initialHorizontalOffset;
+        const nodeX = currentAdjustment + (source.x + horizontalOffset) * zoomLevel;
+        const nodeY = 230 + (source.y + initialVerticalOffset) * zoomLevel;
 
+        // 2. Smoothly scroll the container so this exact pixel is perfectly in the center of the screen
+        treeContainer.scrollTo({
+            left: nodeX - (treeContainer.clientWidth / 2),
+            top: nodeY - (treeContainer.clientHeight / 2),
+            behavior: 'smooth'
+        });
+
+        // 3. Flash the highlight colors (This remains exactly the same as before)
         rectElement.classList.add('highlight');
         textElement.classList.add('highlight');
 
@@ -388,7 +431,12 @@ function displaySearchResults(query) {
 
         li.addEventListener('click', function () {
             focusOnNodeFromSearch(fullName);
-            searchResults.style.display = 'none';
+            
+            // Hide everything and reset back to the icon
+            document.getElementById('search-results').style.display = 'none';
+            document.getElementById('search-wrapper-floating').style.display = 'none';
+            document.getElementById('search-icon-btn').style.display = 'flex';
+            document.getElementById('search-box').value = ''; // Clear the typed text
         });
         searchResults.appendChild(li);
     });
@@ -450,135 +498,149 @@ function expandAll(d) {
 }
 
 function zoomIn() {
-    zoomLevel = Math.min(zoomLevel + 0.1, 1);
-    update(root, true);
-    centerTopNode();
+    const newZoom = Math.min(zoomLevel + 0.1, 1);
+    if (newZoom !== zoomLevel) applyZoom(newZoom);
 }
 
 function zoomOut() {
-    zoomLevel = Math.max(zoomLevel - 0.1, 0.2);
-    update(root, true);
-    centerTopNode();
+    const newZoom = Math.max(zoomLevel - 0.1, 0.2);
+    if (newZoom !== zoomLevel) applyZoom(newZoom);
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('view-stats-btn').addEventListener('click', function () {
-        location.href = 'statistics.html';
-    });
-});
+function applyZoom(newZoom) {
+    const treeContainer = document.getElementById('tree-container');
+    
+    // 1. Find the exact screen center in pixels
+    const centerX = treeContainer.scrollLeft + (treeContainer.clientWidth / 2);
+    const centerY = treeContainer.scrollTop + (treeContainer.clientHeight / 2);
+    
+    // 2. Map this screen center back to the unscaled inner tree coordinates
+    const oldZoom = zoomLevel;
+    const oldAdjustment = currentAdjustment;
+    
+    const innerX = (centerX - oldAdjustment) / oldZoom;
+    const innerY = (centerY - 230) / oldZoom;
+    
+    // 3. Apply the new zoom level and update the tree
+    zoomLevel = newZoom;
+    update(root, false); 
+    
+    // 4. Map the inner coordinates back to the new screen pixels
+    const newCenterX = currentAdjustment + (innerX * zoomLevel);
+    const newCenterY = 230 + (innerY * zoomLevel);
+    
+    // 5. Scroll to lock that exact pixel in the center
+    treeContainer.scrollLeft = newCenterX - (treeContainer.clientWidth / 2);
+    treeContainer.scrollTop = newCenterY - (treeContainer.clientHeight / 2);
+}
+
 
 document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('search-box').addEventListener('input', function () {
+    const searchIconBtn = document.getElementById('search-icon-btn');
+    const searchWrapper = document.getElementById('search-wrapper-floating');
+    const searchBox = document.getElementById('search-box');
+    const searchResults = document.getElementById('search-results');
+const searchContainer = document.getElementById('floating-search-container');
+
+    // 1. Open search when icon is clicked
+    searchIconBtn.addEventListener('click', function (event) {
+        searchIconBtn.style.display = 'none';
+        searchWrapper.style.display = 'block';
+        searchBox.focus(); // Automatically put cursor in the box
+        event.stopPropagation();
+    });
+
+    // 2. Run search when typing
+    searchBox.addEventListener('input', function () {
         const query = this.value.toLowerCase();
         displaySearchResults(query);
     });
 
+    // 3. Close search if clicked anywhere outside the search container
     document.addEventListener('click', function (event) {
-        if (!document.getElementById('search-box').contains(event.target)) {
-            document.getElementById('search-results').style.display = 'none';
+        if (!searchContainer.contains(event.target)) {
+            searchWrapper.style.display = 'none';
+            searchResults.style.display = 'none';
+            searchIconBtn.style.display = 'flex';
         }
     });
 });
 
-document.getElementById('expand-collapse-btn').addEventListener('click', toggleTree);
-document.getElementById('zoom-in-btn').addEventListener('click', zoomIn);
-document.getElementById('zoom-out-btn').addEventListener('click', zoomOut);
+document.getElementById('expand-collapse-btn').addEventListener('click', function(event) {
+    event.preventDefault();
+    event.stopPropagation(); // Prevents the click from bleeding into the search container
+    toggleTree();
+});
+document.getElementById('zoom-in-btn').addEventListener('click', function(event) {
+    event.preventDefault();
+    event.stopPropagation(); // This prevents the click from triggering the search
+    zoomIn();
+});
 
+document.getElementById('zoom-out-btn').addEventListener('click', function(event) {
+    event.preventDefault();
+    event.stopPropagation(); // This prevents the click from triggering the search
+    zoomOut();
+});
 update(root);
 
-const topHeader = document.querySelector('.top-header');
+// === Smooth UI Hide/Show on Scroll ===
+// === Smooth UI Hide/Show on Scroll ===
+const uiWrapper = document.getElementById('ui-wrapper');
+const treeContainerElement = document.getElementById('tree-container');
 
-let maxHeaderHeight = topHeader.offsetHeight;
-if (maxHeaderHeight < 150) maxHeaderHeight = 350; 
+// === Refined UI Hide/Show on Scroll ===
+treeContainerElement.addEventListener('scroll', () => {
+    const scrollTop = treeContainerElement.scrollTop;
+    const scrollHeight = treeContainerElement.scrollHeight;
+    const clientHeight = treeContainerElement.clientHeight;
 
-let currentScroll = 0; 
-let lastTouchY = 0;
-
-function isTreeAtTop() {
-    const svg = document.querySelector('#tree-container svg');
-    const g = svg ? svg.querySelector('g') : null;
-    if (!svg || !g) return true;
-    
-    const svgRect = svg.getBoundingClientRect();
-    const gRect = g.getBoundingClientRect();
-    
-    return gRect.top >= (svgRect.top - 30); 
-}
-
-function updateHeaderAppearance() {
-    let percentage = 1 - (currentScroll / maxHeaderHeight);
-    
-    topHeader.style.opacity = Math.max(0, percentage);
-    topHeader.style.maxHeight = Math.max(0, maxHeaderHeight * percentage) + 'px';
-    topHeader.style.paddingTop = Math.max(0, 15 * percentage) + 'px';
-    topHeader.style.paddingBottom = Math.max(0, 15 * percentage) + 'px';
-    
-    if (percentage <= 0) {
-        topHeader.style.borderBottom = 'none';
-    } else {
-        topHeader.style.borderBottom = '1px solid rgba(139, 115, 85, 0.3)';
-    }
-}
-
-function handleScroll(delta) {
-    if (delta > 0) { 
-        if (currentScroll < maxHeaderHeight) {
-            currentScroll += delta;
-            if (currentScroll > maxHeaderHeight) currentScroll = maxHeaderHeight;
-            updateHeaderAppearance();
-            return true; 
-        }
-        return false; 
-        
-    } else if (delta < 0) { 
-        if (isTreeAtTop()) {
-            if (currentScroll > 0) {
-                currentScroll += delta;
-                if (currentScroll < 0) currentScroll = 0;
-                updateHeaderAppearance();
-                return true; 
-            }
-            return false; 
-        }
-        return false; 
-    }
-    return false;
-}
-
-window.addEventListener('wheel', function(event) {
-    let absorbed = handleScroll(event.deltaY * 0.8);
-    if (absorbed) {
-        event.preventDefault(); 
-        event.stopPropagation(); 
-    }
-}, { passive: false, capture: true });
-
-window.addEventListener('touchstart', function(event) {
-    lastTouchY = event.touches[0].clientY;
-    if (currentScroll === 0) {
-        maxHeaderHeight = Math.max(topHeader.offsetHeight, 350);
-    }
-}, { passive: true });
-
-window.addEventListener('touchmove', function(event) {
-    let currentY = event.touches[0].clientY;
-    let deltaY = lastTouchY - currentY; 
-    
-    let absorbed = handleScroll(deltaY * 1.2); 
-    if (absorbed) {
-        event.preventDefault();
-        event.stopPropagation();
-    }
-    lastTouchY = currentY;
-}, { passive: false, capture: true });
-
-window.addEventListener('pointermove', function(event) {
-    if (event.buttons === 1) { 
-        let deltaY = -event.movementY;
-        let absorbed = handleScroll(deltaY);
-        if (absorbed) {
-            event.preventDefault();
-            event.stopPropagation();
+    // 1. If we scroll down, hide the UI immediately
+    if (scrollTop > 50) {
+        uiWrapper.classList.add('hidden');
+    } 
+    // 2. Only show the logo if we are at the very top AND 
+    // the tree is actually long enough to require scrolling.
+    else if (scrollTop <= 5) {
+        if (scrollHeight > clientHeight + 100) {
+            uiWrapper.classList.remove('hidden');
         }
     }
-}, { passive: false, capture: true });
+});
+
+// Force the view to the very top on initial load so the logo is fully visible
+// Force the view to the very top and perfectly center the root node on load
+setTimeout(() => {
+    // 1. Find the exact horizontal pixel of the root node
+    const horizontalOffset = isMobile() ? initialHorizontalForMobile : initialHorizontalOffset;
+    const rootX = currentAdjustment + (root.x + horizontalOffset) * zoomLevel;
+    
+    // 2. Scroll the container so the root node aligns perfectly in the middle of the screen
+    treeContainerElement.scrollLeft = rootX - (treeContainerElement.clientWidth / 2);
+    treeContainerElement.scrollTop = 0;
+}, 100);
+
+// === Keep Tree Perfectly Centered on Window Resize ===
+window.addEventListener('resize', () => {
+    const treeContainer = document.getElementById('tree-container');
+    
+    // 1. Capture the exact pixel currently in the center of the screen
+    const centerX = treeContainer.scrollLeft + (treeContainer.clientWidth / 2);
+    const centerY = treeContainer.scrollTop + (treeContainer.clientHeight / 2);
+    
+    // 2. Map this screen center back to the unscaled inner tree coordinates
+    const innerX = (centerX - currentAdjustment) / zoomLevel;
+    const innerY = (centerY - 230) / zoomLevel;
+    
+    // 3. Update the SVG layout and dimensions to match the new window size
+    update(root, false);
+    
+    // 4. Map the inner coordinates back to the new screen pixels 
+    // (currentAdjustment might have changed during update!)
+    const newCenterX = currentAdjustment + (innerX * zoomLevel);
+    const newCenterY = 230 + (innerY * zoomLevel);
+    
+    // 5. Scroll to lock that exact pixel back into the center
+    treeContainer.scrollLeft = newCenterX - (treeContainer.clientWidth / 2);
+    treeContainer.scrollTop = newCenterY - (treeContainer.clientHeight / 2);
+});
