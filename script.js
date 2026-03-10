@@ -466,19 +466,39 @@ function centerTopNode() {
     }
 }
 
-function toggleTree() {
+function expandTree() {
     let originalDuration = duration;
     duration = 0;
-
-    if (root.children) {
-        collapseAll(root);
-    } else {
-        expandAll(root);
-    }
-
+    expandAll(root);
     update(root);
-    centerTopNode();
+    centerParentNode(true); // تمرير true لجعل التوسيط فورياً بدون أنيميشن
     duration = originalDuration;
+}
+
+function collapseTree() {
+    let originalDuration = duration;
+    duration = 0;
+    collapseAll(root);
+    update(root);
+    centerParentNode(true); // تمرير true لجعل التوسيط فورياً بدون أنيميشن
+    duration = originalDuration;
+}
+
+// أضفنا متغير isInstant بقيمة افتراضية false
+function centerParentNode(isInstant = false) {
+    const treeContainer = document.getElementById('tree-container');
+    const horizontalOffset = isMobile() ? initialHorizontalForMobile : initialHorizontalOffset;
+    
+    // حساب الإحداثيات الدقيقة للجد الأول
+    const nodeX = currentAdjustment + (root.x + horizontalOffset) * zoomLevel;
+    const nodeY = 230 + (root.y + initialVerticalOffset) * zoomLevel;
+
+    // التمرير الفوري أو الانسيابي بناءً على المتغير
+    treeContainer.scrollTo({
+        left: nodeX - (treeContainer.clientWidth / 2),
+        top: nodeY - (treeContainer.clientHeight / 2),
+        behavior: isInstant ? 'auto' : 'smooth' // 'auto' تعني انتقال فوري
+    });
 }
 
 function collapseAll(d) {
@@ -492,8 +512,11 @@ function collapseAll(d) {
 function expandAll(d) {
     if (d._children) {
         d.children = d._children;
-        d.children.forEach(expandAll);
         d._children = null;
+    }
+    // التأكد من استمرار الفتح للطبقات السفلية حتى لو كانت الطبقة الحالية مفتوحة
+    if (d.children) {
+        d.children.forEach(expandAll);
     }
 }
 
@@ -566,10 +589,22 @@ const searchContainer = document.getElementById('floating-search-container');
     });
 });
 
-document.getElementById('expand-collapse-btn').addEventListener('click', function(event) {
+document.getElementById('expand-btn').addEventListener('click', function(event) {
     event.preventDefault();
-    event.stopPropagation(); // Prevents the click from bleeding into the search container
-    toggleTree();
+    event.stopPropagation();
+    expandTree();
+});
+
+document.getElementById('collapse-btn').addEventListener('click', function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    collapseTree();
+});
+
+document.getElementById('center-btn').addEventListener('click', function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    centerParentNode();
 });
 document.getElementById('zoom-in-btn').addEventListener('click', function(event) {
     event.preventDefault();

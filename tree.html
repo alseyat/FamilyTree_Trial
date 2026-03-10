@@ -28,7 +28,7 @@
     </div>
 
     <div id="floating-search-container">
-        <button id="search-icon-btn" class="floating-btn">
+        <button id="search-icon-btn" class="floating-btn" title="بحث">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -58,17 +58,31 @@
 </div>
 
     <div class="zoom-controls">
-        <button id="zoom-in-btn" class="floating-btn">+</button>
-        <button id="zoom-out-btn" class="floating-btn">-</button>
+        <button id="zoom-in-btn" class="floating-btn" title="تكبير">+</button>
+        <button id="zoom-out-btn" class="floating-btn" title="تصغير">-</button>
         
-        <button id="expand-collapse-btn" class="floating-btn" title="طي / تمديد الشجرة">
-            <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="3" width="6" height="6" rx="1"></rect>
-                <path d="M12 9v4"></path>
-                <path d="M12 13h-6v3"></path>
-                <path d="M12 13h6v3"></path>
-                <rect x="3" y="16" width="6" height="6" rx="1"></rect>
-                <rect x="15" y="16" width="6" height="6" rx="1"></rect>
+        <button id="expand-btn" class="floating-btn" title="تمديد الشجرة بالكامل">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 3h6v6"></path>
+                <path d="M9 21H3v-6"></path>
+                <path d="M21 3l-7 7"></path>
+                <path d="M3 21l7-7"></path>
+            </svg>
+        </button>
+        
+        <button id="collapse-btn" class="floating-btn" title="طي الشجرة">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 14h6v6"></path>
+                <path d="M20 10h-6V4"></path>
+                <path d="M14 10l7-7"></path>
+                <path d="M10 14l-7 7"></path>
+            </svg>
+        </button>
+
+        <button id="center-btn" class="floating-btn" title="توسيط الجد الأول">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <circle cx="12" cy="12" r="3"></circle>
             </svg>
         </button>
     </div>
