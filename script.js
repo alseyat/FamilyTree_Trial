@@ -679,3 +679,76 @@ window.addEventListener('resize', () => {
     treeContainer.scrollLeft = newCenterX - (treeContainer.clientWidth / 2);
     treeContainer.scrollTop = newCenterY - (treeContainer.clientHeight / 2);
 });
+
+// === Pinch-to-Zoom (Mobile Two-Finger Gesture) ===
+(function () {
+    const treeContainer = document.getElementById('tree-container');
+
+    let pinchStartDist = null;   // distance between fingers at gesture start
+    let pinchStartZoom = null;   // zoomLevel value at gesture start
+    let pinchMidX = null;        // midpoint X on screen at gesture start
+    let pinchMidY = null;        // midpoint Y on screen at gesture start
+    let pinchInnerX = null;      // midpoint mapped to unscaled tree coords
+    let pinchInnerY = null;
+
+    function getTouchDist(touches) {
+        const dx = touches[0].clientX - touches[1].clientX;
+        const dy = touches[0].clientY - touches[1].clientY;
+        return Math.hypot(dx, dy);
+    }
+
+    function getTouchMid(touches, container) {
+        const rect = container.getBoundingClientRect();
+        return {
+            x: ((touches[0].clientX + touches[1].clientX) / 2) - rect.left + container.scrollLeft,
+            y: ((touches[0].clientY + touches[1].clientY) / 2) - rect.top  + container.scrollTop,
+        };
+    }
+
+    treeContainer.addEventListener('touchstart', function (e) {
+        if (e.touches.length === 2) {
+            // Grab the starting state the moment a second finger lands
+            pinchStartDist = getTouchDist(e.touches);
+            pinchStartZoom = zoomLevel;
+
+            const mid = getTouchMid(e.touches, treeContainer);
+            pinchMidX = mid.x;
+            pinchMidY = mid.y;
+
+            // Lock the tree-space point under the midpoint so it stays fixed
+            pinchInnerX = (pinchMidX - currentAdjustment) / zoomLevel;
+            pinchInnerY = (pinchMidY - 230)              / zoomLevel;
+        }
+    }, { passive: true });
+
+    treeContainer.addEventListener('touchmove', function (e) {
+        if (e.touches.length !== 2 || pinchStartDist === null) return;
+
+        e.preventDefault(); // stop the page from scrolling while pinching
+
+        const currentDist = getTouchDist(e.touches);
+        const rawScale    = currentDist / pinchStartDist;
+
+        // Clamp to the same min/max the buttons use (0.2 – 1.0)
+        const newZoom = Math.min(1, Math.max(0.2, pinchStartZoom * rawScale));
+
+        if (Math.abs(newZoom - zoomLevel) < 0.002) return; // skip tiny movements
+
+        zoomLevel = newZoom;
+        update(root, false);
+
+        // Re-anchor: scroll so the original tree-space point stays under the midpoint
+        treeContainer.scrollLeft = currentAdjustment + pinchInnerX * zoomLevel - pinchMidX;
+        treeContainer.scrollTop  = 230              + pinchInnerY * zoomLevel - pinchMidY;
+
+    }, { passive: false }); // passive: false required to call preventDefault
+
+    treeContainer.addEventListener('touchend', function (e) {
+        if (e.touches.length < 2) {
+            // Reset when either finger lifts
+            pinchStartDist = null;
+            pinchStartZoom = null;
+            pinchMidX = pinchMidY = pinchInnerX = pinchInnerY = null;
+        }
+    }, { passive: true });
+})();

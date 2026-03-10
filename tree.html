@@ -3,38 +3,39 @@
 
 <head>
 
-        <link rel="preload" as="image" href="logo.png">
-    
+    <link rel="preload" as="image" href="logo.png">
+
     <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
     <title>شجرة أسرة السياط</title>
-    
+
     <link rel="icon" href="favicon_io/favicon.ico" type="image/x-icon">
 
     <link rel="icon" href="favicon_io/favicon-32x32.png" type="image/png">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <script src="https://d3js.org/d3.v6.min.js"></script>
-    
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <div id="ui-wrapper">
-        
 
-        
+
+
     </div>
 
     <div id="floating-search-container">
         <button id="search-icon-btn" class="floating-btn" title="بحث">
-            <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
+                stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
         </button>
-        
+
         <div class="search-wrapper" id="search-wrapper-floating" style="display: none;">
             <input type="text" id="search-box" placeholder="بحث عن اسم...">
             <ul id="search-results"></ul>
@@ -42,49 +43,68 @@
     </div>
 
     <div id="floating-menu-container">
-    <button id="menu-icon-btn" class="floating-btn">
-        <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-        </svg>
-    </button>
-    
-    <div id="menu-dropdown">
-        <a href="tree.html" class="menu-item">شجرة الأسرة</a>
-        <a href="about.html" class="menu-item">نبذة عن الأسرة</a>
-        <button id="view-stats-btn" class="menu-item">إحصائيات</button>
+        <button id="menu-icon-btn" class="floating-btn">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+
+        <div id="menu-dropdown">
+            <a href="index.html" class="menu-item">الرئيسية</a>
+            <a href="tree.html" class="menu-item">شجرة الأسرة</a>
+            <!-- <a href="about.html" class="menu-item">نبذة عن الأسرة</a> -->
+            <button id="view-stats-btn" class="menu-item">إحصائيات</button>
+        </div>
     </div>
-</div>
 
     <div class="zoom-controls">
-        <button id="zoom-in-btn" class="floating-btn" title="تكبير">+</button>
-        <button id="zoom-out-btn" class="floating-btn" title="تصغير">-</button>
-        
-        <button id="expand-btn" class="floating-btn" title="تمديد الشجرة بالكامل">
-            <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M15 3h6v6"></path>
-                <path d="M9 21H3v-6"></path>
-                <path d="M21 3l-7 7"></path>
-                <path d="M3 21l7-7"></path>
-            </svg>
-        </button>
-        
-        <button id="collapse-btn" class="floating-btn" title="طي الشجرة">
-            <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 14h6v6"></path>
-                <path d="M20 10h-6V4"></path>
-                <path d="M14 10l7-7"></path>
-                <path d="M10 14l-7 7"></path>
+        <button id="controls-toggle-btn" class="floating-btn" title="أدوات التحكم">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="4" y1="6" x2="20" y2="6"></line>
+                <line x1="8" y1="12" x2="20" y2="12"></line>
+                <line x1="4" y1="18" x2="20" y2="18"></line>
+                <circle cx="4" cy="6" r="2" fill="#4a3b32" stroke="none"></circle>
+                <circle cx="14" cy="12" r="2" fill="#4a3b32" stroke="none"></circle>
+                <circle cx="4" cy="18" r="2" fill="#4a3b32" stroke="none"></circle>
             </svg>
         </button>
 
-        <button id="center-btn" class="floating-btn" title="توسيط الجد الأول">
-            <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-        </button>
+        <div id="controls-panel">
+            <button id="zoom-in-btn" class="floating-btn" title="تكبير">+</button>
+            <button id="zoom-out-btn" class="floating-btn" title="تصغير">-</button>
+
+            <button id="expand-btn" class="floating-btn" title="تمديد الشجرة بالكامل">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 3h6v6"></path>
+                    <path d="M9 21H3v-6"></path>
+                    <path d="M21 3l-7 7"></path>
+                    <path d="M3 21l7-7"></path>
+                </svg>
+            </button>
+
+            <button id="collapse-btn" class="floating-btn" title="طي الشجرة">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 14h6v6"></path>
+                    <path d="M20 10h-6V4"></path>
+                    <path d="M14 10l7-7"></path>
+                    <path d="M10 14l-7 7"></path>
+                </svg>
+            </button>
+
+            <button id="center-btn" class="floating-btn" title="توسيط الجد الأول">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+            </button>
+        </div>
     </div>
 
     <div id="tree-container"></div>
@@ -96,6 +116,26 @@
 
     <script type="module" src="script.js"></script>
     <script src="menu.js"></script>
+    <script>
+        (function () {
+            const toggleBtn = document.getElementById('controls-toggle-btn');
+            const panel = document.getElementById('controls-panel');
+
+            toggleBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const isOpen = panel.classList.toggle('open');
+                toggleBtn.classList.toggle('active', isOpen);
+            });
+
+            // Close panel when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!toggleBtn.contains(e.target) && !panel.contains(e.target)) {
+                    panel.classList.remove('open');
+                    toggleBtn.classList.remove('active');
+                }
+            });
+        })();
+    </script>
 </body>
 
 </html>
