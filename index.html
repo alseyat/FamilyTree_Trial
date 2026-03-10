@@ -2,7 +2,9 @@
 <html lang="Arabic">
 
 <head>
+
     <link rel="preload" as="image" href="https://github.com/alseyat/FamilyTree_Trial/blob/main/logo.png?raw=true">
+    
     <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
     <title>شجرة أسرة السياط</title>
@@ -18,22 +20,59 @@
 </head>
 
 <body>
-    <header class="top-header">
-        <img src="https://github.com/alseyat/FamilyTree_Trial/blob/main/logo.png?raw=true" alt="شعار الشجرة">
-    </header>
+    <div id="ui-wrapper">
+        <header class="top-header">
+            <img src="https://github.com/alseyat/FamilyTree_Trial/blob/main/logo.png?raw=true" alt="شعار الشجرة">
+        </header>
 
-    <nav class="nav-bar">
-        <a href="about.html" id="about-btn">نبذة عن الأسرة</a>
-        <button id="view-stats-btn">إحصائيات</button>
-        <button id="expand-collapse-btn">طي / تمديد الشجرة</button>
-        <button id="zoom-in-btn">تكبير (+)</button>
-        <button id="zoom-out-btn">تصغير (-)</button>
         
-        <div class="search-wrapper">
+    </div>
+
+    <div id="floating-search-container">
+        <button id="search-icon-btn" class="floating-btn">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+        </button>
+        
+        <div class="search-wrapper" id="search-wrapper-floating" style="display: none;">
             <input type="text" id="search-box" placeholder="بحث عن اسم...">
             <ul id="search-results"></ul>
         </div>
-    </nav>
+    </div>
+
+    <div id="floating-menu-container">
+    <button id="menu-icon-btn" class="floating-btn">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+    </button>
+    
+    <div id="menu-dropdown">
+        <a href="index.html" class="menu-item">شجرة الأسرة</a>
+        <a href="about.html" class="menu-item">نبذة عن الأسرة</a>
+        <button id="view-stats-btn" class="menu-item">إحصائيات</button>
+    </div>
+</div>
+
+    <div class="zoom-controls">
+        <button id="zoom-in-btn" class="floating-btn">+</button>
+        <button id="zoom-out-btn" class="floating-btn">-</button>
+        
+        <button id="expand-collapse-btn" class="floating-btn" title="طي / تمديد الشجرة">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="3" width="6" height="6" rx="1"></rect>
+                <path d="M12 9v4"></path>
+                <path d="M12 13h-6v3"></path>
+                <path d="M12 13h6v3"></path>
+                <rect x="3" y="16" width="6" height="6" rx="1"></rect>
+                <rect x="15" y="16" width="6" height="6" rx="1"></rect>
+            </svg>
+        </button>
+    </div>
 
     <div id="tree-container"></div>
     <div id="tooltip"></div>
@@ -43,6 +82,7 @@
     </footer>
 
     <script type="module" src="script.js"></script>
+    <script src="menu.js"></script>
 </body>
 
 </html>
