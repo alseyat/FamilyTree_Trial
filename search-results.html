@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+    <link rel="preload" as="image" href="logo.png">
+    <meta charset="UTF-8">
+    <title>نتائج البحث - شجرة أسرة السياط</title>
+    <link rel="icon" href="favicon_io/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon_io/favicon-32x32.png" type="image/png">
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Noto Naskh Arabic', sans-serif;
+            direction: rtl;
+            background-color: #f4efdf;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            color: #4a3b32;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 20px 0px;
+        }
+
+        .header img {
+            max-height: 300px;
+            width: auto;
+        }
+
+        .content-container {
+            max-width: 800px;
+            width: 85%;
+            margin: 20px auto 40px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 115, 85, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            flex-grow: 1;
+        }
+
+        .page-title {
+            font-family: 'Reem Kufi Ink', sans-serif;
+            font-size: 26px;
+            color: #8b7355;
+            text-align: center;
+            margin: 0 0 8px 0;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(139, 115, 85, 0.25);
+        }
+
+        .query-label {
+            text-align: center;
+            font-size: 15px;
+            color: #8b7355;
+            margin-bottom: 25px;
+        }
+
+        .query-label span {
+            font-weight: bold;
+            color: #4a3b32;
+            background: rgba(139, 115, 85, 0.12);
+            padding: 2px 10px;
+            border-radius: 6px;
+        }
+
+        .results-count {
+            text-align: center;
+            font-size: 14px;
+            color: #8b7355;
+            margin-bottom: 20px;
+        }
+
+        .no-results {
+            text-align: center;
+            font-size: 18px;
+            color: #8b7355;
+            padding: 40px 0;
+        }
+
+        .results-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .results-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.8);
+            margin: 10px 0;
+            padding: 14px 20px;
+            border: 1px solid rgba(139, 115, 85, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+            font-size: 16px;
+        }
+
+        .results-list li:hover {
+            background: rgba(255, 255, 255, 0.97);
+            border-color: rgba(139, 115, 85, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(139, 115, 85, 0.15);
+        }
+
+        .result-number {
+            background: #8b7355;
+            color: #f4efdf;
+            font-weight: bold;
+            font-size: 13px;
+            min-width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .result-name {
+            flex: 1;
+            font-weight: bold;
+            color: #4a3b32;
+            line-height: 1.7;
+        }
+
+        /* Highlight the matched query part */
+        .result-name mark {
+            background: rgba(139, 115, 85, 0.2);
+            color: #4a3b32;
+            border-radius: 3px;
+            padding: 0 2px;
+        }
+
+        .result-arrow {
+            color: #8b7355;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .back-btn-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: #4a3b32;
+            color: #f4efdf;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn:hover {
+            background: #6a5646;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .bottom-footer {
+            text-align: center;
+            padding: 15px;
+            background: #4a3b32;
+            color: #f4efdf;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .content-container {
+                margin: 15px auto;
+                padding: 25px;
+                width: 90%;
+            }
+
+            .header img {
+                max-height: 180px;
+            }
+
+            .results-list li {
+                padding: 12px 15px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="floating-menu-container">
+        <button id="menu-icon-btn" class="floating-btn">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+        <div id="menu-dropdown">
+            <a href="index.html" class="menu-item">الرئيسية</a>
+            <a href="tree.html" class="menu-item">شجرة الأسرة</a>
+            <button id="view-stats-btn" class="menu-item">إحصائيات</button>
+        </div>
+    </div>
+
+    <div class="header">
+        <img src="logo.png" alt="شعار شجرة السياط">
+    </div>
+
+    <div class="content-container">
+        <h1 class="page-title">نتائج البحث</h1>
+        <div class="query-label" id="query-label"></div>
+        <div class="results-count" id="results-count"></div>
+        <ul class="results-list" id="results-list"></ul>
+
+        <div class="back-btn-container">
+            <a href="tree.html" class="back-btn">العودة إلى شجرة الأسرة</a>
+        </div>
+    </div>
+
+    <footer class="bottom-footer">
+        إعداد وتصميم: م. أنس بن سعود السياط
+    </footer>
+
+    <script type="module">
+        import data from './alseyat.js';
+
+        function searchTreeNames(node, query, fullName = "", matches = []) {
+            const currentFullName = fullName ? `${node.name} بن ${fullName}` : node.name;
+            if (currentFullName.toLowerCase().startsWith(query.toLowerCase())) {
+                matches.push(currentFullName);
+            }
+            if (node.children) {
+                node.children.forEach(child => searchTreeNames(child, query, currentFullName, matches));
+            }
+            return matches;
+        }
+
+        function highlightMatch(text, query) {
+            if (!query) return text;
+            const idx = text.toLowerCase().indexOf(query.toLowerCase());
+            if (idx === -1) return text;
+            return text.slice(0, idx) +
+                `<mark>${text.slice(idx, idx + query.length)}</mark>` +
+                text.slice(idx + query.length);
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const query = params.get('q') || '';
+
+        // Show query label
+        const queryLabel = document.getElementById('query-label');
+        if (query) {
+            queryLabel.innerHTML = `نتائج البحث عن: <span>${query}</span>`;
+        }
+
+        const results = query ? searchTreeNames(data, query) : [];
+
+        // Show count
+        const countEl = document.getElementById('results-count');
+        if (results.length === 0 && query) {
+            countEl.textContent = '';
+            const list = document.getElementById('results-list');
+            list.innerHTML = `<div class="no-results">لا توجد نتائج مطابقة لـ "${query}"</div>`;
+        } else {
+            countEl.textContent = `عدد النتائج: ${results.length}`;
+
+            const list = document.getElementById('results-list');
+            results.forEach((fullName, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <div class="result-number">${index + 1}</div>
+                    <div class="result-name">${highlightMatch(fullName, query)}</div>
+                    <div class="result-arrow">←</div>
+                `;
+                li.addEventListener('click', () => {
+                    window.location.href = `tree.html?focus=${encodeURIComponent(fullName)}`;
+                });
+                list.appendChild(li);
+            });
+        }
+    </script>
+    <script src="menu.js"></script>
+</body>
+
+</html>

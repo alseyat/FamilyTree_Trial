@@ -579,6 +579,16 @@ const searchContainer = document.getElementById('floating-search-container');
         displaySearchResults(query);
     });
 
+    // 2b. Navigate to results page on Enter
+    searchBox.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            const query = this.value.trim();
+            if (query.length > 0) {
+                window.location.href = `search-results.html?q=${encodeURIComponent(query)}`;
+            }
+        }
+    });
+
     // 3. Close search if clicked anywhere outside the search container
     document.addEventListener('click', function (event) {
         if (!searchContainer.contains(event.target)) {
@@ -618,6 +628,18 @@ document.getElementById('zoom-out-btn').addEventListener('click', function(event
     zoomOut();
 });
 update(root);
+
+// === Auto-focus from URL param (coming back from search-results.html) ===
+(function () {
+    const params = new URLSearchParams(window.location.search);
+    const focusName = params.get('focus');
+    if (focusName) {
+        // Wait for tree to render before focusing
+        setTimeout(() => {
+            focusOnNodeFromSearch(decodeURIComponent(focusName));
+        }, 300);
+    }
+})();
 
 // === Smooth UI Hide/Show on Scroll ===
 // === Smooth UI Hide/Show on Scroll ===
