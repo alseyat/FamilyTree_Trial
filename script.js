@@ -855,6 +855,28 @@ window.addEventListener('resize', () => {
 // ── PNG Export (called from inline script via window.exportTree) ──────────────
 window.exportTree = async function (onDone) {
 
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    // Safari blocks window.open() after any await — must open tab SYNCHRONOUSLY
+    // before any async work, then fill it with the image later
+    let safariTab = null;
+    if (isMobile && isSafari) {
+        safariTab = window.open("", "_blank");
+        if (safariTab) {
+            safariTab.document.write(
+                '<html><head>' +
+                '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+                '<title>شجرة أسرة السياط</title>' +
+                '<style>body{margin:0;background:#1a1a1a;display:flex;flex-direction:column;' +
+                'align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;}' +
+                'p{color:#aaa;font-size:16px;margin-top:16px;direction:rtl;}' +
+                '</style></head>' +
+                '<body><p>جارٍ تجهيز الصورة...</p></body></html>'
+            );
+        }
+    }
+
     const originalDuration = duration;
 
     // 1. Expand everything instantly
@@ -870,21 +892,17 @@ window.exportTree = async function (onDone) {
     const svgWidth  = parseFloat(svgEl.getAttribute("width"));
     const svgHeight = parseFloat(svgEl.getAttribute("height"));
 
-    // 3. Fetch the Arabic font and convert to base64 so canvas stays untainted
+    // 3. Fetch Arabic font → base64 so canvas stays untainted
     let fontFaceCSS = "";
     try {
-        // Use a static font file served from the same origin (no cross-origin issue)
-        const fontRes  = await fetch("https://fonts.gstatic.com/s/notonaskharabic/v35/RrQ5bpV-9Dd1b1OAGA6M9PkyDuVBePeKNaxcsss0Y7bwvc-tTLqHIhqQHqY.woff2");
-        const fontBuf  = await fontRes.arrayBuffer();
-        const base64   = btoa(String.fromCharCode(...new Uint8Array(fontBuf)));
-        fontFaceCSS    = `@font-face {
+        const fontRes = await fetch("https://fonts.gstatic.com/s/notonaskharabic/v35/RrQ5bpV-9Dd1b1OAGA6M9PkyDuVBePeKNaxcsss0Y7bwvc-tTLqHIhqQHqY.woff2");
+        const fontBuf = await fontRes.arrayBuffer();
+        const base64  = btoa(String.fromCharCode(...new Uint8Array(fontBuf)));
+        fontFaceCSS   = `@font-face {
             font-family: 'NotoArabic';
             src: url('data:font/woff2;base64,${base64}') format('woff2');
         }`;
-    } catch (_) {
-        // Font fetch failed — fall back to generic serif (still readable)
-        fontFaceCSS = "";
-    }
+    } catch (_) {}
 
     // 4. Clone SVG
     const clone = svgEl.cloneNode(true);
@@ -916,11 +934,10 @@ window.exportTree = async function (onDone) {
     bg.setAttribute("fill", "#f4efdf");
     clone.insertBefore(bg, styleEl.nextSibling);
 
-    // 7. Serialize SVG → Blob
-    const svgStr  = new XMLSerializer().serializeToString(clone);
+    // 7. Serialize SVG → Blob → Object URL
+    const svgStr = new XMLSerializer().serializeToString(clone);
     const svgBlob = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
-
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const svgUrl  = URL.createObjectURL(svgBlob);
 
     // Helper: restore tree state
     function restoreTree() {
@@ -934,50 +951,67 @@ window.exportTree = async function (onDone) {
         duration = originalDuration;
     }
 
-    if (isMobile) {
-        // 8a. Mobile: download SVG directly — no canvas, no memory limit, no popup block
-        //     SVG opens natively in iOS Files / Android Downloads as a zoomable image
-        const svgUrl = URL.createObjectURL(svgBlob);
-        const a      = document.createElement("a");
-        a.href       = svgUrl;
-        a.download   = "شجرة-أسرة-السياط.svg";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(svgUrl), 1000);
-        restoreTree();
-        onDone();
-    } else {
-        // 8b. Desktop: render to 2× canvas → PNG download
-        const svgUrl = URL.createObjectURL(svgBlob);
-        const scale  = 2;
-        const canvas = document.createElement("canvas");
-        canvas.width  = svgWidth  * scale;
-        canvas.height = svgHeight * scale;
-        const ctx = canvas.getContext("2d");
-        ctx.scale(scale, scale);
+    // 8. Render SVG → canvas → PNG data URL
+    const scale  = 2;
+    const canvas = document.createElement("canvas");
+    canvas.width  = svgWidth  * scale;
+    canvas.height = svgHeight * scale;
+    const ctx = canvas.getContext("2d");
+    ctx.scale(scale, scale);
 
-        const img = new Image();
-        img.onload = function () {
-            ctx.drawImage(img, 0, 0, svgWidth, svgHeight);
-            URL.revokeObjectURL(svgUrl);
+    const img = new Image();
+    img.onload = function () {
+        ctx.drawImage(img, 0, 0, svgWidth, svgHeight);
+        URL.revokeObjectURL(svgUrl);
 
-            const a   = document.createElement("a");
+        const dataURL = canvas.toDataURL("image/png");
+
+        if (isMobile && isSafari && safariTab) {
+            // 9a. Safari iOS: write PNG into the pre-opened tab
+            //     User long-presses image → "Add to Photos"
+            safariTab.document.open();
+            safariTab.document.write(
+                '<html><head>' +
+                '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+                '<title>شجرة أسرة السياط</title>' +
+                '<style>body{margin:0;background:#1a1a1a;display:flex;flex-direction:column;' +
+                'align-items:center;padding:16px;box-sizing:border-box;}' +
+                'img{max-width:100%;height:auto;border-radius:8px;}' +
+                'p{color:#ccc;font-size:14px;margin-top:12px;direction:rtl;text-align:center;}' +
+                '</style></head>' +
+                '<body>' +
+                '<img src="' + dataURL + '">' +
+                '<p>اضغط مطوّلاً على الصورة ثم اختر "إضافة إلى الصور"</p>' +
+                '</body></html>'
+            );
+            safariTab.document.close();
+        } else if (isMobile) {
+            // 9b. Chrome iOS / Android: anchor click works
+            const a = document.createElement("a");
             a.download = "شجرة-أسرة-السياط.png";
-            a.href     = canvas.toDataURL("image/png");
+            a.href = dataURL;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+        } else {
+            // 9c. Desktop: standard anchor download
+            const a = document.createElement("a");
+            a.download = "شجرة-أسرة-السياط.png";
+            a.href = dataURL;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
 
-            restoreTree();
-            onDone();
-        };
-        img.onerror = function () {
-            URL.revokeObjectURL(svgUrl);
-            alert("تعذّر تصدير الصورة.");
-            restoreTree();
-            onDone();
-        };
-        img.src = svgUrl;
-    }
+        restoreTree();
+        onDone();
+    };
+    img.onerror = function () {
+        URL.revokeObjectURL(svgUrl);
+        if (safariTab) safariTab.close();
+        alert("تعذّر تصدير الصورة.");
+        restoreTree();
+        onDone();
+    };
+    img.src = svgUrl;
 };
