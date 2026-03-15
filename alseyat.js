@@ -16,7 +16,7 @@
 
 // ── بيانات الأسرة ─────────────────────────────────────────
 const people = [
-  { id:   1, name: "سياط",  parentId: null },
+  { id:   1, name: "سياط", death: "1434/9/27 هـ - 2013/8/4 م",  parentId: null },
 
   // أبناء سياط (id: 1)
   { id:   2, name: "سالم",  parentId: 1 },
@@ -89,7 +89,7 @@ const people = [
 
   // أبناء علي (id: 27)
   { id:  28, name: "ماشي",  parentId: 27 },
-  { id:  29, name: "محمد",  parentId: 27 },
+  { id:  29, name: "محمد", death: "", portrait: 29,  parentId: 27 },
 
   // أبناء محمد (id: 29)
   { id:  30, name: "مرزوق",  parentId: 29 },
@@ -153,7 +153,7 @@ const people = [
   { id:  54, name: "نايف",  parentId: 53 },
 
   // أبناء محمد (id: 29)
-  { id:  55, name: "يوسف",  parentId: 29 },
+  { id:  55, name: "يوسف", death: "1447/1/25 هـ - 2025/7/20 م",  parentId: 29 },
 
   // أبناء يوسف (id: 55)
   { id:  56, name: "محمد",  parentId: 55 },
@@ -202,7 +202,7 @@ const people = [
 
 
   // أبناء عجب (id: 77)
-  { id:  78, name: "سميحان",  parentId: 77 },
+  { id:  78, name: "سميحان", death: "", portrait: 78,  parentId: 77 },
 
   // أبناء سميحان (id: 78)
   { id:  79, name: "سعود",  parentId: 78 },
@@ -244,7 +244,7 @@ const people = [
   { id:  97, name: "مصعب",  parentId: 79 },
 
   // أبناء سميحان (id: 78)
-  { id:  98, name: "صالح",  parentId: 78 },
+  { id:  98, name: "صالح", death: "1442/3/5 هـ - 2020/10/22 م",  parentId: 78 },
 
   // أبناء صالح (id: 98)
   { id:  99, name: "محمد",  parentId: 98 },
@@ -258,10 +258,10 @@ const people = [
   { id: 103, name: "عبدالملك",  parentId: 98 },
 
   // أبناء عجب (id: 77)
-  { id: 104, name: "سحيمان",  parentId: 77 },
+  { id: 104, name: "سحيمان", death: "", portrait: 104,  parentId: 77 },
 
   // أبناء سحيمان (id: 104)
-  { id: 105, name: "موسى",  parentId: 104 },
+  { id: 105, name: "موسى", death: "1446/8/26 هـ - 2025/2/25 م",  parentId: 104 },
   { id: 106, name: "عبدالله",  parentId: 104 },
   { id: 107, name: "علي",  parentId: 104 },
 
@@ -271,7 +271,7 @@ const people = [
   { id: 110, name: "عبدالله",  parentId: 107 },
 
   // أبناء سحيمان (id: 104)
-  { id: 111, name: "عبدالرحمن",  parentId: 104 },
+  { id: 111, name: "عبدالرحمن", death: "1442/3/4 هـ - 2020/10/21 م",  parentId: 104 },
 
   // أبناء سليمان (id: 18)
   { id: 112, name: "سالم",  parentId: 18 },
@@ -292,7 +292,7 @@ const people = [
   { id: 117, name: "عطاالله",  parentId: 112 },
 
   // أبناء عطاالله (id: 117)
-  { id: 118, name: "عواد",  parentId: 117 },
+  { id: 118, name: "عواد", death: "", portrait: 118,  parentId: 117 },
 
   // أبناء عواد (id: 118)
   { id: 119, name: "عطاالله",  parentId: 118 },
@@ -335,7 +335,7 @@ const people = [
   { id: 136, name: "سلمان",  parentId: 134 },
 
   // أبناء سلمان (id: 136)
-  { id: 137, name: "هلال",  parentId: 136 },
+  { id: 137, name: "هلال", death: "", portrait: 137,  parentId: 136 },
 
   // أبناء هلال (id: 137)
   { id: 138, name: "سلمان",  parentId: 137 },
@@ -381,7 +381,7 @@ const people = [
   { id: 156, name: "أحمد",  parentId: 138 },
 
   // أبناء هلال (id: 137)
-  { id: 157, name: "عبدالرحمن",  parentId: 137 },
+  { id: 157, name: "عبدالرحمن", death: "1443/11/20 هـ - 2022/6/19 م",  parentId: 137 },
 
   // أبناء عبدالرحمن (id: 157)
   { id: 158, name: "حسام",  parentId: 157 },
@@ -413,7 +413,7 @@ const people = [
   { id: 169, name: "سطام",  parentId: 166 },
 
   // أبناء موسى (id: 165)
-  { id: 170, name: "عبدالله",  parentId: 165 },
+  { id: 170, name: "عبدالله", death: "1434/9/27 هـ - 2013/8/4 م",  parentId: 165 },
   { id: 171, name: "محمد",  parentId: 165 },
     // أبناء محمد (id: 171)
   { id: 172, name: "عبدالله",  parentId: 171 },
@@ -446,7 +446,7 @@ const people = [
   { id: 181, name: "محمد",  parentId: 134 },
 
   // أبناء محمد (id: 181)
-  { id: 182, name: "حمود",  parentId: 181 },
+  { id: 182, name: "حمود", death: "", portrait: 182,  parentId: 181 },
 
   // أبناء حمود (id: 182)
   { id: 183, name: "عبدالهادي",  parentId: 182 },
@@ -477,7 +477,7 @@ const people = [
   { id: 193, name: "فيصل",  parentId: 187 },
 
   // أبناء محمد (id: 181)
-  { id: 194, name: "الحميدي",  parentId: 181 },
+  { id: 194, name: "الحميدي", death: "1434/12/6 هـ - 2013/10/11 م", portrait: 194,  parentId: 181 },
 
   // أبناء الحميدي (id: 194)
   { id: 195, name: "عبدالله",  parentId: 194 },
@@ -513,7 +513,7 @@ const people = [
   { id: 209, name: "خميس",  parentId: 134 },
 
   // أبناء خميس (id: 209)
-  { id: 210, name: "عطاء",  parentId: 209 },
+  { id: 210, name: "عطا", death: "1444/4/18 هـ - 2022/11/12 م", portrait: 210, parentId: 209 },
 
   // أبناء عطاء (id: 210)
   { id: 211, name: "عبدالله",  parentId: 210 },
@@ -566,7 +566,7 @@ const people = [
   { id: 232, name: "مشعل",  parentId: 231 },
 
   // أبناء خميس (id: 209)
-  { id: 233, name: "ونيس",  parentId: 209 },
+  { id: 233, name: "ونيس", death: "", portrait: 233,  parentId: 209 },
 
   // أبناء ونيس (id: 233)
   { id: 234, name: "ونيس",  parentId: 233 },
@@ -639,7 +639,12 @@ const people = [
 // =========================================================
 function buildTree(list) {
   const map = {};
-  list.forEach(p => { map[p.id] = { name: p.name, children: [] }; });
+  list.forEach(p => {
+    const node = { name: p.name, children: [] };
+    if (p.death !== undefined) node.death = p.death;
+    if (p.portrait) node.portrait = p.portrait;
+    map[p.id] = node;
+  });
   let root = null;
   list.forEach(p => {
     if (p.parentId === null) { root = map[p.id]; }

@@ -18,6 +18,126 @@
     <script src="https://d3js.org/d3.v6.min.js"></script>
 
     <link rel="stylesheet" href="style.css">
+    <style>
+        #death-popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+
+        #death-popup-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #death-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            z-index: 2001;
+            background: rgba(244, 239, 223, 0.98);
+            border: 1px solid rgba(139, 115, 85, 0.4);
+            border-radius: 16px;
+            padding: 28px 32px;
+            min-width: 280px;
+            /* max-width: 400px; */
+            max-width: 30vw;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            direction: rtl;
+            text-align: right;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+        }
+
+        #death-popup.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        #death-popup-name {
+            font-family: 'Noto Kufi Arabic', sans-serif;
+            font-size: 16px;
+            /* ← change name size here */
+            font-weight: 700;
+            color: #4a3b32;
+            line-height: 1.8;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        #death-popup-rahma {
+            font-family: 'Noto Naskh Arabic', sans-serif;
+            font-size: 15px;
+            /* ← change rahma line size here */
+            color: #6a5646;
+            /* font-style:italic; */
+            margin-bottom: 14px;
+            border-bottom: 1px solid rgba(139, 115, 85, 0.2);
+            padding-bottom: 12px;
+            text-align: center;
+        }
+
+        #death-popup-date {
+            font-family: 'Noto Naskh Arabic', sans-serif;
+            font-size: 15px;
+            /* ← change date size here */
+            color: #6a5646;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center
+        }
+
+        #death-popup-date::before {
+            content: '❖';
+            font-size: 16px;
+            opacity: 0.8;
+
+        }
+
+        #death-popup-close {
+            display: block;
+            margin: 18px auto 0;
+            background: #4a3b32;
+            color: #f4efdf;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 24px;
+            font-family: 'Noto Naskh Arabic', sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        #death-popup-close:hover {
+            background: #6a5646;
+        }
+
+        #lineage-text {
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        #death-popup-portrait {
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+            border-radius: 10px;
+            margin: 0 auto 14px;
+            border: 2px solid rgba(139, 115, 85, 0.35);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            object-fit: cover;
+        }
+    </style>
 </head>
 
 <body>
@@ -25,6 +145,14 @@
 
 
 
+    </div>
+
+    <!-- Fixed Header Overlay: logo + lineage text, hides on scroll, never scales with tree -->
+    <div id="header-overlay">
+        <img src="logo.png" alt="شعار أسرة السياط" id="header-logo">
+        <p id="lineage-text">آل سياط من عشيرة أهل الحجلا من الزقاريط من الربيعية من عبدة من قبيلة شمر الطائية<br>وهم
+            ذرية سياط بن عودة بن محمد بن علّيق بن محمد بن سليمان (جد الحجلا) بن نافع بن عمار بن زقروط<br>الربيعي العبدي
+            الشمري</p>
     </div>
 
     <div id="floating-search-container">
@@ -53,12 +181,20 @@
         </button>
 
         <div id="menu-dropdown">
-            <a href="index.html" class="menu-item">الرئيسية</a>
-            <a href="tree.html" class="menu-item">شجرة الأسرة</a>
-            <!-- <a href="about.html" class="menu-item">نبذة عن الأسرة</a> -->
-            <button id="view-stats-btn" class="menu-item">إحصائيات</button>
         </div>
     </div>
+
+    <button id="share-btn" class="floating-btn" title="مشاركة">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+        </svg>
+    </button>
+    <div id="share-toast">تم نسخ الرابط!</div>
 
     <div class="zoom-controls">
         <button id="controls-toggle-btn" class="floating-btn" title="أدوات التحكم">
@@ -110,8 +246,17 @@
     <div id="tree-container"></div>
     <div id="tooltip"></div>
 
+    <!-- Death Date Popup -->
+    <div id="death-popup-overlay"></div>
+    <div id="death-popup">
+        <img id="death-popup-portrait" src="" alt="" style="display:none;">
+        <div id="death-popup-name"></div>
+        <div id="death-popup-rahma">- رحمه الله وأسكنه فسيح جناته -</div>
+        <div id="death-popup-date"></div>
+        <button id="death-popup-close">إغلاق</button>
+    </div>
+
     <footer class="bottom-footer">
-        إعداد وتصميم: م. أنس بن سعود السياط
     </footer>
 
     <script type="module" src="script.js"></script>
@@ -135,6 +280,49 @@
                 }
             });
         })();
+
+        document.fonts.ready.then(() => {
+            document.getElementById('lineage-text').style.opacity = '1';
+        });
+
+        // ── Share Button ──
+        (function () {
+            const shareBtn = document.getElementById("share-btn");
+            const toast = document.getElementById("share-toast");
+            let toastTimer;
+
+            function showToast(msg) {
+                toast.textContent = msg;
+                toast.classList.add("show");
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(() => toast.classList.remove("show"), 2500);
+            }
+
+            shareBtn.addEventListener("click", async function (e) {
+                e.stopPropagation();
+                const shareData = {
+                    title: document.title,
+                    url: window.location.href
+                };
+                if (navigator.share) {
+                    try { await navigator.share(shareData); } catch (_) {}
+                } else {
+                    try {
+                        await navigator.clipboard.writeText(window.location.href);
+                        showToast("تم نسخ الرابط!");
+                    } catch (_) {
+                        const ta = document.createElement("textarea");
+                        ta.value = window.location.href;
+                        ta.style.position = "fixed"; ta.style.opacity = "0";
+                        document.body.appendChild(ta);
+                        ta.select(); document.execCommand("copy");
+                        document.body.removeChild(ta);
+                        showToast("تم نسخ الرابط!");
+                    }
+                }
+            });
+        })();
+
     </script>
 </body>
 

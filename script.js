@@ -30,7 +30,8 @@ function isMobile() {
 }
 const viewportWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
-let initialVerticalOffset = 250;
+const overlay = document.getElementById('header-overlay');
+let initialVerticalOffset = (overlay ? overlay.offsetHeight : 0) + 40;
 let initialHorizontalOffset = width / 2 + 19;
 let initialHorizontalForMobile = 79;
 
@@ -150,6 +151,54 @@ svgGroup.attr("transform", `translate(${currentAdjustment} , ${verticalStart}) s
         .attr("font-size", "20px")
         .text(d => d.data.name);
 
+    // Death badge — circle + ❖ symbol, with pulse animation, only for nodes with a death date or portrait
+    const deathBadge = nodeEnter.append('g')
+        .attr('class', 'death-badge')
+        .attr('transform', 'translate(44, -16)')
+        .style('cursor', 'pointer')
+        .style('display', d => (d.data.death !== undefined && d.data.death !== null) || d.data.portrait ? null : 'none')
+        .on('click', function(event, d) {
+            event.stopPropagation();
+            openDeathPopup(d);
+        });
+
+    // Pulsing ring — uses SVG <animate> so it works without CSS r animation
+    const pulseCircle = deathBadge.append('circle')
+        .attr('r', 8)
+        .attr('fill', 'none')
+        .attr('stroke', '#8b6914')
+        .attr('stroke-width', '2');
+
+    pulseCircle.append('animate')
+        .attr('attributeName', 'r')
+        .attr('from', '8')
+        .attr('to', '16')
+        .attr('dur', '2s')
+        .attr('repeatCount', 'indefinite');
+
+    pulseCircle.append('animate')
+        .attr('attributeName', 'opacity')
+        .attr('from', '0.7')
+        .attr('to', '0')
+        .attr('dur', '2s')
+        .attr('repeatCount', 'indefinite');
+
+    // Filled circle background
+    deathBadge.append('circle')
+        .attr('r', 8)
+        .attr('fill', '#8b6914')
+        .attr('stroke', '#fff')
+        .attr('stroke-width', '1.5');
+
+    // ❖ symbol on top
+    deathBadge.append('text')
+        .attr('dy', '0.35em')
+        .attr('text-anchor', 'middle')
+        .attr('font-size', '9px')
+        .attr('fill', '#fff')
+        .attr('pointer-events', 'none')
+        .text('❖');
+
     const badge = nodeEnter.append('g')
         .attr('class', 'children-badge')
         .attr('transform', 'translate(0, 24)')
@@ -194,6 +243,9 @@ svgGroup.attr("transform", `translate(${currentAdjustment} , ${verticalStart}) s
         
     nodeUpdate.select('.children-badge circle')
         .style('fill', d => d._children ? "#ea5050" : "#95a5a6");
+
+    nodeUpdate.select('.death-badge')
+        .style('display', d => (d.data.death !== undefined && d.data.death !== null) || d.data.portrait ? null : 'none');
 
     const nodeExit = node.exit().transition()
         .duration(duration)
@@ -259,6 +311,7 @@ svgGroup.attr("transform", `translate(${currentAdjustment} , ${verticalStart}) s
     if (center) {
         centerTopNode();
     }
+
 }
 
 function click(event, d) {
@@ -302,6 +355,54 @@ function click(event, d) {
         treeContainer.scrollTop += (newY - oldY);
     }
 }
+
+// ── Death Date Popup ─────────────────────────────────────
+function openDeathPopup(d) {
+    const hasPortrait = !!d.data.portrait;
+    const hasDeath = d.data.death !== undefined && d.data.death !== null;
+    const hasDate = hasDeath && d.data.death !== '';
+
+    // Portrait
+    const portraitEl = document.getElementById('death-popup-portrait');
+    if (hasPortrait) {
+        portraitEl.src = `assets/${d.data.portrait}.jpg`;
+        portraitEl.style.display = 'block';
+    } else {
+        portraitEl.src = '';
+        portraitEl.style.display = 'none';
+    }
+
+    // Name
+    document.getElementById('death-popup-name').textContent = getFullName(d);
+
+    // Rahma — hide only if person has a portrait but no death info
+    const rahmaEl = document.getElementById('death-popup-rahma');
+    rahmaEl.style.display = (hasPortrait && !hasDeath) ? 'none' : 'block';
+
+    // Date — show only if there's an actual date string
+    const dateEl = document.getElementById('death-popup-date');
+    if (hasDate) {
+        dateEl.textContent = 'تاريخ الوفاة: ' + d.data.death;
+        dateEl.style.display = 'flex';
+    } else {
+        dateEl.textContent = '';
+        dateEl.style.display = 'none';
+    }
+
+    document.getElementById('death-popup').classList.add('open');
+    document.getElementById('death-popup-overlay').classList.add('open');
+}
+
+function closeDeathPopup() {
+    document.getElementById('death-popup').classList.remove('open');
+    document.getElementById('death-popup-overlay').classList.remove('open');
+}
+
+// Close handlers — inside script.js (module scope) so they always resolve correctly
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('death-popup-close').addEventListener('click', closeDeathPopup);
+    document.getElementById('death-popup-overlay').addEventListener('click', closeDeathPopup);
+});
 
 function focusOnNodeFromSearch(fullName) {
     const nameParts = fullName.split(' بن ').reverse();
@@ -645,6 +746,7 @@ update(root);
 // === Smooth UI Hide/Show on Scroll ===
 const uiWrapper = document.getElementById('ui-wrapper');
 const treeContainerElement = document.getElementById('tree-container');
+const headerOverlay = document.getElementById('header-overlay');
 
 // === Refined UI Hide/Show on Scroll ===
 treeContainerElement.addEventListener('scroll', () => {
@@ -655,12 +757,14 @@ treeContainerElement.addEventListener('scroll', () => {
     // 1. If we scroll down, hide the UI immediately
     if (scrollTop > 50) {
         uiWrapper.classList.add('hidden');
+        if (headerOverlay) headerOverlay.classList.add('hidden');
     } 
     // 2. Only show the logo if we are at the very top AND 
     // the tree is actually long enough to require scrolling.
     else if (scrollTop <= 5) {
         if (scrollHeight > clientHeight + 100) {
             uiWrapper.classList.remove('hidden');
+            if (headerOverlay) headerOverlay.classList.remove('hidden');
         }
     }
 });

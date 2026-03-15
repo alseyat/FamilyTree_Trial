@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+    <link rel="preload" as="image" href="logo.png">
+
+    <meta charset="UTF-8">
+    <title>تمرة السياطية - شجرة أسرة السياط</title>
+
+    <link rel="icon" href="favicon_io/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon_io/favicon-32x32.png" type="image/png">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            font-family: 'Noto Naskh Arabic', sans-serif;
+            direction: rtl;
+            background-color: #f4efdf;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            color: #4a3b32;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 20px 0px;
+        }
+
+        .header img {
+            max-height: 350px;
+            width: auto;
+        }
+
+        .content-container {
+            max-width: 800px;
+            width: 85%;
+            margin: 20px auto 40px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 115, 85, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            flex-grow: 1;
+        }
+
+        .page-title {
+            font-family: 'Noto Kufi Arabic', sans-serif;
+            font-size: 26px;
+            color: #4a3b32;
+            text-align: center;
+            margin: 0 0 25px 0;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(139, 115, 85, 0.25);
+            line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .content-container h2 {
+            color: #8b7355;
+            font-size: 20px;
+            border-bottom: 1.5px solid rgba(139, 115, 85, 0.2);
+            padding-bottom: 8px;
+            margin-top: 32px;
+            margin-bottom: 14px;
+        }
+
+        .content-container h2:first-of-type {
+            margin-top: 0;
+        }
+
+        .content-container p {
+            font-size: 18px;
+            line-height: 2.1;
+            text-align: justify;
+            margin-bottom: 16px;
+        }
+
+        /* Numbered list styling */
+        .content-container ol {
+            padding-right: 24px;
+            padding-left: 0;
+            margin-bottom: 16px;
+        }
+
+        .content-container ol li {
+            font-size: 16px;
+            line-height: 2.1;
+            margin-bottom: 10px;
+        }
+
+        .content-container ol li strong {
+            color: #4a3b32;
+        }
+
+        /* References section */
+        .references-section {
+            margin-top: 36px;
+            padding-top: 18px;
+            border-top: 2px solid rgba(139, 115, 85, 0.25);
+        }
+
+        .references-section h2 {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .references-section ol li {
+            font-size: 15px;
+            line-height: 2;
+            color: #5a4a3a;
+        }
+
+        .references-section a {
+            color: #8b7355;
+            text-decoration: underline;
+            transition: color 0.2s ease;
+        }
+
+        .references-section a:hover {
+            color: #4a3b32;
+        }
+
+        /* Highlighted closing paragraph */
+        .closing-paragraph {
+            background: rgba(139, 115, 85, 0.08);
+            border-right: 4px solid #8b7355;
+            padding: 14px 18px;
+            border-radius: 0 8px 8px 0;
+            font-size: 16px;
+            line-height: 2.1;
+            font-weight: bold;
+            color: #4a3b32;
+        }
+
+        .back-btn-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: #4a3b32;
+            color: #f4efdf;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn:hover {
+            background: #6a5646;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Themed image frame */
+        .dates-image-container {
+            text-align: center;
+            margin: 0 0 30px 0;
+        }
+
+        .dates-image-frame {
+            display: inline-block;
+            position: relative;
+            padding: 12px;
+            background: linear-gradient(145deg, #c9a96e, #8b7355, #c9a96e, #6b5340, #c9a96e);
+            border-radius: 4px;
+            box-shadow:
+                0 0 0 2px #f4efdf,
+                0 0 0 4px #8b7355,
+                0 8px 25px rgba(74, 59, 50, 0.35);
+        }
+
+        .dates-image-frame::before {
+            content: '';
+            position: absolute;
+            inset: 5px;
+            border: 1.5px solid rgba(244, 239, 223, 0.5);
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Corner ornaments */
+        .dates-image-frame::after {
+            content: '✦';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #c9a96e;
+            font-size: 18px;
+            text-shadow: 0 0 6px rgba(201, 169, 110, 0.6);
+        }
+
+        .corner-ornament {
+            position: absolute;
+            color: #f4efdf;
+            font-size: 14px;
+            opacity: 0.85;
+            line-height: 1;
+        }
+        .corner-ornament.tl { top: 3px; right: 3px; }
+        .corner-ornament.tr { top: 3px; left: 3px; }
+        .corner-ornament.bl { bottom: 3px; right: 3px; }
+        .corner-ornament.br { bottom: 3px; left: 3px; }
+
+        .dates-image-frame img {
+            display: block;
+            max-width: 100%;
+            width: 500px;
+            height: auto;
+            border-radius: 2px;
+            position: relative;
+            z-index: 0;
+        }
+
+        @media (max-width: 768px) {
+            .dates-image-frame img {
+                /* width: 100%; */
+
+            max-width: 100%;
+            width: 280px;
+            height: auto;
+            }
+        }
+
+        /* .bottom-footer {
+            text-align: center;
+            padding: 15px;
+            background: #4a3b32;
+            color: #f4efdf;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: auto;
+        } */
+
+        @media (max-width: 768px) {
+            .content-container {
+                margin: 15px auto;
+                padding: 25px;
+                width: 80%;
+            }
+
+            .header img {
+                max-height: 200px;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="floating-menu-container">
+        <button id="menu-icon-btn" class="floating-btn">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+        <div id="menu-dropdown"></div>
+    </div>
+
+    <div class="header">
+        <img src="logo.png" alt="شعار شجرة السياط">
+    </div>
+
+    <div class="content-container">
+
+        <h1 class="page-title">تمرة "السياطية".. أيقونة الجوف وأول بشائر موسم التمور في الشمال</h1>
+
+        <div class="dates-image-container">
+            <div class="dates-image-frame">
+                <span class="corner-ornament tl">❧</span>
+                <span class="corner-ornament tr">❧</span>
+                <span class="corner-ornament bl">❧</span>
+                <span class="corner-ornament br">❧</span>
+                <img src="dates.jpeg" alt="تمرة السياطية">
+            </div>
+        </div>
+
+        <p>
+            تعد منطقة الجوف واحدة من أهم سلال الغذاء في المملكة العربية السعودية، حيث ترتبط هويتها الزراعية بعلاقة
+            تاريخية وثيقة مع النخلة. ومن بين عشرات الأصناف التي تجود بها أرض "سكاكا" وعموم المنطقة، تبرز تمرة
+            "السياطية" كعنوان للأصالة وبداية لموسم الحصاد، مستمدةً اسمها وتاريخها من إرث موثق يمتد لعقود.
+        </p>
+
+        <h2>الجذور التاريخية والتسمية الرسمية</h2>
+        <p>
+            تكتسب تمرة "السياطية" اسمها من قصة وفاء للأرض؛ حيث تعود التسمية إلى "سياط الشمري" -رحمه الله-، وهو أول من
+            جلب هذا الصنف إلى مدينة سكاكا وغرسه فيها، ومن ثم انتشرت زراعتها في المنطقة. وتؤكد المصادر التاريخية
+            والاجتماعية أن "السياطية" هو الاسم الحقيقي والرسمي المعتمد لهذا الصنف، نسبةً إلى أسرة "السياط" التي ينتمي
+            إليها غارسها الأول، وأي تسمية أخرى تخرج عن هذا السياق تفتقر للدقة والمصداقية التاريخية.
+        </p>
+
+        <h2>"السياطية".. بشيرة الموسم</h2>
+        <p>
+            مع انقضاء موسم العنب في الجوف، تتجه الأنظار بشغف نحو النخيل، حيث يبدأ المزارعون والأهالي بمراقبة نضج
+            التمور. وهنا تحجز "السياطية" مكانتها الخاصة؛ فهي "أول ما يستوي" من تمور منطقة الجوف، لتكون بذلك أول صنف
+            يتسلل إلى المجالس العربية العريقة، معلنةً انطلاق موسم الخير والبركة.
+        </p>
+        <p>
+            وقد وصف الكاتب الأستاذ يوسف بن علي الشاعل في مقاله "كنوز خلف النفود" هذا التحول الموسمي، مشيراً إلى أن
+            اهتمام الناس ينتقل بانتهاء موسم العنب مباشرة إلى مراقبة جودة إنتاج النخيل، حيث تتصدر "السياطية" المشهد
+            كأول الغيث.
+        </p>
+
+        <h2>توثيق علمي ورسمي</h2>
+        <p>لم تكن شهرة "السياطية" وليدة الصدفة، بل هي صنف موثق في المراجع العلمية والرسمية الصادرة عن مؤسسات الدولة، ومن
+            أبرزها:</p>
+        <ol>
+            <li>
+                <strong>كتاب "أصناف التمور المشهورة بالمملكة العربية السعودية":</strong>
+                الصادر عن وزارة التعليم العالي، حيث ورد ذكرها تحت التسلسل رقم (150).
+            </li>
+            <li>
+                <strong>كتاب "النخلة في حياة أهل الجوف":</strong> لمؤلفه الدكتور عارف المسعر -رحمه الله- (مدير عام
+                التعليم بمنطقة الجوف سابقاً)، حيث وثّق في الصفحة رقم (12) هذا الاسم الرسمي والمعتمد.
+            </li>
+            <li>
+                <strong>وكالة الأنباء السعودية (واس):</strong> التي أشارت في تقاريرها المتعددة إلى "السياطية" كأحد
+                أهم الأصناف التي تزرع في الجوف إلى جانب السكري والصقعي والحسينية وغيرها.
+            </li>
+        </ol>
+
+        <h2>التنوع الزراعي في الجوف</h2>
+        <p>
+            تعد "السياطية" جزءاً من منظومة زراعية غنية تضم عشرات الأنواع المتميزة في منطقة الجوف، مثل: (الصقعي،
+            الصفراء، الحيزا، بويضاء خذما، السكري، الحسينية، الهجرية، الخضيرية، المرعية، وكسبة المدق). إلا أن ما يميز
+            "السياطية" هو قيمتها الرمزية كبوابة لموسم التمور، وارتباطها الوثيق بذاكرة المكان وأهله.
+        </p>
+
+        <p class="closing-paragraph">
+            ختاماً، تبقى تمرة "السياطية" أكثر من مجرد منتج زراعي؛ إنها قصة توثق ارتباط إنسان الجوف بنخلته، وشاهد
+            على عراقة الأصناف السعودية التي تجمع بين المذاق الفريد والعمق التاريخي الموثق.
+        </p>
+
+        <div class="references-section">
+            <h2>المصادر والمراجع</h2>
+            <ol>
+                <li>
+                    <strong>وكالة الأنباء السعودية (واس):</strong> تقرير توثيقي حول أصناف التمور في منطقة الجوف وتاريخ
+                    تسمية "السياطية".
+                    <a href="https://spa.gov.sa/482387" target="_blank" rel="noopener">رابط المصدر</a>.
+                </li>
+                <li>
+                    <strong>وزارة التعليم العالي:</strong> كتاب <em>"أصناف التمور المشهورة بالمملكة العربية
+                        السعودية"</em>،
+                    المملكة العربية السعودية، (الرقم التسلسلي للصنف: 150).
+                </li>
+                <li>
+                    <strong>د. عارف المسعر (رحمه الله):</strong> كتاب <em>"النخلة في حياة أهل الجوف"</em>، الطبعة
+                    الرسمية،
+                    صفحة 12.
+                </li>
+                <li>
+                    <strong>الأستاذ يوسف بن علي الشاعل:</strong> مقال <em>"كنوز خلف النفود مفتاحها بيد الرؤية"</em>،
+                    صحيفة هتون الإلكترونية.
+                    <a href="https://alhtoon.com/282789/" target="_blank" rel="noopener">رابط المقال</a>.
+                </li>
+                <li>
+                    <strong>وكالة الأنباء السعودية (واس):</strong> تقرير إخباري بتاريخ 7 صفر 1445هـ حول التنوع الزراعي
+                    وموسم التمور في سكاكا.
+                    <a href="https://spa.gov.sa/ar/w1953512" target="_blank" rel="noopener">رابط المصدر</a>.
+                </li>
+            </ol>
+        </div>
+
+        <div class="back-btn-container">
+            <a href="tree.html" class="back-btn">العودة إلى شجرة الأسرة</a>
+        </div>
+
+    </div>
+
+    <footer class="bottom-footer">
+    </footer>
+
+    <script src="menu.js"></script>
+</body>
+
+</html>

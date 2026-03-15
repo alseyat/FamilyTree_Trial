@@ -2,7 +2,7 @@
 <html lang="ar">
 
 <head>
-        <link rel="preload" as="image" href="logo.png">
+    <link rel="preload" as="image" href="logo.png">
 
     <meta charset="UTF-8">
     <title>نبذة عن أسرة السياط</title>
@@ -44,7 +44,7 @@
         }
 
         .header h1 {
-            font-family: 'Reem Kufi Ink', sans-serif;
+            font-family: 'Noto Kufi Arabic', sans-serif;
             font-size: 32px;
             margin: 0;
             color: #4a3b32;
@@ -66,11 +66,13 @@
 
         /* تنسيق النصوص والعناوين الداخلية */
         .content-container h2 {
+            font-family: 'Noto Kufi Arabic', sans-serif;
             color: #8b7355;
             font-size: 22px;
             border-bottom: 2px solid rgba(139, 115, 85, 0.2);
             padding-bottom: 10px;
             margin-top: 30px;
+            text-align: right;
         }
 
         .content-container h2:first-of-type {
@@ -78,7 +80,7 @@
         }
 
         .content-container p {
-            font-size: 16px;
+            font-size: 18px;
             line-height: 2;
             text-align: justify;
             margin-bottom: 15px;
@@ -110,7 +112,7 @@
         }
 
         /* الفوتر السفلي */
-        .bottom-footer {
+        /* .bottom-footer {
             text-align: center;
             padding: 15px;
             background: #4a3b32;
@@ -118,7 +120,7 @@
             font-size: 14px;
             font-weight: bold;
             margin-top: auto;
-        }
+        } */
 
         /* توافق الشاشات الصغيرة (الجوال) */
         @media (max-width: 768px) {
@@ -147,10 +149,6 @@
         </button>
 
         <div id="menu-dropdown">
-            <a href="index.html" class="menu-item">الرئيسية</a>
-            <a href="tree.html" class="menu-item">شجرة الأسرة</a>
-            <a href="about.html" class="menu-item">نبذة عن الأسرة</a>
-            <button id="view-stats-btn" class="menu-item">إحصائيات</button>
         </div>
     </div>
 
@@ -186,7 +184,6 @@
     </div>
 
     <footer class="bottom-footer">
-        إعداد وتصميم: م. أنس بن سعود السياط
     </footer>
     <script src="menu.js"></script>
 

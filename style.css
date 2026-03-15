@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Reem+Kufi+Ink:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@100..900&display=swap');
 
 body {
     font-family: 'Noto Naskh Arabic', sans-serif;
@@ -152,12 +153,32 @@ body {
     padding: 12px;
     background: #4a3b32;
     color: #f4efdf;
-    font-family: 'Noto Naskh Arabic', sans-serif;
-    font-size: 14px;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 12px;
     font-weight: bold;
     flex-shrink: 0;
     z-index: 1000;
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.footer-whatsapp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #f4efdf;
+    opacity: 0.85;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    text-decoration: none;
+    line-height: 1;
+}
+
+.footer-whatsapp:hover {
+    opacity: 1;
+    transform: scale(1.15);
 }
 
 
@@ -347,10 +368,10 @@ transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
 #floating-search-container {
     position: absolute;
     top: 20px;
-    right: 20px;
+    left: 20px;
     z-index: 1001;
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     height: 45px;
     /* display: none; */
 }
@@ -360,7 +381,7 @@ transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
     position: absolute;
     /* This 75px pushes the zoom buttons strictly below the search area, making overlap mathematically impossible */
     top: 75px; 
-    right: 20px;
+    left: 20px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -378,8 +399,8 @@ transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
 .search-wrapper {
     position: absolute;
     top: 0;
-    right: 0;
-    width: 250px; /* How far it expands to the left */
+    left: 0;
+    width: 250px; /* How far it expands to the right */
     z-index: 1001;
 }
 
@@ -406,7 +427,7 @@ transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
 /* Search Results Dropdown */
 ul#search-results {
     top: 50px;
-    right: 0;
+    left: 0;
     position: absolute;
     width: 100%;
     margin: 0;
@@ -446,7 +467,7 @@ ul#search-results li:hover {
 #floating-menu-container {
     position: absolute;
     top: 20px;
-    left: 20px;
+    right: 20px;
     z-index: 1001;
 }
 
@@ -454,7 +475,7 @@ ul#search-results li:hover {
 #menu-dropdown {
     position: absolute;
     top: 100%; /* Positions it right below the button */
-    left: 0;   /* Aligns it to the left edge so the button doesn't move */
+    right: 0;  /* Aligns it to the right edge so the button doesn't move */
     margin-top: 10px;
     background: rgba(244, 239, 223, 0.95);
     backdrop-filter: blur(10px);
@@ -548,4 +569,111 @@ ul#search-results li:hover {
     .search-wrapper {
         width: 210px; /* Slightly smaller on mobile screens */
     }
+}
+
+/* =========================================
+   Fixed Header Overlay: Logo + Lineage Text
+   - Sits fixed at top-center of the viewport
+   - Never moves or scales with the tree
+   - Fades out when scrolling down, returns at top
+========================================= */
+
+#header-overlay {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 900; /* Below floating buttons (1001) but above tree */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 14px 24px 10px;
+    pointer-events: none; /* Lets clicks pass through to the tree */
+    width: 100%;        /* ADD THIS */
+
+    /* Smooth show/hide transition */
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+    transition-delay: 0.1s;
+}
+
+#header-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-50%) translateY(-20px);
+    transition-delay: 0s;
+}
+
+#header-logo {
+    max-height: 110px;
+    width: auto;
+    margin-bottom: 6px;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.18));
+}
+
+#lineage-text {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    margin: 0;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: clamp(13px, 1.5vw, 15px);
+    font-weight: 700;
+    color: #3a2c1e;
+    direction: rtl;
+    text-align: center;
+    line-height: 1.7;
+    letter-spacing: 0.02em;
+    max-width: 55vw;
+    /* Soft warm text-shadow for elegance */
+    text-shadow:
+        0 1px 0 rgba(255,255,255,0.8),
+        0 2px 8px rgba(139, 115, 85, 0.25);
+    /* Subtle decorative underline */
+    border-bottom: 1.5px solid rgba(139, 115, 85, 0.35);
+    padding-bottom: 4px;
+}
+
+@media (max-width: 600px) {
+    #header-logo {
+        max-height: 70px;
+    }
+    #lineage-text {
+        font-size: 11px;
+        max-width: 65vw;
+    }
+}
+/* ── Share Button ── */
+#share-btn {
+    position: absolute;
+    top: 75px;
+    right: 20px;
+    z-index: 1001;
+}
+
+/* ── Share Toast ── */
+#share-toast {
+    position: fixed;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: #4a3b32;
+    color: #f4efdf;
+    font-family: 'Noto Naskh Arabic', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px 22px;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+    z-index: 3000;
+    white-space: nowrap;
+}
+
+#share-toast.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
 }
