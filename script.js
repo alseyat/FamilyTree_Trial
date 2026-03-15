@@ -916,46 +916,14 @@ window.exportTree = async function (onDone) {
     bg.setAttribute("fill", "#f4efdf");
     clone.insertBefore(bg, styleEl.nextSibling);
 
-    // 7. Serialize → Object URL
-    const svgStr = new XMLSerializer().serializeToString(clone);
-    const blob   = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
-    const url    = URL.createObjectURL(blob);
+    // 7. Serialize SVG → Blob
+    const svgStr  = new XMLSerializer().serializeToString(clone);
+    const svgBlob = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
 
-    // 8. Draw onto 2× canvas → PNG download
-    const scale  = 2;
-    const canvas = document.createElement("canvas");
-    canvas.width  = svgWidth  * scale;
-    canvas.height = svgHeight * scale;
-    const ctx = canvas.getContext("2d");
-    ctx.scale(scale, scale);
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-    const img = new Image();
-    img.onload = function () {
-        ctx.drawImage(img, 0, 0, svgWidth, svgHeight);
-        URL.revokeObjectURL(url);
-
-        const dataURL = canvas.toDataURL("image/png");
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        if (isMobile) {
-            // Mobile browsers block programmatic anchor clicks — open in new tab
-            // so the user can long-press the image and save it to their photos
-            const win = window.open();
-            win.document.write(
-                '<html><head><meta name="viewport" content="width=device-width">' +
-                '<title>شجرة أسرة السياط</title></head>' +
-                '<body style="margin:0;background:#000;display:flex;justify-content:center">' +
-                '<img src="' + dataURL + '" style="max-width:100%;height:auto">' +
-                '</body></html>'
-            );
-            win.document.close();
-        } else {
-            const a   = document.createElement("a");
-            a.download = "شجرة-أسرة-السياط.png";
-            a.href     = dataURL;
-            a.click();
-        }
-
-        // 9. Restore collapsed state
+    // Helper: restore tree state
+    function restoreTree() {
         duration = 0;
         collapseAll(root);
         if (root._children) {
@@ -964,13 +932,52 @@ window.exportTree = async function (onDone) {
         }
         update(root);
         duration = originalDuration;
+    }
 
+    if (isMobile) {
+        // 8a. Mobile: download SVG directly — no canvas, no memory limit, no popup block
+        //     SVG opens natively in iOS Files / Android Downloads as a zoomable image
+        const svgUrl = URL.createObjectURL(svgBlob);
+        const a      = document.createElement("a");
+        a.href       = svgUrl;
+        a.download   = "شجرة-أسرة-السياط.svg";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(svgUrl), 1000);
+        restoreTree();
         onDone();
-    };
-    img.onerror = function () {
-        URL.revokeObjectURL(url);
-        alert("تعذّر تصدير الصورة.");
-        onDone();
-    };
-    img.src = url;
+    } else {
+        // 8b. Desktop: render to 2× canvas → PNG download
+        const svgUrl = URL.createObjectURL(svgBlob);
+        const scale  = 2;
+        const canvas = document.createElement("canvas");
+        canvas.width  = svgWidth  * scale;
+        canvas.height = svgHeight * scale;
+        const ctx = canvas.getContext("2d");
+        ctx.scale(scale, scale);
+
+        const img = new Image();
+        img.onload = function () {
+            ctx.drawImage(img, 0, 0, svgWidth, svgHeight);
+            URL.revokeObjectURL(svgUrl);
+
+            const a   = document.createElement("a");
+            a.download = "شجرة-أسرة-السياط.png";
+            a.href     = canvas.toDataURL("image/png");
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            restoreTree();
+            onDone();
+        };
+        img.onerror = function () {
+            URL.revokeObjectURL(svgUrl);
+            alert("تعذّر تصدير الصورة.");
+            restoreTree();
+            onDone();
+        };
+        img.src = svgUrl;
+    }
 };
