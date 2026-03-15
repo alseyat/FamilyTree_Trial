@@ -934,10 +934,26 @@ window.exportTree = async function (onDone) {
         ctx.drawImage(img, 0, 0, svgWidth, svgHeight);
         URL.revokeObjectURL(url);
 
-        const a   = document.createElement("a");
-        a.download = "شجرة-أسرة-السياط.png";
-        a.href     = canvas.toDataURL("image/png");
-        a.click();
+        const dataURL = canvas.toDataURL("image/png");
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (isMobile) {
+            // Mobile browsers block programmatic anchor clicks — open in new tab
+            // so the user can long-press the image and save it to their photos
+            const win = window.open();
+            win.document.write(
+                '<html><head><meta name="viewport" content="width=device-width">' +
+                '<title>شجرة أسرة السياط</title></head>' +
+                '<body style="margin:0;background:#000;display:flex;justify-content:center">' +
+                '<img src="' + dataURL + '" style="max-width:100%;height:auto">' +
+                '</body></html>'
+            );
+            win.document.close();
+        } else {
+            const a   = document.createElement("a");
+            a.download = "شجرة-أسرة-السياط.png";
+            a.href     = dataURL;
+            a.click();
+        }
 
         // 9. Restore collapsed state
         duration = 0;
