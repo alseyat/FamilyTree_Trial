@@ -494,6 +494,7 @@ ul#search-results li:hover {
     transform: translateY(-10px);
     transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
     z-index: 1002;
+    z-index: 1002;
 }
 
 /* The class added by JavaScript to show the menu */
@@ -558,6 +559,42 @@ ul#search-results li:hover {
 #controls-panel.open .floating-btn:nth-child(3) { transition-delay: 0.12s; }
 #controls-panel.open .floating-btn:nth-child(4) { transition-delay: 0.16s; }
 #controls-panel.open .floating-btn:nth-child(5) { transition-delay: 0.20s; }
+#controls-panel.open .floating-btn:nth-child(6) { transition-delay: 0.24s; }
+
+/* ── Share Button ── */
+#share-btn {
+    position: absolute;
+    top: 75px;
+    right: 20px;
+    z-index: 1000;
+}
+
+/* ── Share Toast ── */
+#share-toast {
+    position: fixed;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: #4a3b32;
+    color: #f4efdf;
+    font-family: 'Noto Naskh Arabic', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px 22px;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+    z-index: 3000;
+    white-space: nowrap;
+}
+
+#share-toast.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
 
 /* Active state for the toggle button */
 #controls-toggle-btn.active {

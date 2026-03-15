@@ -851,3 +851,102 @@ window.addEventListener('resize', () => {
         }
     }, { passive: true });
 })();
+// ── PNG Export (called from inline script via window.exportTree) ──────────────
+window.exportTree = function (onDone) {
+
+    // 1. Remember current state so we can restore it after export
+    const wasExpanded = !root._children && root.children;
+    const originalDuration = duration;
+
+    // 2. Expand everything instantly (no animation)
+    duration = 0;
+    expandAll(root);
+    update(root);
+    duration = originalDuration;
+
+    // 3. Wait one frame for D3 to finish laying out, then capture
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+
+            const svgEl     = document.querySelector("#tree-container svg");
+            const svgWidth  = parseFloat(svgEl.getAttribute("width"));
+            const svgHeight = parseFloat(svgEl.getAttribute("height"));
+
+            // 4. Clone the SVG
+            const clone = svgEl.cloneNode(true);
+            clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+            clone.setAttribute("width",  svgWidth);
+            clone.setAttribute("height", svgHeight);
+
+            // 5. Inject the exact CSS rules the tree relies on as a <style> block
+            //    (avoids getComputedStyle which mangles SVG fills to black)
+            const styleEl = document.createElementNS("http://www.w3.org/2000/svg", "style");
+            styleEl.textContent = `
+                @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
+                .node rect          { fill: #ffffff; stroke: #2c3e50; stroke-width: 3px; }
+                .node.has-children rect { fill: #e8f0f2; }
+                .node.collapsed rect    { fill: rgb(194,194,205); }
+                .node text          { font-family: 'Noto Naskh Arabic', sans-serif; font-size: 20px; }
+                .link               { fill: none; stroke: #747a7a; stroke-width: 2.5px; }
+                .death-badge circle { }
+                .children-badge circle { fill: #ea5050; stroke: #fff; stroke-width: 2px; }
+                .children-badge text   { fill: #fff; font-size: 11px; font-weight: bold;
+                                         font-family: 'Noto Naskh Arabic', sans-serif; }
+            `;
+            clone.insertBefore(styleEl, clone.firstChild);
+
+            // 6. Warm background rect
+            const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            bg.setAttribute("width",  svgWidth);
+            bg.setAttribute("height", svgHeight);
+            bg.setAttribute("fill", "#f4efdf");
+            clone.insertBefore(bg, styleEl.nextSibling);
+
+            // 7. Serialize → Blob → Object URL
+            const svgStr  = new XMLSerializer().serializeToString(clone);
+            const blob    = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
+            const url     = URL.createObjectURL(blob);
+
+            // 8. Render onto a 2× canvas for retina sharpness
+            const scale  = 2;
+            const canvas = document.createElement("canvas");
+            canvas.width  = svgWidth  * scale;
+            canvas.height = svgHeight * scale;
+            const ctx = canvas.getContext("2d");
+            ctx.scale(scale, scale);
+
+            const img = new Image();
+            img.onload = function () {
+                ctx.drawImage(img, 0, 0, svgWidth, svgHeight);
+                URL.revokeObjectURL(url);
+
+                // 9. Download
+                const a = document.createElement("a");
+                a.download = "شجرة-أسرة-السياط.png";
+                a.href = canvas.toDataURL("image/png");
+                a.click();
+
+                // 10. Restore original collapse state
+                if (!wasExpanded) {
+                    duration = 0;
+                    collapseAll(root);
+                    // re-expand just the root's direct children (initial state)
+                    if (root._children) {
+                        root.children = root._children;
+                        root._children = null;
+                    }
+                    update(root);
+                    duration = originalDuration;
+                }
+
+                onDone();
+            };
+            img.onerror = function () {
+                URL.revokeObjectURL(url);
+                alert("تعذّر تصدير الصورة.");
+                onDone();
+            };
+            img.src = url;
+        });
+    });
+};
