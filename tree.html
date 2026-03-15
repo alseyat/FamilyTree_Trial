@@ -151,7 +151,7 @@
     <div id="header-overlay">
         <img src="logo.png" alt="شعار أسرة السياط" id="header-logo">
         <p id="lineage-text">آل سياط من عشيرة أهل الحجلا من الزقاريط من الربيعية من عبدة من قبيلة شمر الطائية<br>وهم
-            ذرية سياط بن عودة بن محمد بن علّيق بن محمد بن سليمان (جد الحجلا) بن نافع بن عمار بن زقروط الربيعي العبدي
+            ذرية سياط بن عودة بن محمد بن علّيق بن محمد بن سليمان (جد الحجلا) بن نافع بن عمار بن زقروط<br>الربيعي العبدي
             الشمري</p>
     </div>
 
@@ -290,20 +290,15 @@
             const shareBtn = document.getElementById("share-btn");
             const toast = document.getElementById("share-toast");
             let toastTimer;
-
             function showToast(msg) {
                 toast.textContent = msg;
                 toast.classList.add("show");
                 clearTimeout(toastTimer);
                 toastTimer = setTimeout(() => toast.classList.remove("show"), 2500);
             }
-
             shareBtn.addEventListener("click", async function (e) {
                 e.stopPropagation();
-                const shareData = {
-                    title: document.title,
-                    url: window.location.href
-                };
+                const shareData = { title: document.title, url: window.location.href };
                 if (navigator.share) {
                     try { await navigator.share(shareData); } catch (_) {}
                 } else {

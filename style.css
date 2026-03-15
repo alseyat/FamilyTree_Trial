@@ -493,6 +493,7 @@ ul#search-results li:hover {
     visibility: hidden;
     transform: translateY(-10px);
     transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+    z-index: 1002;
 }
 
 /* The class added by JavaScript to show the menu */
@@ -648,7 +649,7 @@ ul#search-results li:hover {
     position: absolute;
     top: 75px;
     right: 20px;
-    z-index: 1001;
+    z-index: 1000;
 }
 
 /* ── Share Toast ── */
