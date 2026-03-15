@@ -851,102 +851,110 @@ window.addEventListener('resize', () => {
         }
     }, { passive: true });
 })();
-// ── PNG Export (called from inline script via window.exportTree) ──────────────
-window.exportTree = function (onDone) {
 
-    // 1. Remember current state so we can restore it after export
-    const wasExpanded = !root._children && root.children;
+// ── PNG Export (called from inline script via window.exportTree) ──────────────
+window.exportTree = async function (onDone) {
+
     const originalDuration = duration;
 
-    // 2. Expand everything instantly (no animation)
+    // 1. Expand everything instantly
     duration = 0;
     expandAll(root);
     update(root);
     duration = originalDuration;
 
-    // 3. Wait one frame for D3 to finish laying out, then capture
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
+    // 2. Wait two frames for D3 layout to settle
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
-            const svgEl     = document.querySelector("#tree-container svg");
-            const svgWidth  = parseFloat(svgEl.getAttribute("width"));
-            const svgHeight = parseFloat(svgEl.getAttribute("height"));
+    const svgEl     = document.querySelector("#tree-container svg");
+    const svgWidth  = parseFloat(svgEl.getAttribute("width"));
+    const svgHeight = parseFloat(svgEl.getAttribute("height"));
 
-            // 4. Clone the SVG
-            const clone = svgEl.cloneNode(true);
-            clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-            clone.setAttribute("width",  svgWidth);
-            clone.setAttribute("height", svgHeight);
+    // 3. Fetch the Arabic font and convert to base64 so canvas stays untainted
+    let fontFaceCSS = "";
+    try {
+        // Use a static font file served from the same origin (no cross-origin issue)
+        const fontRes  = await fetch("https://fonts.gstatic.com/s/notonaskharabic/v35/RrQ5bpV-9Dd1b1OAGA6M9PkyDuVBePeKNaxcsss0Y7bwvc-tTLqHIhqQHqY.woff2");
+        const fontBuf  = await fontRes.arrayBuffer();
+        const base64   = btoa(String.fromCharCode(...new Uint8Array(fontBuf)));
+        fontFaceCSS    = `@font-face {
+            font-family: 'NotoArabic';
+            src: url('data:font/woff2;base64,${base64}') format('woff2');
+        }`;
+    } catch (_) {
+        // Font fetch failed — fall back to generic serif (still readable)
+        fontFaceCSS = "";
+    }
 
-            // 5. Inject the exact CSS rules the tree relies on as a <style> block
-            //    (avoids getComputedStyle which mangles SVG fills to black)
-            const styleEl = document.createElementNS("http://www.w3.org/2000/svg", "style");
-            styleEl.textContent = `
-                @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
-                .node rect          { fill: #ffffff; stroke: #2c3e50; stroke-width: 3px; }
-                .node.has-children rect { fill: #e8f0f2; }
-                .node.collapsed rect    { fill: rgb(194,194,205); }
-                .node text          { font-family: 'Noto Naskh Arabic', sans-serif; font-size: 20px; }
-                .link               { fill: none; stroke: #747a7a; stroke-width: 2.5px; }
-                .death-badge circle { }
-                .children-badge circle { fill: #ea5050; stroke: #fff; stroke-width: 2px; }
-                .children-badge text   { fill: #fff; font-size: 11px; font-weight: bold;
-                                         font-family: 'Noto Naskh Arabic', sans-serif; }
-            `;
-            clone.insertBefore(styleEl, clone.firstChild);
+    // 4. Clone SVG
+    const clone = svgEl.cloneNode(true);
+    clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    clone.setAttribute("width",  svgWidth);
+    clone.setAttribute("height", svgHeight);
 
-            // 6. Warm background rect
-            const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-            bg.setAttribute("width",  svgWidth);
-            bg.setAttribute("height", svgHeight);
-            bg.setAttribute("fill", "#f4efdf");
-            clone.insertBefore(bg, styleEl.nextSibling);
+    // 5. Inject self-contained styles with embedded font
+    const styleEl = document.createElementNS("http://www.w3.org/2000/svg", "style");
+    styleEl.textContent = `
+        ${fontFaceCSS}
+        .node rect               { fill: #ffffff; stroke: #2c3e50; stroke-width: 3px; }
+        .node.has-children rect  { fill: #e8f0f2; }
+        .node.collapsed rect     { fill: rgb(194,194,205); }
+        .node text               { font-family: 'NotoArabic', serif; font-size: 20px; fill: #000; }
+        .link                    { fill: none; stroke: #747a7a; stroke-width: 2.5px; }
+        .children-badge circle   { fill: #ea5050; stroke: #fff; stroke-width: 2px; }
+        .children-badge text     { fill: #fff; font-size: 11px; font-weight: bold;
+                                   font-family: 'NotoArabic', serif; }
+        .death-badge circle      { fill: #8b6914; stroke: #fff; stroke-width: 1.5px; }
+        .death-badge text        { fill: #fff; font-size: 9px; }
+    `;
+    clone.insertBefore(styleEl, clone.firstChild);
 
-            // 7. Serialize → Blob → Object URL
-            const svgStr  = new XMLSerializer().serializeToString(clone);
-            const blob    = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
-            const url     = URL.createObjectURL(blob);
+    // 6. Warm background rect
+    const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    bg.setAttribute("width",  svgWidth);
+    bg.setAttribute("height", svgHeight);
+    bg.setAttribute("fill", "#f4efdf");
+    clone.insertBefore(bg, styleEl.nextSibling);
 
-            // 8. Render onto a 2× canvas for retina sharpness
-            const scale  = 2;
-            const canvas = document.createElement("canvas");
-            canvas.width  = svgWidth  * scale;
-            canvas.height = svgHeight * scale;
-            const ctx = canvas.getContext("2d");
-            ctx.scale(scale, scale);
+    // 7. Serialize → Object URL
+    const svgStr = new XMLSerializer().serializeToString(clone);
+    const blob   = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
+    const url    = URL.createObjectURL(blob);
 
-            const img = new Image();
-            img.onload = function () {
-                ctx.drawImage(img, 0, 0, svgWidth, svgHeight);
-                URL.revokeObjectURL(url);
+    // 8. Draw onto 2× canvas → PNG download
+    const scale  = 2;
+    const canvas = document.createElement("canvas");
+    canvas.width  = svgWidth  * scale;
+    canvas.height = svgHeight * scale;
+    const ctx = canvas.getContext("2d");
+    ctx.scale(scale, scale);
 
-                // 9. Download
-                const a = document.createElement("a");
-                a.download = "شجرة-أسرة-السياط.png";
-                a.href = canvas.toDataURL("image/png");
-                a.click();
+    const img = new Image();
+    img.onload = function () {
+        ctx.drawImage(img, 0, 0, svgWidth, svgHeight);
+        URL.revokeObjectURL(url);
 
-                // 10. Restore original collapse state
-                if (!wasExpanded) {
-                    duration = 0;
-                    collapseAll(root);
-                    // re-expand just the root's direct children (initial state)
-                    if (root._children) {
-                        root.children = root._children;
-                        root._children = null;
-                    }
-                    update(root);
-                    duration = originalDuration;
-                }
+        const a   = document.createElement("a");
+        a.download = "شجرة-أسرة-السياط.png";
+        a.href     = canvas.toDataURL("image/png");
+        a.click();
 
-                onDone();
-            };
-            img.onerror = function () {
-                URL.revokeObjectURL(url);
-                alert("تعذّر تصدير الصورة.");
-                onDone();
-            };
-            img.src = url;
-        });
-    });
+        // 9. Restore collapsed state
+        duration = 0;
+        collapseAll(root);
+        if (root._children) {
+            root.children  = root._children;
+            root._children = null;
+        }
+        update(root);
+        duration = originalDuration;
+
+        onDone();
+    };
+    img.onerror = function () {
+        URL.revokeObjectURL(url);
+        alert("تعذّر تصدير الصورة.");
+        onDone();
+    };
+    img.src = url;
 };

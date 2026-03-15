@@ -330,11 +330,11 @@
         // ── Export PNG ──
         (function () {
             const exportBtn = document.getElementById("export-btn");
-            exportBtn.addEventListener("click", function (e) {
+            exportBtn.addEventListener("click", async function (e) {
                 e.stopPropagation();
                 exportBtn.disabled = true;
                 exportBtn.style.opacity = "0.5";
-                window.exportTree(function () {
+                await window.exportTree(function () {
                     exportBtn.disabled = false;
                     exportBtn.style.opacity = "";
                 });
