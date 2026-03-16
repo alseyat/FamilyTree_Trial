@@ -380,14 +380,14 @@ function openDeathPopup(d) {
     rahmaEl.style.display = (hasPortrait && !hasDeath) ? 'none' : 'block';
 
     // Date — show only if there's an actual date string
-    const dateEl = document.getElementById('death-popup-date');
-    if (hasDate) {
-        dateEl.textContent = 'تاريخ الوفاة: ' + d.data.death;
-        dateEl.style.display = 'flex';
-    } else {
-        dateEl.textContent = '';
-        dateEl.style.display = 'none';
-    }
+   const dateEl = document.getElementById('death-popup-date');
+if (hasDate) {
+    dateEl.innerHTML = '<span id="death-popup-label">الوفاة:</span> ' + d.data.death;
+    dateEl.style.display = 'flex';
+} else {
+    dateEl.innerHTML = '';
+    dateEl.style.display = 'none';
+}
 
     document.getElementById('death-popup').classList.add('open');
     document.getElementById('death-popup-overlay').classList.add('open');

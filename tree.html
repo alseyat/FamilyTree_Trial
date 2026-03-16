@@ -75,6 +75,7 @@
         #death-popup-rahma {
             font-family: 'Noto Naskh Arabic', sans-serif;
             font-size: 15px;
+            font-weight: 600;
             /* ← change rahma line size here */
             color: #6a5646;
             /* font-style:italic; */
@@ -136,6 +137,13 @@
             border: 2px solid rgba(139, 115, 85, 0.35);
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
             object-fit: cover;
+        }
+
+        #death-popup-label {
+            font-family: 'Noto Kufi Arabic', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: #4a3b32;
         }
     </style>
 </head>
@@ -241,14 +249,14 @@
                 </svg>
             </button>
 
-            <button id="export-btn" class="floating-btn" title="تصدير PNG">
+            <!-- <button id="export-btn" class="floating-btn" title="تصدير PNG">
                 <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                     <polyline points="7 10 12 15 17 10"></polyline>
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                 </svg>
-            </button>
+            </button> -->
         </div>
     </div>
 
@@ -309,7 +317,7 @@
                 e.stopPropagation();
                 const shareData = { title: document.title, url: window.location.href };
                 if (navigator.share) {
-                    try { await navigator.share(shareData); } catch (_) {}
+                    try { await navigator.share(shareData); } catch (_) { }
                 } else {
                     try {
                         await navigator.clipboard.writeText(window.location.href);
