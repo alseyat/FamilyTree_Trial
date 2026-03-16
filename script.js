@@ -362,35 +362,48 @@ function openDeathPopup(d) {
     const hasDeath = d.data.death !== undefined && d.data.death !== null;
     const hasDate = hasDeath && d.data.death !== '';
 
-    // Portrait
+    function showPopup() {
+        // Name
+        document.getElementById('death-popup-name').textContent = getFullName(d);
+
+        // Rahma — hide only if person has a portrait but no death info
+        const rahmaEl = document.getElementById('death-popup-rahma');
+        rahmaEl.style.display = (hasPortrait && !hasDeath) ? 'none' : 'block';
+
+        // Date — show only if there's an actual date string
+        const dateEl = document.getElementById('death-popup-date');
+        if (hasDate) {
+            dateEl.innerHTML = '<span id="death-popup-label">الوفاة:</span> ' + d.data.death;
+            dateEl.style.display = 'flex';
+        } else {
+            dateEl.innerHTML = '';
+            dateEl.style.display = 'none';
+        }
+
+        document.getElementById('death-popup').classList.add('open');
+        document.getElementById('death-popup-overlay').classList.add('open');
+    }
+
+    // Portrait — load first, then open popup so everything appears together
     const portraitEl = document.getElementById('death-popup-portrait');
     portraitEl.style.display = 'none';
     portraitEl.src = '';
+
     if (hasPortrait) {
-        portraitEl.onload = () => { portraitEl.style.display = 'block'; };
-        portraitEl.onerror = () => { portraitEl.style.display = 'none'; };
-        portraitEl.src = `assets/${d.data.portrait}.jpg`;
+        const img = new Image();
+        img.onload = () => {
+            portraitEl.src = img.src;
+            portraitEl.style.display = 'block';
+            showPopup();
+        };
+        img.onerror = () => {
+            portraitEl.style.display = 'none';
+            showPopup();
+        };
+        img.src = `assets/${d.data.portrait}.jpg`;
+    } else {
+        showPopup();
     }
-
-    // Name
-    document.getElementById('death-popup-name').textContent = getFullName(d);
-
-    // Rahma — hide only if person has a portrait but no death info
-    const rahmaEl = document.getElementById('death-popup-rahma');
-    rahmaEl.style.display = (hasPortrait && !hasDeath) ? 'none' : 'block';
-
-    // Date — show only if there's an actual date string
-   const dateEl = document.getElementById('death-popup-date');
-if (hasDate) {
-    dateEl.innerHTML = '<span id="death-popup-label">الوفاة:</span> ' + d.data.death;
-    dateEl.style.display = 'flex';
-} else {
-    dateEl.innerHTML = '';
-    dateEl.style.display = 'none';
-}
-
-    document.getElementById('death-popup').classList.add('open');
-    document.getElementById('death-popup-overlay').classList.add('open');
 }
 
 function closeDeathPopup() {
