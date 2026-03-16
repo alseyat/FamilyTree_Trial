@@ -364,12 +364,12 @@ function openDeathPopup(d) {
 
     // Portrait
     const portraitEl = document.getElementById('death-popup-portrait');
+    portraitEl.style.display = 'none';
+    portraitEl.src = '';
     if (hasPortrait) {
+        portraitEl.onload = () => { portraitEl.style.display = 'block'; };
+        portraitEl.onerror = () => { portraitEl.style.display = 'none'; };
         portraitEl.src = `assets/${d.data.portrait}.jpg`;
-        portraitEl.style.display = 'block';
-    } else {
-        portraitEl.src = '';
-        portraitEl.style.display = 'none';
     }
 
     // Name
