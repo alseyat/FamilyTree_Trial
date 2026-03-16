@@ -45,7 +45,6 @@
             border-radius: 16px;
             padding: 28px 32px;
             min-width: 280px;
-            /* max-width: 400px; */
             max-width: 30vw;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
             direction: rtl;
@@ -64,7 +63,6 @@
         #death-popup-name {
             font-family: 'Noto Kufi Arabic', sans-serif;
             font-size: 16px;
-            /* ← change name size here */
             font-weight: 700;
             color: #4a3b32;
             line-height: 1.8;
@@ -76,9 +74,7 @@
             font-family: 'Noto Naskh Arabic', sans-serif;
             font-size: 15px;
             font-weight: 600;
-            /* ← change rahma line size here */
             color: #6a5646;
-            /* font-style:italic; */
             margin-bottom: 14px;
             border-bottom: 1px solid rgba(139, 115, 85, 0.2);
             padding-bottom: 12px;
@@ -88,7 +84,6 @@
         #death-popup-date {
             font-family: 'Noto Naskh Arabic', sans-serif;
             font-size: 15px;
-            /* ← change date size here */
             color: #6a5646;
             display: flex;
             align-items: center;
@@ -100,7 +95,6 @@
             content: '❖';
             font-size: 16px;
             opacity: 0.8;
-
         }
 
         #death-popup-close {
@@ -147,42 +141,39 @@
         }
 
         .death-date-parts {
-    display: inline-flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 0 4px;
-    white-space: nowrap;
-}
+            display: inline-flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 0 4px;
+            white-space: nowrap;
+        }
 
-.death-date-hijri,
-.death-date-miladi {
-    white-space: nowrap;
-}
+        .death-date-hijri,
+        .death-date-miladi {
+            white-space: nowrap;
+        }
 
-.death-date-sep {
-    white-space: nowrap;
-}
+        .death-date-sep {
+            white-space: nowrap;
+        }
 
-@media (max-width: 480px) {
-    .death-date-parts {
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-    }
+        @media (max-width: 480px) {
+            .death-date-parts {
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+            }
 
-    .death-date-sep {
-        display: none;
-    }
-}
+            .death-date-sep {
+                display: none;
+            }
+        }
     </style>
 </head>
 
 <body>
     <div id="ui-wrapper">
-
-
-
     </div>
 
     <!-- Fixed Header Overlay: logo + lineage text, hides on scroll, never scales with tree -->

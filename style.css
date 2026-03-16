@@ -149,16 +149,64 @@ body {
 
 /* 4. الفوتر السفلي الثابت */
 .bottom-footer {
-    text-align: center;
-    padding: 12px;
+    flex-shrink: 0;
+    z-index: 1000;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+}
+
+.footer-legend {
+    background: #f4efdf;
+    color: #2c1a0e;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 7px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    border-top: 1px solid rgba(139, 115, 85, 0.25);
+}
+
+@media (max-width: 480px) {
+    .footer-legend {
+        font-size: 10px;
+        gap: 12px;
+        padding: 6px 10px;
+    }
+
+    .legend-swatch {
+        width: 20px;
+        height: 13px;
+    }
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.legend-swatch {
+    display: inline-block;
+    width: 26px;
+    height: 16px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.footer-credit {
     background: #4a3b32;
     color: #f4efdf;
     font-family: 'Noto Kufi Arabic', sans-serif;
     font-size: 12px;
     font-weight: bold;
-    flex-shrink: 0;
-    z-index: 1000;
-    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+    padding: 12px;
     display: flex;
     align-items: center;
     justify-content: center;

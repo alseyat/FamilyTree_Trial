@@ -141,8 +141,14 @@ svgGroup.attr("transform", `translate(${currentAdjustment} , ${verticalStart}) s
         .attr('rx', 10)
         .attr('ry', 10)
         .attr('class', 'node')
-        .style('fill', d => d._children ? "#e3d8bc" : "#ffffff");
-        
+.style('fill', d => {
+    const isDead = d.data.deceased
+        || d.data.death !== undefined
+        || d.data.portrait;
+    if (isDead) return d._children ? "#c3baa2" : "#c3baa2";
+    return d._children ? "#f8edcf" : "#f8edcf";
+});
+
     nodeEnter.append('text')
         .attr('dy', '.23em')
         .attr('x', 0)
@@ -239,8 +245,14 @@ svgGroup.attr("transform", `translate(${currentAdjustment} , ${verticalStart}) s
         .attr('rx', 10)
         .attr('ry', 10)
         .attr('class', d => d._children ? 'has-children' : '')
-        .style('fill', d => d._children ? "#e3d8bc" : "#ffffff");
-        
+.style('fill', d => {
+    const isDead = d.data.deceased
+        || d.data.death !== undefined
+        || d.data.portrait;
+    if (isDead) return d._children ? "#c3baa2" : "#c3baa2";
+    return d._children ? "#f8edcf" : "#f8edcf";
+});
+
     nodeUpdate.select('.children-badge circle')
         .style('fill', d => d._children ? "#ea5050" : "#95a5a6");
 
@@ -321,6 +333,8 @@ function click(event, d) {
         d._children = d.children.concat(d._children || []);
         d.children = null;
         hasChanges = true;
+                duration = 150;  // ← instant collapse only
+
     } else {
         if (d._children) {
             d.children = d._children;
@@ -345,6 +359,8 @@ function click(event, d) {
         const oldY = 230 + (d.y0 + initialVerticalOffset) * zoomLevel;
 
         update(d);
+                duration = 150;  // ← restore to your default
+
 
         // Calculate new position using the updated currentAdjustment and new d.x
         const newX = currentAdjustment + (d.x + horizontalOffset) * zoomLevel;
