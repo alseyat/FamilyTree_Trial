@@ -89,7 +89,7 @@ const people = [
 
   // أبناء علي (id: 27)
   { id:  28, name: "ماشي",  parentId: 27 },
-  { id:  29, name: "محمد", death: "", portrait: 29,  parentId: 27 },
+  { id:  29, name: "محمد", death: "13 ربيع الأول 1436 هـ - 4 يناير 2015 م", portrait: 29,  parentId: 27 },
 
   // أبناء محمد (id: 29)
   { id:  30, name: "مرزوق",  parentId: 29 },
@@ -118,7 +118,8 @@ const people = [
   { id:  41, name: "سياط",  parentId: 38 },
 
   // أبناء محمد (id: 29)
-  { id:  42, name: "سليمان", death: "17 / 6 / 1438 هـ - 16 / 3 / 2017 م", portrait: 42,  parentId: 29 },
+  { id:  42, name: "سليمان", death: "15 جمادى الآخرة 1438 هـ - 14 مارس 2017 م", portrait: 42,  parentId: 29 },
+  // { id:  42, name: "سليمان", death: "15 / 6 / 1438 هـ - 14 / 3 / 2017 م", portrait: 42,  parentId: 29 },
 
   // أبناء سليمان (id: 42)
   { id:  43, name: "خالد",  parentId: 42 },
@@ -153,7 +154,8 @@ const people = [
   { id:  54, name: "نايف",  parentId: 53 },
 
   // أبناء محمد (id: 29)
-  { id:  55, name: "يوسف", death: "25 / 1 / 1447 هـ - 20 / 7 / 2025 م", portrait: 55,  parentId: 29 },
+  { id:  55, name: "يوسف", death: "25 محرم 1447 هـ - 20 يوليو 2025 م", portrait: 55,  parentId: 29 },
+  // { id:  55, name: "يوسف", death: "25 / 1 / 1447 هـ - 20 / 7 / 2025 م", portrait: 55,  parentId: 29 },
 
   // أبناء يوسف (id: 55)
   { id:  56, name: "محمد",  parentId: 55 },
@@ -244,7 +246,8 @@ const people = [
   { id:  97, name: "مصعب",  parentId: 79 },
 
   // أبناء سميحان (id: 78)
-  { id:  98, name: "صالح", death: "5 / 3 / 1442 هـ - 22 / 10 / 2020 م",  parentId: 78 },
+  { id:  98, name: "صالح", death: "5 ربيع الأول 1442 هـ - 22 أكتوبر 2020 م",  parentId: 78 },
+  // { id:  98, name: "صالح", death: "5 / 3 / 1442 هـ - 22 / 10 / 2020 م",  parentId: 78 },
 
   // أبناء صالح (id: 98)
   { id:  99, name: "محمد",  parentId: 98 },
@@ -261,9 +264,11 @@ const people = [
   { id: 104, name: "سحيمان", death: "", portrait: 104,  parentId: 77 },
 
   // أبناء سحيمان (id: 104)
-  { id: 105, name: "موسى", death: "26 / 8 / 1446 هـ - 25 / 2 / 2025 م", portrait: 105,  parentId: 104 },
-  { id: 106, name: "عبدالله", death: "", portrait: 106,  parentId: 104 },
-  { id: 107, name: "علي", death: "", portrait: 107,  parentId: 104 },
+  { id: 105, name: "موسى", death: "26 شعبان 1446 هـ - 25 فبراير 2025 م", portrait: 105,  parentId: 104 },
+  // { id: 105, name: "موسى", death: "26 / 8 / 1446 هـ - 25 / 2 / 2025 م", portrait: 105,  parentId: 104 },
+
+  { id: 106, name: "عبدالله", death: "10 جمادى الآخرة 1431 هـ - 24 مايو 2010 م", portrait: 106,  parentId: 104 },
+  { id: 107, name: "علي", death: "28 ذو القعدة 1430 هـ - 16 نوفمبر 2009 م", portrait: 107,  parentId: 104 },
 
   // أبناء علي (id: 107)
   { id: 108, name: "حسين",  parentId: 107 },
@@ -271,7 +276,8 @@ const people = [
   { id: 110, name: "عبدالله",  parentId: 107 },
 
   // أبناء سحيمان (id: 104)
-  { id: 111, name: "عبدالرحمن", death: "4 / 3 / 1442 هـ - 21 / 10 / 2020 م",  parentId: 104 },
+  { id: 111, name: "عبدالرحمن", death: "4 ربيع الأول 1442 هـ - 21 أكتوبر 2020 م",  parentId: 104 },
+  // { id: 111, name: "عبدالرحمن", death: "4 / 3 / 1442 هـ - 21 / 10 / 2020 م",  parentId: 104 },
 
   // أبناء سليمان (id: 18)
   { id: 112, name: "سالم",  parentId: 18 },
@@ -335,10 +341,10 @@ const people = [
   { id: 136, name: "سلمان",  parentId: 134 },
 
   // أبناء سلمان (id: 136)
-  { id: 137, name: "هلال", death: "", portrait: 137,  parentId: 136 },
+  { id: 137, name: "هلال", death: "9 جمادى الآخرة 1417 هـ - 22 أكتوبر 1996 م", portrait: 137,  parentId: 136 },
 
   // أبناء هلال (id: 137)
-  { id: 138, name: "سلمان", death: "", portrait: 138,  parentId: 137 },
+  { id: 138, name: "سلمان", death: "29 ربيع الأول 1421 هـ - 2 يوليو 2000 م", portrait: 138,  parentId: 137 },
 
   // أبناء سلمان (id: 138)
   { id: 139, name: "أديب",  parentId: 138 },
@@ -381,7 +387,8 @@ const people = [
   { id: 156, name: "أحمد",  parentId: 138 },
 
   // أبناء هلال (id: 137)
-  { id: 157, name: "عبدالرحمن", death: "20 / 11 / 1443 هـ - 19 / 6 / 2022 م",  parentId: 137 },
+  { id: 157, name: "عبدالرحمن", death: "20 ذو القعدة 1443 هـ - 19 يونيو 2022 م",  parentId: 137 },
+  // { id: 157, name: "عبدالرحمن", death: "20 / 11 / 1443 هـ - 19 / 6 / 2022 م",  parentId: 137 },
 
   // أبناء عبدالرحمن (id: 157)
   { id: 158, name: "حسام",  parentId: 157 },
@@ -413,7 +420,9 @@ const people = [
   { id: 169, name: "سطام",  parentId: 166 },
 
   // أبناء موسى (id: 165)
-  { id: 170, name: "عبدالله", death: "27 / 9 / 1434 هـ - 4 / 8 / 2013 م",  parentId: 165 },
+  { id: 170, name: "عبدالله", death: "27 رمضان 1434 هـ - 4 أغسطس 2013 م",  parentId: 165 },
+  // { id: 170, name: "عبدالله", death: "27 / 9 / 1434 هـ - 4 / 8 / 2013 م",  parentId: 165 },
+
   { id: 171, name: "محمد",  parentId: 165 },
     // أبناء محمد (id: 171)
   { id: 172, name: "عبدالله",  parentId: 171 },
@@ -446,7 +455,7 @@ const people = [
   { id: 181, name: "محمد",  parentId: 134 },
 
   // أبناء محمد (id: 181)
-  { id: 182, name: "حمود", death: "", portrait: 182,  parentId: 181 },
+  { id: 182, name: "حمود", death: "24 ذو القعدة 1421 هـ - 18 فبراير 2001 م", portrait: 182,  parentId: 181 },
 
   // أبناء حمود (id: 182)
   { id: 183, name: "عبدالهادي",  parentId: 182 },
@@ -477,13 +486,14 @@ const people = [
   { id: 193, name: "فيصل",  parentId: 187 },
 
   // أبناء محمد (id: 181)
-  { id: 194, name: "الحميدي", death: "6 / 12 / 1434 هـ - 11 / 10 / 2013 م", portrait: 194,  parentId: 181 },
+  { id: 194, name: "الحميدي", death: "6 ذو الحجة 1434 هـ - 11 أكتوبر 2013 م", portrait: 194,  parentId: 181 },
+  // { id: 194, name: "الحميدي", death: "6 / 12 / 1434 هـ - 11 / 10 / 2013 م", portrait: 194,  parentId: 181 },
 
   // أبناء الحميدي (id: 194)
   { id: 195, name: "عبدالله",  parentId: 194 },
 
   // أبناء عبدالله (id: 195)
-  { id: 196, name: "سياط",  parentId: 195 },
+  { id: 196, name: "سياط", death: "",  parentId: 195 },
   { id: 197, name: "محمد",  parentId: 195 },
   { id: 198, name: "يوسف",  parentId: 195 },
 
@@ -513,7 +523,8 @@ const people = [
   { id: 209, name: "خميس",  parentId: 134 },
 
   // أبناء خميس (id: 209)
-  { id: 210, name: "عطا", death: "18 / 4 / 1444 هـ - 12 / 11 / 2022 م", portrait: 210, parentId: 209 },
+  { id: 210, name: "عطا", death: "18 ربيع الثاني 1444 هـ - 12 نوفمبر 2022 م", portrait: 210, parentId: 209 },
+  // { id: 210, name: "عطا", death: "18 / 4 / 1444 هـ - 12 / 11 / 2022 م", portrait: 210, parentId: 209 },
 
   // أبناء عطاء (id: 210)
   { id: 211, name: "عبدالله",  parentId: 210 },
