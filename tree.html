@@ -145,6 +145,36 @@
             font-weight: 700;
             color: #4a3b32;
         }
+
+        .death-date-parts {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0 4px;
+    white-space: nowrap;
+}
+
+.death-date-hijri,
+.death-date-miladi {
+    white-space: nowrap;
+}
+
+.death-date-sep {
+    white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+    .death-date-parts {
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .death-date-sep {
+        display: none;
+    }
+}
     </style>
 </head>
 

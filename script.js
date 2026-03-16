@@ -373,9 +373,18 @@ function openDeathPopup(d) {
         // Date — show only if there's an actual date string
         const dateEl = document.getElementById('death-popup-date');
         if (hasDate) {
-            dateEl.innerHTML = '<span id="death-popup-label">الوفاة:</span> ' + d.data.death;
-            dateEl.style.display = 'flex';
-        } else {
+    const parts = d.data.death.split(' - ');
+    const hijri = parts[0] || '';
+    const miladi = parts[1] || '';
+
+    dateEl.innerHTML = `
+        <span id="death-popup-label">الوفاة:</span>
+        <span class="death-date-parts">
+            <span class="death-date-hijri">${hijri}</span>
+            ${miladi ? `<span class="death-date-sep"> - </span><span class="death-date-miladi">${miladi}</span>` : ''}
+        </span>`;
+    dateEl.style.display = 'flex';
+} else {
             dateEl.innerHTML = '';
             dateEl.style.display = 'none';
         }
