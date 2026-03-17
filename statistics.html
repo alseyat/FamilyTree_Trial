@@ -208,6 +208,7 @@
 
     <div class="content-container">
         <div class="total-members" id="total-members"></div>
+<div class="total-members" id="total-living"></div>
 
         <h2>أكثر الأسماء تكراراً</h2>
         <ul id="top-names" class="top-names"></ul>
@@ -224,61 +225,63 @@
     </footer>
 
     <script type="module">
-        import data from './alseyat.js';
+    import data from './alseyat.js';
 
-        function prepareStatistics(data) {
-            const nameCount = {};
-            let totalMembers = 0;
+    function prepareStatistics(data) {
+        const nameCount = {};
+        let totalMembers = 0;
+        let totalDeceased = 0;
 
-            function computeStatistics(node) {
-                totalMembers++;
-                nameCount[node.name] = (nameCount[node.name] || 0) + 1;
-                if (node.children) {
-                    node.children.forEach(child => computeStatistics(child));
-                }
+        function computeStatistics(node) {
+            totalMembers++;
+            if (node.deceased || node.death !== undefined) totalDeceased++;
+            nameCount[node.name] = (nameCount[node.name] || 0) + 1;
+            if (node.children) {
+                node.children.forEach(child => computeStatistics(child));
             }
-
-            computeStatistics(data);
-
-            // Group names by count, sorted descending
-            const grouped = {};
-            Object.entries(nameCount).forEach(([name, count]) => {
-                if (!grouped[count]) grouped[count] = [];
-                grouped[count].push(name);
-            });
-
-            const topNames = Object.entries(grouped)
-                .map(([count, names]) => ({ count: parseInt(count), names: names.sort((a, b) => a.localeCompare(b, 'ar')) }))
-                .sort((a, b) => b.count - a.count);
-
-            return { topNames, totalMembers };
         }
 
-        function displayStatistics(statistics) {
-            const { topNames, totalMembers } = statistics;
+        computeStatistics(data);
 
-            document.getElementById('total-members').innerText = `إجمالي عدد أفراد الأسرة: ${totalMembers}`;
+        const grouped = {};
+        Object.entries(nameCount).forEach(([name, count]) => {
+            if (!grouped[count]) grouped[count] = [];
+            grouped[count].push(name);
+        });
 
-            const list = document.getElementById('top-names');
+        const topNames = Object.entries(grouped)
+            .map(([count, names]) => ({ count: parseInt(count), names: names.sort((a, b) => a.localeCompare(b, 'ar')) }))
+            .sort((a, b) => b.count - a.count);
 
-            topNames.forEach(({ count, names }) => {
-                const li = document.createElement('li');
+        return { topNames, totalMembers, totalDeceased, totalLiving: totalMembers - totalDeceased };
+    }
 
-                const chipsHTML = names
-                    .map(name => `<span class="name-chip">${name}</span>`)
-                    .join('');
+    function displayStatistics(statistics) {
+        const { topNames, totalMembers, totalDeceased, totalLiving } = statistics;
 
-                li.innerHTML = `
-                    <div class="names-group">${chipsHTML}</div>
-                    <div class="count">${count}</div>
-                `;
-                list.appendChild(li);
-            });
-        }
+        document.getElementById('total-members').innerText = `إجمالي عدد أفراد الأسرة الذكور: ${totalMembers}`;
+        document.getElementById('total-living').innerText = `عدد الذكور الأحياء: ${totalLiving}`;
 
-        const statistics = prepareStatistics(data);
-        displayStatistics(statistics);
-    </script>
+        const list = document.getElementById('top-names');
+
+        topNames.forEach(({ count, names }) => {
+            const li = document.createElement('li');
+
+            const chipsHTML = names
+                .map(name => `<span class="name-chip">${name}</span>`)
+                .join('');
+
+            li.innerHTML = `
+                <div class="names-group">${chipsHTML}</div>
+                <div class="count">${count}</div>
+            `;
+            list.appendChild(li);
+        });
+    }
+
+    const statistics = prepareStatistics(data);
+    displayStatistics(statistics);
+</script>
     <script src="menu.js"></script>
 </body>
 

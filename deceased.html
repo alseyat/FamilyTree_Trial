@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+    <link rel="preload" as="image" href="logo.png">
+    <meta charset="UTF-8">
+    <title>الوفيات — أسرة السياط</title>
+    <link rel="icon" href="favicon_io/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon_io/favicon-32x32.png" type="image/png">
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Noto Naskh Arabic', sans-serif;
+            direction: rtl;
+            background-color: #f4efdf;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            color: #4a3b32;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-y: auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 20px 0;
+        }
+
+        .header img {
+            max-height: 350px;
+            width: auto;
+        }
+
+        .content-container {
+            max-width: 800px;
+            width: 85%;
+            margin: 20px auto 40px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 115, 85, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            flex-grow: 1;
+        }
+
+        .page-title {
+            font-family: 'Noto Kufi Arabic', sans-serif;
+            font-size: 26px;
+            color: #4a3b32;
+            text-align: center;
+            margin: 0 auto 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(139, 115, 85, 0.25);
+            line-height: 1.6;
+            max-width: 600px;
+        }
+
+        .deceased-count {
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #4a3b32;
+            background: rgba(139, 115, 85, 0.1);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(139, 115, 85, 0.2);
+        }
+
+        .deceased-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .deceased-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(139, 115, 85, 0.3);
+            border-radius: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .deceased-item:hover {
+            background: rgba(255, 255, 255, 0.98);
+            border-color: rgba(139, 115, 85, 0.6);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .deceased-portrait {
+            width: 56px;
+            height: 56px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 2px solid rgba(139, 115, 85, 0.4);
+            flex-shrink: 0;
+            background: rgba(139, 115, 85, 0.08);
+        }
+
+        .deceased-portrait-placeholder {
+            width: 56px;
+            height: 56px;
+            border-radius: 6px;
+            border: 2px solid rgba(139, 115, 85, 0.3);
+            flex-shrink: 0;
+            background: rgba(139, 115, 85, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: rgba(139, 115, 85, 0.5);
+        }
+
+        .deceased-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .deceased-name {
+            font-family: 'Noto Kufi Arabic', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: #4a3b32;
+            line-height: 1.5;
+        }
+
+        .deceased-date {
+            font-weight: bold;
+            font-size: 13px;
+            color: #7a6452;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .deceased-date::before {
+            content: '❖';
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
+        .deceased-arrow {
+            color: rgba(139, 115, 85, 0.5);
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .back-btn-container {
+            text-align: center;
+            margin-top: 32px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: #4a3b32;
+            color: #f4efdf;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn:hover {
+            background: #6a5646;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .deceased-date-label {
+            font-family: 'Noto Kufi Arabic', sans-serif;
+            font-size: 12px;
+            font-weight: bold;
+            color: #4a3b32;
+            margin-left: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .content-container {
+                margin: 15px auto;
+                padding: 20px;
+                width: 90%;
+            }
+
+            .header img {
+                max-height: 200px;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+
+            .deceased-name {
+                font-size: 14px;
+            }
+
+            .deceased-date {
+                font-size: 12px;
+            }
+        }
+
+        .death-date-parts {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 4px;
+    white-space: nowrap;
+}
+
+.death-date-hijri,
+.death-date-miladi {
+    white-space: nowrap;
+}
+
+.death-date-sep {
+    white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+    .death-date-parts {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+
+    .death-date-sep {
+        display: none;
+    }
+}
+    </style>
+</head>
+
+<body>
+    <div id="floating-menu-container">
+        <button id="menu-icon-btn" class="floating-btn">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+        <div id="menu-dropdown"></div>
+    </div>
+
+    <div class="header">
+        <img src="logo.png" alt="شعار شجرة السياط">
+    </div>
+
+    <div class="content-container">
+        <h1 class="page-title">وفيات الأسرة</h1>
+        <!-- <div class="deceased-count" id="deceased-count"></div> -->
+        <ul class="deceased-list" id="deceased-list"></ul>
+        <div class="back-btn-container">
+            <a href="tree.html" class="back-btn">العودة إلى شجرة الأسرة</a>
+        </div>
+    </div>
+
+    <footer class="bottom-footer"></footer>
+
+    <script type="module">
+        import { people } from './alseyat.js';
+
+        // Build a parent lookup map
+        const map = {};
+        people.forEach(p => { map[p.id] = p; });
+
+        // Build full name by walking up the tree
+        function getFullName(person) {
+            const parts = [];
+            let current = person;
+            while (current) {
+                parts.push(current.name);
+                current = current.parentId !== null ? map[current.parentId] : null;
+            }
+            return parts.join(' بن ');
+        }
+
+        // Filter only people with a popup card (death or portrait)
+        const hijriMonths = {
+            'محرم': 1, 'صفر': 2, 'ربيع الأول': 3, 'ربيع الثاني': 4,
+            'جمادى الأولى': 5, 'جمادى الآخرة': 6, 'رجب': 7, 'شعبان': 8,
+            'رمضان': 9, 'شوال': 10, 'ذو القعدة': 11, 'ذو الحجة': 12
+        };
+
+        function getHijriSortKey(death) {
+            if (!death) return 0;
+            const yearMatch = death.match(/(\d{4})\s*هـ/);
+            const dayMatch = death.match(/^(\d+)/);
+            const year = yearMatch ? parseInt(yearMatch[1]) : 0;
+            const day = dayMatch ? parseInt(dayMatch[1]) : 0;
+            let month = 0;
+            for (const [name, num] of Object.entries(hijriMonths)) {
+                if (death.includes(name)) { month = num; break; }
+            }
+            return year * 10000 + month * 100 + day;
+        }
+
+        // Filter only people with a popup card (death or portrait)
+        const deceased = people
+            .filter(p => p.death !== undefined || p.portrait !== undefined)
+            .map(p => ({
+                id: p.id,
+                name: p.name,
+                fullName: getFullName(p),
+                death: p.death || null,
+                portrait: p.portrait || null,
+            }))
+            .sort((a, b) => {
+                const aHasDate = !!a.death;
+                const bHasDate = !!b.death;
+                if (!aHasDate && !bHasDate) return a.name.localeCompare(b.name, 'ar');
+                if (!aHasDate) return -1;
+                if (!bHasDate) return 1;
+                return getHijriSortKey(a.death) - getHijriSortKey(b.death);
+            });
+
+        // Count
+        // document.getElementById('deceased-count').textContent =
+        //     `عدد المتوفين الذين لديهم بطاقة: ${deceased.length}`;
+
+        // Render
+        const list = document.getElementById('deceased-list');
+        deceased.forEach(person => {
+            const li = document.createElement('li');
+
+            const portraitHTML = person.portrait
+                ? `<img class="deceased-portrait" src="assets/${person.portrait}.jpg" alt="${person.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                   <div class="deceased-portrait-placeholder" style="display:none;">❖</div>`
+                : `<div class="deceased-portrait-placeholder">❖</div>`;
+
+            const dateHTML = person.death ? (() => {
+    const parts = person.death.split(' - ');
+    const hijri = parts[0] || '';
+    const miladi = parts[1] || '';
+    return `<div class="deceased-date">
+        <span class="deceased-date-label">الوفاة:</span>
+        <span class="death-date-parts">
+            <span class="death-date-hijri">${hijri}</span>
+            ${miladi ? `<span class="death-date-sep"> - </span><span class="death-date-miladi">${miladi}</span>` : ''}
+        </span>
+    </div>`;
+})() : '';
+
+            li.innerHTML = `
+                ${portraitHTML}
+                <div class="deceased-info">
+                    <div class="deceased-name">${person.fullName}</div>
+                    ${dateHTML}
+                </div>
+                <div class="deceased-arrow">←</div>
+            `;
+
+            li.classList.add('deceased-item');
+            li.addEventListener('click', () => {
+                window.location.href = `tree.html?focus=${encodeURIComponent(person.fullName)}`;
+            });
+
+            list.appendChild(li);
+        });
+    </script>
+    <script src="menu.js"></script>
+</body>
+
+</html>

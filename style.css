@@ -11,6 +11,7 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    height: 100dvh;
     overflow: hidden;
 }
 
@@ -513,7 +514,7 @@ ul#search-results li:hover {
 
 /* Floating Menu Container */
 #floating-menu-container {
-    position: absolute;
+    position: fixed;
     top: 20px;
     right: 20px;
     z-index: 1001;

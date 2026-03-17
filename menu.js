@@ -9,11 +9,13 @@
 const FOOTER_TEXT = 'إعداد وتصميم: م. أنس بن سعود السياط';
 const WHATSAPP_LINK = 'https://wa.me/qr/MXNHVWH6YIENA1';
 const MENU_ITEMS = [
-    { label: 'الرئيسية',       href: 'index.html' },
-    { label: 'شجرة الأسرة',    href: 'tree.html' },
+    { label: 'الرئيسية', href: 'index.html' },
+    { label: 'شجرة الأسرة', href: 'tree.html' },
     // { label: 'نبذة عن الأسرة', href: 'about.html' },
     // { label: 'تمرة السياطية',  href: 'dates.html' },
-    { label: 'إحصائيات',       href: 'statistics.html' },
+    { label: 'إحصائيات', href: 'statistics.html' },
+    { label: 'الوفيات', href: 'deceased.html' },
+
     // { label: 'شبات الأسرة',    href: 'shabat.html' },
 ];
 

@@ -671,4 +671,5 @@ function buildTree(list) {
 }
 
 const data = buildTree(people);
+export { people };
 export default data;
