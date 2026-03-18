@@ -140,6 +140,17 @@
             line-height: 1.5;
         }
 
+        .deceased-rahma {
+            font-family: 'Noto Naskh Arabic', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #6a5646;
+            margin-right: 6px;
+            display: block;
+            /* text-align: center; */
+
+        }
+
         .deceased-date {
             font-weight: bold;
             font-size: 13px;
@@ -167,6 +178,7 @@
         }
 
         .back-btn {
+            font-family: 'Noto Kufi Arabic', sans-serif;
             display: inline-block;
             background: #4a3b32;
             color: #f4efdf;
@@ -363,7 +375,7 @@
             li.innerHTML = `
                 ${portraitHTML}
                 <div class="deceased-info">
-                    <div class="deceased-name">${person.fullName}</div>
+                    <div class="deceased-name">${person.fullName}<span class="deceased-rahma">- رحمه الله وأسكنه فسيح جناته -</span></div>
                     ${dateHTML}
                 </div>
                 <div class="deceased-arrow">←</div>

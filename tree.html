@@ -86,7 +86,8 @@
             font-size: 15px;
             color: #6a5646;
             display: flex;
-            align-items: center;
+            /* align-items: center; */
+            align-items: flex-start;  /* ← change from center to flex-start */
             gap: 8px;
             justify-content: center
         }
@@ -95,6 +96,8 @@
             content: '❖';
             font-size: 16px;
             opacity: 0.8;
+            /* margin-top: 2px;  ← optional: fine-tune vertical alignment */
+
         }
 
         #death-popup-close {
