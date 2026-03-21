@@ -16,7 +16,9 @@
 
 // ── بيانات الأسرة ─────────────────────────────────────────
 const people = [
-  { id:   1, name: "سياط",  parentId: null, deceased: true },
+  { id:   1, name: "سياط", parentId: null, deceased: true },
+    // { id:   1, name: "سياط", death: "",  parentId: null, deceased: true },
+
 
   // أبناء سياط (id: 1)
   { id:   2, name: "سالم",  parentId: 1, deceased: true },
@@ -246,7 +248,7 @@ const people = [
   { id:  97, name: "مصعب",  parentId: 79 },
 
   // أبناء سميحان (id: 78)
-  { id:  98, name: "صالح", death: "5 ربيع الأول 1442 هـ - 22 أكتوبر 2020 م",  parentId: 78 },
+  { id:  98, name: "صالح", death: "5 ربيع الأول 1442 هـ - 22 أكتوبر 2020 م", portrait: 98,  parentId: 78 },
   // { id:  98, name: "صالح", death: "5 / 3 / 1442 هـ - 22 / 10 / 2020 م",  parentId: 78 },
 
   // أبناء صالح (id: 98)
@@ -387,7 +389,7 @@ const people = [
   { id: 156, name: "أحمد",  parentId: 138 },
 
   // أبناء هلال (id: 137)
-  { id: 157, name: "عبدالرحمن", death: "20 ذو القعدة 1443 هـ - 19 يونيو 2022 م",  parentId: 137 },
+  { id: 157, name: "عبدالرحمن", death: "20 ذو القعدة 1443 هـ - 19 يونيو 2022 م", portrait: 157,  parentId: 137 },
   // { id: 157, name: "عبدالرحمن", death: "20 / 11 / 1443 هـ - 19 / 6 / 2022 م",  parentId: 137 },
 
   // أبناء عبدالرحمن (id: 157)

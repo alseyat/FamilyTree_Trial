@@ -7,27 +7,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أسرة السياط</title>
+    <meta name="description" content="شجرة أسرة السياط — من عشيرة أهل الحجلا من الزقاريط من عبدة من قبيلة شمر الطائية">
     <link rel="icon" href="favicon_io/favicon.ico" type="image/x-icon">
-
     <link rel="icon" href="favicon_io/favicon-32x32.png" type="image/png">
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&family=Reem+Kufi+Ink:wght@400;700&family=Noto+Kufi+Arabic:wght@100..900&display=swap">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* إعدادات التمركز وضمان عدم الاختفاء عند تغيير حجم النافذة */
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh; /* يسمح للصفحة بالتمدد إذا كان المحتوى طويلاً */
-            margin: 0;
-            background-color: #f4efdf;
-            text-align: center;
-            overflow-y: auto; /* يظهر شريط التمرير فقط إذا دعت الحاجة */
-            padding: 40px 20px;
-            box-sizing: border-box;
-        }
-
         .intro-container {
             display: flex;
             flex-direction: column;
@@ -38,44 +25,38 @@
             max-width: 800px;
         }
 
-        /* الحالة الافتراضية للعناصر (مخفية ومزاحة للأسفل قليلاً) */
         .logo-intro, .verse-img, .enter-btn {
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 1s ease, transform 1s ease;
         }
 
-        /* تنسيق الشعار */
         .logo-intro {
             display: block;
             width: 80vw;
-            height: auto;
             max-width: 450px;
             height: auto;
         }
 
-        /* تنسيق صورة الآية */
         .verse-img {
-                        display: block;
-
+            display: block;
             width: 80vw;
             max-width: 500px;
             height: auto;
         }
 
-        /* تنسيق زر الدخول */
         .enter-btn {
-            font-family: 'Noto Kufi Arabic', sans-serif;
+            font-family: var(--font-heading);
             font-weight: 700;
-            background-color: #4a3b32;
-            color: #f4efdf;
+            background-color: var(--color-dark);
+            color: var(--color-cream);
             border: none;
             padding: 15px 50px;
             font-size: 1.3rem;
             border-radius: 30px;
             cursor: pointer;
             text-decoration: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
             margin-top: 10px;
         }
 
@@ -84,7 +65,6 @@
             transform: scale(1.05);
         }
 
-        /* تشغيل الحركات عند إضافة كلاس loaded بواسطة JavaScript */
         body.loaded .logo-intro {
             opacity: 1;
             transform: translateY(0);
@@ -93,33 +73,29 @@
         body.loaded .verse-img {
             opacity: 1;
             transform: translateY(0);
-            transition-delay: 0.5s; /* تبدأ بعد ظهور الشعار قليلاً */
+            transition-delay: 0.5s;
         }
 
         body.loaded .enter-btn {
             opacity: 1;
             transform: translateY(0);
-            transition-delay: 1.0s; /* تظهر في النهاية */
+            transition-delay: 1.0s;
         }
     </style>
 </head>
-<body>
 
+<body class="intro-page">
     <div class="intro-container">
         <img src="logo.png" alt="شعار أسرة السياط" class="logo-intro">
-
         <img src="verse.png" alt="آية قرآنية" class="verse-img">
-
         <a href="tree.html" class="enter-btn">دخول</a>
     </div>
 
     <script>
-        // الانتظار حتى يتم تحميل كافة الموارد (الصور والخطوط) تماماً
-        window.addEventListener('load', function() {
-            // إضافة الكلاس للجسم لبدء الحركات المتتالية بسلاسة
+        window.addEventListener('load', function () {
             document.body.classList.add('loaded');
         });
     </script>
-
 </body>
+
 </html>

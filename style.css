@@ -1,30 +1,361 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Reem+Kufi+Ink:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@100..900&display=swap');
+/* =========================================
+   Design Tokens (Custom Properties)
+   ========================================= */
+:root {
+    --color-bg: #f4efdf;
+    --color-text: #4a3b32;
+    --color-text-light: #6a5646;
+    --color-accent: #8b7355;
+    --color-dark: #4a3b32;
+    --color-cream: #f4efdf;
+    --color-border: rgba(139, 115, 85, 0.3);
+    --color-border-strong: rgba(139, 115, 85, 0.4);
+    --font-body: 'Noto Naskh Arabic', sans-serif;
+    --font-heading: 'Noto Kufi Arabic', sans-serif;
+    --font-display: 'Reem Kufi Ink', sans-serif;
+    --radius-sm: 8px;
+    --radius-md: 10px;
+    --radius-lg: 15px;
+    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.05);
+    --noise-bg: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+}
 
+/* =========================================
+   Base Styles
+   ========================================= */
 body {
-    font-family: 'Noto Naskh Arabic', sans-serif;
+    font-family: var(--font-body);
     direction: rtl;
-    background-color: #f4efdf;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+    background-color: var(--color-bg);
+    background-image: var(--noise-bg);
+    color: var(--color-text);
     margin: 0;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-y: auto;
+}
+
+/* Tree page: fixed-height, no scroll */
+body.tree-page {
     height: 100vh;
     height: 100dvh;
+    min-height: 0;
     overflow: hidden;
 }
 
-/* 1. الترويسة العلوية (الهيدر) */
+/* Intro page: centered */
+body.intro-page {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
+
+/* =========================================
+   Shared Content Page Layout
+   ========================================= */
+.header {
+    text-align: center;
+    padding: 30px 20px 0;
+}
+
+.header img {
+    max-height: 350px;
+    width: auto;
+}
+
+.content-container {
+    max-width: 800px;
+    width: 85%;
+    margin: 20px auto 40px;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    flex-grow: 1;
+}
+
+.content-container h2 {
+    font-family: var(--font-heading);
+    color: var(--color-accent);
+    font-size: 22px;
+    border-bottom: 2px solid rgba(139, 115, 85, 0.2);
+    padding-bottom: 10px;
+    margin-top: 30px;
+    text-align: right;
+}
+
+.content-container h2:first-of-type {
+    margin-top: 0;
+}
+
+.content-container p {
+    font-size: 18px;
+    line-height: 2;
+    text-align: justify;
+    margin-bottom: 15px;
+}
+
+.page-title {
+    font-family: var(--font-heading);
+    font-size: 26px;
+    color: var(--color-text);
+    text-align: center;
+    margin: 0 auto 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(139, 115, 85, 0.25);
+    line-height: 1.6;
+    max-width: 600px;
+}
+
+/* ── Back Button ── */
+.back-btn-container {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.back-btn {
+    font-family: var(--font-heading);
+    display: inline-block;
+    background: var(--color-dark);
+    color: var(--color-cream);
+    text-decoration: none;
+    padding: 12px 30px;
+    border-radius: var(--radius-sm);
+    font-weight: bold;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.back-btn:hover {
+    background: var(--color-text-light);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ── Content Pages Responsive ── */
+@media (max-width: 768px) {
+    .content-container {
+        margin: 15px auto;
+        padding: 25px;
+        width: 90%;
+    }
+
+    .header img {
+        max-height: 200px;
+    }
+
+    .page-title {
+        font-size: 20px;
+    }
+}
+
+/* =========================================
+   Footer (shared)
+   ========================================= */
+.bottom-footer {
+    flex-shrink: 0;
+    z-index: 1000;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+    margin-top: auto;
+}
+
+.footer-legend {
+    background: var(--color-bg);
+    color: #2c1a0e;
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: bold;
+    padding: 7px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    border-top: 1px solid rgba(139, 115, 85, 0.25);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.legend-swatch {
+    display: inline-block;
+    width: 26px;
+    height: 16px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.footer-credit {
+    background: var(--color-dark);
+    color: var(--color-cream);
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: bold;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.footer-whatsapp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-cream);
+    opacity: 0.85;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    text-decoration: none;
+    line-height: 1;
+}
+
+.footer-whatsapp:hover {
+    opacity: 1;
+    transform: scale(1.15);
+}
+
+@media (max-width: 480px) {
+    .footer-legend {
+        font-size: 10px;
+        gap: 12px;
+        padding: 6px 10px;
+    }
+
+    .legend-swatch {
+        width: 20px;
+        height: 13px;
+    }
+}
+
+/* =========================================
+   Floating Menu (shared)
+   ========================================= */
+#floating-menu-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1001;
+}
+
+#menu-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 10px;
+    background: rgba(244, 239, 223, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-width: 160px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+    z-index: 1002;
+}
+
+#menu-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.menu-item {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(139, 115, 85, 0.2);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: bold;
+    padding: 12px 15px;
+    cursor: pointer;
+    text-align: right;
+    text-decoration: none;
+    width: 100%;
+    box-sizing: border-box;
+    display: block;
+    outline: none;
+}
+
+.menu-item:last-child {
+    border-bottom: none;
+}
+
+.menu-item:hover {
+    background: rgba(255, 255, 255, 0.6);
+}
+
+/* =========================================
+   Floating Button (shared)
+   ========================================= */
+.floating-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--color-border-strong);
+    color: var(--color-text);
+    font-size: 28px;
+    font-weight: bold;
+    width: 45px;
+    height: 45px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+    padding: 0;
+    line-height: 1;
+    touch-action: manipulation;
+    user-select: none;
+}
+
+.floating-btn:hover {
+    background: #ffffff;
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(139, 115, 85, 0.2);
+}
+
+.floating-btn svg {
+    width: 20px !important;
+    height: 20px !important;
+    pointer-events: none;
+}
+
+/* =========================================
+   Tree Page: Top Header
+   ========================================= */
 .top-header {
     text-align: center;
     padding: 15px;
     background: rgba(244, 239, 223, 0.85);
     backdrop-filter: blur(8px);
-    border-bottom: 1px solid rgba(139, 115, 85, 0.3);
+    border-bottom: 1px solid var(--color-border);
     flex-shrink: 0;
     z-index: 1000;
     overflow: hidden;
+    width: 100%;
+    pointer-events: auto;
 }
 
 .top-header.hidden {
@@ -42,12 +373,12 @@ body {
 
 .top-header h1 {
     margin: 0;
-    font-family: 'Reem Kufi Ink', sans-serif;
+    font-family: var(--font-display);
     font-size: 35px;
-    color: #4a3b32;
+    color: var(--color-text);
 }
 
-/* 2. شريط الأدوات الثابت (Nav Bar) */
+/* Nav Bar */
 .nav-bar {
     display: flex;
     justify-content: center;
@@ -59,17 +390,18 @@ body {
     z-index: 999;
     flex-shrink: 0;
     flex-wrap: wrap;
+    pointer-events: auto;
 }
 
 .nav-bar button, .nav-bar a, .nav-bar input {
     background: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(139, 115, 85, 0.4);
-    color: #4a3b32;
-    font-family: 'Noto Naskh Arabic', sans-serif;
+    border: 1px solid var(--color-border-strong);
+    color: var(--color-text);
+    font-family: var(--font-body);
     font-size: 14px;
     font-weight: bold;
     padding: 8px 16px;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
@@ -82,17 +414,33 @@ body {
     transform: translateY(-2px);
 }
 
-.search-wrapper {
-    position: relative;
+/* =========================================
+   Tree Page: UI Wrapper Overlay
+   ========================================= */
+#ui-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+    transition-delay: 0.1s;
+    pointer-events: none;
 }
 
-.search-wrapper input {
-    width: 220px;
-    text-align: right;
-    cursor: text;
+#ui-wrapper.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition-delay: 0s;
 }
 
+/* =========================================
+   Tree Page: D3 Nodes & Links
+   ========================================= */
 .node {
     filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3));
     transition: filter 0.2s ease;
@@ -103,29 +451,25 @@ body {
     cursor: pointer;
 }
 
-/* 1. Add this transition to your existing base node rect to make the color fade smoothly */
 .node rect {
     fill: #ffffff;
     stroke: #2c3e50;
     stroke-width: 3px;
-    transition: fill 0.4s ease, stroke 0.4s ease; /* This makes the flash smooth */
+    transition: fill 0.4s ease, stroke 0.4s ease;
 }
 
-/* 2. Replace your existing highlight classes with these new colors */
 .node rect.highlight {
-    fill: #060606 !important; /* A bright golden yellow */
-    stroke: #070707 !important; /* A deep orange/red border */
+    fill: #060606 !important;
+    stroke: #070707 !important;
 }
 
 .node text.highlight {
-    fill: #fbf9f9 !important; /* Matches the text to the border */
+    fill: #fbf9f9 !important;
 }
 
 .node text {
-    font-family: 'Noto Naskh Arabic', sans-serif;
+    font-family: var(--font-body);
 }
-
-
 
 .link {
     fill: none;
@@ -148,105 +492,24 @@ body {
     position: relative;
 }
 
-/* 4. الفوتر السفلي الثابت */
-.bottom-footer {
-    flex-shrink: 0;
-    z-index: 1000;
-    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    padding: 0;
-}
-
-.footer-legend {
-    background: #f4efdf;
-    color: #2c1a0e;
-    font-family: 'Noto Kufi Arabic', sans-serif;
-    font-size: 12px;
-    font-weight: bold;
-    padding: 7px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    border-top: 1px solid rgba(139, 115, 85, 0.25);
-}
-
-@media (max-width: 480px) {
-    .footer-legend {
-        font-size: 10px;
-        gap: 12px;
-        padding: 6px 10px;
-    }
-
-    .legend-swatch {
-        width: 20px;
-        height: 13px;
-    }
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-}
-
-.legend-swatch {
-    display: inline-block;
-    width: 26px;
-    height: 16px;
-    border-radius: 4px;
-    flex-shrink: 0;
-}
-
-.footer-credit {
-    background: #4a3b32;
-    color: #f4efdf;
-    font-family: 'Noto Kufi Arabic', sans-serif;
-    font-size: 12px;
-    font-weight: bold;
-    padding: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-}
-
-.footer-whatsapp {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #f4efdf;
-    opacity: 0.85;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    text-decoration: none;
-    line-height: 1;
-}
-
-.footer-whatsapp:hover {
-    opacity: 1;
-    transform: scale(1.15);
-}
-
-
-/* Tooltip Styles */
+/* =========================================
+   Tree Page: Tooltip
+   ========================================= */
 #tooltip {
     position: absolute;
     text-align: center;
     padding: 8px 12px;
-    font-family: 'Noto Naskh Arabic', sans-serif;
+    font-family: var(--font-body);
     font-size: 14px;
     font-weight: bold;
     color: #fff;
     background: rgba(0, 0, 0, 0.8);
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     pointer-events: none;
     opacity: 0;
     direction: rtl;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 2000;
     width: 250px;
     white-space: normal;
@@ -254,18 +517,20 @@ body {
     line-height: 1.6;
 }
 
-/* Input Box */
+/* =========================================
+   Tree Page: Search
+   ========================================= */
 .search-container input[type="text"] {
     background: rgba(255, 255, 255, 0.35);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(139, 115, 85, 0.4);
-    color: #4a3b32;
-    font-family: 'Noto Naskh Arabic', sans-serif;
+    border: 1px solid var(--color-border-strong);
+    color: var(--color-text);
+    font-family: var(--font-body);
     font-size: 14px;
     font-weight: bold;
     padding: 10px 16px;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
     outline: none;
@@ -276,144 +541,6 @@ body {
     text-align: right;
 }
 
-/* Search Results Container */
-ul#search-results {
-    top: 100%;
-    right: 0;
-    position: absolute;
-    width: 100%;
-    margin-top: 5px;
-    font-family: 'Noto Naskh Arabic', sans-serif;
-    list-style-type: none;
-    padding: 0;
-    display: none;
-    z-index: 1000;
-    background: rgba(244, 239, 223, 0.9) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(139, 115, 85, 0.3) !important;
-    border-radius: 8px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    left: 25%;
-}
-
-ul#search-results li {
-    padding: 10px;
-    cursor: pointer;
-    direction: rtl;
-    border-bottom: 1px solid rgba(139, 115, 85, 0.3);
-    text-align: right;
-}
-
-ul#search-results li:hover {
-    background: rgba(255, 255, 255, 0.5) !important;
-}
-
-#search-box:focus {
-    background: rgba(255, 255, 255, 0.85);
-    border: 2px solid #8b7355;
-    box-shadow: 0 0 10px rgba(139, 115, 85, 0.3);
-    outline: none;
-}
-
-@media (max-width: 600px) {
-    .search-container {
-        margin-top: 240px;
-    }
-
-    .search-container input[type="text"] {
-        width: 70%;
-        font-size: 14px;
-        padding: 8px;
-    }
-
-    ul#search-results {
-        width: 80%;
-        left: 10%;
-    }
-
-    .top-header {
-        padding: 10px 5px;
-    }
-    
-    .top-header img {
-        max-height: 180px;
-        margin-bottom: 5px;
-    }
-
-
-
-
-}
-
-/* =========================================
-   UI Overlay & Floating Buttons Styling
-========================================= */
-
-/* Wrap the logo and nav to float them over the tree */
-#ui-wrapper {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 1000;
-    /* Added opacity fade and a smoother easing curve */
-transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
-    transition-delay: 0.1s; /* Adds a tiny buffer to ignore accidental scroll bounces */
-    pointer-events: none;
-}
-
-#ui-wrapper.hidden {
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-20px);
-    transition-delay: 0s; /* Hide immediately when scrolling down */
-}
-
-.top-header, .nav-bar {
-    pointer-events: auto; /* Re-enables clicking on the actual buttons/logo */
-}
-
-.top-header {
-    width: 100%;
-}
-
-/* Floating Zoom Controls */
-/* Floating Controls Container */
-
-/* Universal Floating Button Style */
-.floating-btn {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(139, 115, 85, 0.4);
-    color: #4a3b32;
-    font-size: 28px;
-    font-weight: bold;
-    width: 45px;
-    height: 45px;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s ease;
-    padding: 0;
-    line-height: 1;
-    touch-action: manipulation;
-    user-select: none;
-}
-
-.floating-btn:hover {
-    background: #ffffff;
-    transform: scale(1.1);
-    box-shadow: 0 6px 12px rgba(139, 115, 85, 0.2);
-}
-
-/* Isolated Search Container */
 #floating-search-container {
     position: absolute;
     top: 20px;
@@ -422,14 +549,81 @@ transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
     display: flex;
     justify-content: flex-start;
     height: 45px;
-    /* display: none; */
 }
 
-/* Isolated Zoom Container */
+.search-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: min(250px, calc(100vw - 80px));
+    z-index: 1001;
+}
+
+.search-wrapper input {
+    width: 100%;
+    height: 45px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 2px solid var(--color-accent);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: bold;
+    padding: 0 15px;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    outline: none;
+    direction: rtl;
+    text-align: right;
+}
+
+#search-box:focus {
+    background: rgba(255, 255, 255, 0.85);
+    border: 2px solid var(--color-accent);
+    box-shadow: 0 0 10px rgba(139, 115, 85, 0.3);
+    outline: none;
+}
+
+ul#search-results {
+    top: 50px;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    margin: 0;
+    font-family: var(--font-body);
+    list-style-type: none;
+    padding: 0;
+    display: none;
+    background: rgba(244, 239, 223, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+ul#search-results li {
+    padding: 12px 15px;
+    cursor: pointer;
+    direction: rtl;
+    border-bottom: 1px solid rgba(139, 115, 85, 0.2);
+    text-align: right;
+    font-size: 14px;
+}
+
+ul#search-results li:hover {
+    background: rgba(255, 255, 255, 0.6);
+}
+
+/* =========================================
+   Tree Page: Zoom Controls
+   ========================================= */
 .zoom-controls {
     position: absolute;
-    /* This 75px pushes the zoom buttons strictly below the search area, making overlap mathematically impossible */
-    top: 75px; 
+    top: 75px;
     left: 20px;
     display: flex;
     flex-direction: column;
@@ -443,144 +637,9 @@ transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
     box-shadow: 0 6px 12px rgba(139, 115, 85, 0.2);
 }
 
-
-
-.search-wrapper {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 250px; /* How far it expands to the right */
-    z-index: 1001;
-}
-
-.search-wrapper input {
-    width: 100%;
-    height: 45px;
-    box-sizing: border-box;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 2px solid #8b7355;
-    color: #4a3b32;
-    font-family: 'Noto Naskh Arabic', sans-serif;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 0 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    outline: none;
-    direction: rtl;
-    text-align: right;
-}
-
-/* Search Results Dropdown */
-ul#search-results {
-    top: 50px;
-    left: 0;
-    position: absolute;
-    width: 100%;
-    margin: 0;
-    font-family: 'Noto Naskh Arabic', sans-serif;
-    list-style-type: none;
-    padding: 0;
-    display: none;
-    background: rgba(244, 239, 223, 0.95);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(139, 115, 85, 0.4);
-    border-radius: 8px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
-}
-
-ul#search-results li {
-    padding: 12px 15px;
-    cursor: pointer;
-    direction: rtl;
-    border-bottom: 1px solid rgba(139, 115, 85, 0.2);
-    text-align: right;
-    font-size: 14px;
-}
-
-ul#search-results li:hover {
-    background: rgba(255, 255, 255, 0.6);
-}
-
-.floating-btn svg {
-    width: 20px !important;
-    height: 20px !important;
-    pointer-events: none; /* Stops the SVG itself from capturing clicks */
-}
-
-/* Floating Menu Container */
-#floating-menu-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1001;
-}
-
-/* Menu Dropdown Styling with Transition */
-#menu-dropdown {
-    position: absolute;
-    top: 100%; /* Positions it right below the button */
-    right: 0;  /* Aligns it to the right edge so the button doesn't move */
-    margin-top: 10px;
-    background: rgba(244, 239, 223, 0.95);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(139, 115, 85, 0.4);
-    border-radius: 8px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    min-width: 160px;
-    
-    /* Animation properties */
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
-    z-index: 1002;
-    z-index: 1002;
-}
-
-/* The class added by JavaScript to show the menu */
-#menu-dropdown.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-/* Individual Menu Items */
-.menu-item {
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid rgba(139, 115, 85, 0.2);
-    color: #4a3b32;
-    font-family: 'Noto Naskh Arabic', sans-serif;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 12px 15px;
-    cursor: pointer;
-    text-align: right;
-    text-decoration: none;
-    width: 100%;
-    box-sizing: border-box;
-    display: block;
-    outline: none;
-}
-
-.menu-item:last-child {
-    border-bottom: none;
-}
-
-.menu-item:hover {
-    background: rgba(255, 255, 255, 0.6);
-}
-
-/* Controls Toggle Panel */
+/* =========================================
+   Tree Page: Controls Toggle Panel
+   ========================================= */
 #controls-panel {
     display: flex;
     flex-direction: column;
@@ -602,7 +661,6 @@ ul#search-results li:hover {
     pointer-events: auto;
 }
 
-/* Stagger children buttons when opening */
 #controls-panel.open .floating-btn:nth-child(1) { transition-delay: 0.04s; }
 #controls-panel.open .floating-btn:nth-child(2) { transition-delay: 0.08s; }
 #controls-panel.open .floating-btn:nth-child(3) { transition-delay: 0.12s; }
@@ -610,7 +668,15 @@ ul#search-results li:hover {
 #controls-panel.open .floating-btn:nth-child(5) { transition-delay: 0.20s; }
 #controls-panel.open .floating-btn:nth-child(6) { transition-delay: 0.24s; }
 
-/* ── Share Button ── */
+#controls-toggle-btn.active {
+    background: rgba(139, 115, 85, 0.18);
+    border-color: rgba(139, 115, 85, 0.7);
+    box-shadow: 0 4px 12px rgba(139, 115, 85, 0.25);
+}
+
+/* =========================================
+   Tree Page: Share Button & Toast
+   ========================================= */
 #share-btn {
     position: absolute;
     top: 75px;
@@ -618,20 +684,19 @@ ul#search-results li:hover {
     z-index: 1000;
 }
 
-/* ── Share Toast ── */
 #share-toast {
     position: fixed;
     bottom: 60px;
     left: 50%;
     transform: translateX(-50%) translateY(10px);
-    background: #4a3b32;
-    color: #f4efdf;
-    font-family: 'Noto Naskh Arabic', sans-serif;
+    background: var(--color-dark);
+    color: var(--color-cream);
+    font-family: var(--font-body);
     font-size: 14px;
     font-weight: bold;
     padding: 10px 22px;
-    border-radius: 10px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
@@ -645,40 +710,21 @@ ul#search-results li:hover {
     transform: translateX(-50%) translateY(0);
 }
 
-/* Active state for the toggle button */
-#controls-toggle-btn.active {
-    background: rgba(139, 115, 85, 0.18);
-    border-color: rgba(139, 115, 85, 0.7);
-    box-shadow: 0 4px 12px rgba(139, 115, 85, 0.25);
-}
-
-@media (max-width: 600px) {
-    .search-wrapper {
-        width: 210px; /* Slightly smaller on mobile screens */
-    }
-}
-
 /* =========================================
-   Fixed Header Overlay: Logo + Lineage Text
-   - Sits fixed at top-center of the viewport
-   - Never moves or scales with the tree
-   - Fades out when scrolling down, returns at top
-========================================= */
-
+   Tree Page: Header Overlay (Logo + Lineage)
+   ========================================= */
 #header-overlay {
     position: fixed;
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 900; /* Below floating buttons (1001) but above tree */
+    z-index: 900;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 14px 24px 10px;
-    pointer-events: none; /* Lets clicks pass through to the tree */
-    width: 100%;        /* ADD THIS */
-
-    /* Smooth show/hide transition */
+    pointer-events: none;
+    width: 100%;
     opacity: 1;
     visibility: visible;
     transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
@@ -696,14 +742,14 @@ ul#search-results li:hover {
     max-height: 110px;
     width: auto;
     margin-bottom: 6px;
-    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.18));
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.18));
 }
 
 #lineage-text {
     opacity: 0;
     transition: opacity 0.4s ease;
     margin: 0;
-    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-family: var(--font-heading);
     font-size: clamp(13px, 1.5vw, 15px);
     font-weight: 700;
     color: #3a2c1e;
@@ -712,55 +758,133 @@ ul#search-results li:hover {
     line-height: 1.7;
     letter-spacing: 0.02em;
     max-width: 55vw;
-    /* Soft warm text-shadow for elegance */
     text-shadow:
-        0 1px 0 rgba(255,255,255,0.8),
+        0 1px 0 rgba(255, 255, 255, 0.8),
         0 2px 8px rgba(139, 115, 85, 0.25);
-    /* Subtle decorative underline */
     border-bottom: 1.5px solid rgba(139, 115, 85, 0.35);
     padding-bottom: 4px;
 }
 
+/* =========================================
+   Mobile Responsive
+   ========================================= */
 @media (max-width: 600px) {
+    .top-header {
+        padding: 10px 5px;
+    }
+
+    .top-header img {
+        max-height: 180px;
+        margin-bottom: 5px;
+    }
+
+    .search-wrapper {
+        width: min(210px, calc(100vw - 80px));
+    }
+
+    .search-container {
+        margin-top: 240px;
+    }
+
+    .search-container input[type="text"] {
+        width: 70%;
+        font-size: 14px;
+        padding: 8px;
+    }
+
     #header-logo {
         max-height: 70px;
     }
+
     #lineage-text {
         font-size: 11px;
         max-width: 65vw;
     }
 }
-/* ── Share Button ── */
-#share-btn {
-    position: absolute;
-    top: 75px;
-    right: 20px;
-    z-index: 1000;
-}
 
-/* ── Share Toast ── */
-#share-toast {
-    position: fixed;
-    bottom: 60px;
-    left: 50%;
-    transform: translateX(-50%) translateY(10px);
-    background: #4a3b32;
-    color: #f4efdf;
-    font-family: 'Noto Naskh Arabic', sans-serif;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 10px 22px;
-    border-radius: 10px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
-    z-index: 3000;
+/* =========================================
+   Shared Date Parts (tree popup + deceased)
+   ========================================= */
+.death-date-parts {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0 4px;
     white-space: nowrap;
 }
 
-#share-toast.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-50%) translateY(0);
+.death-date-hijri,
+.death-date-miladi {
+    white-space: nowrap;
+}
+
+.death-date-sep {
+    white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+    .death-date-parts {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+
+    .death-date-sep {
+        display: none;
+    }
+}
+
+/* =========================================
+   Print Stylesheet
+   ========================================= */
+@media print {
+    body {
+        background-image: none !important;
+        background-color: #fff !important;
+        color: #000 !important;
+        overflow: visible !important;
+        height: auto !important;
+        min-height: 0 !important;
+    }
+
+    .floating-btn,
+    #floating-menu-container,
+    #floating-search-container,
+    .zoom-controls,
+    #share-btn,
+    #share-toast,
+    .back-btn-container,
+    #header-overlay,
+    #ui-wrapper {
+        display: none !important;
+    }
+
+    .content-container {
+        background: none !important;
+        backdrop-filter: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .bottom-footer {
+        box-shadow: none !important;
+    }
+
+    .footer-legend {
+        border-top: 1px solid #ccc !important;
+    }
+
+    .header img {
+        max-height: 150px !important;
+    }
+
+    a {
+        text-decoration: none !important;
+        color: inherit !important;
+    }
 }

@@ -3,77 +3,32 @@
 
 <head>
     <link rel="preload" as="image" href="logo.png">
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>شبات الأسرة - شجرة أسرة السياط</title>
+    <meta name="description" content="شبات أسرة السياط — مواعيد وأماكن لقاءات الأسرة">
     <link rel="icon" href="favicon_io/favicon.ico" type="image/x-icon">
     <link rel="icon" href="favicon_io/favicon-32x32.png" type="image/png">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&family=Reem+Kufi+Ink:wght@400;700&family=Noto+Kufi+Arabic:wght@100..900&display=swap">
     <link rel="stylesheet" href="style.css">
-
     <style>
-        body {
-            font-family: 'Noto Naskh Arabic', sans-serif;
-            direction: rtl;
-            background-color: #f4efdf;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
-            color: #4a3b32;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            overflow-y: auto;
-        }
-
-        .header {
-            text-align: center;
-            padding: 30px 20px 0px;
-        }
-
-        .header img {
-            max-height: 350px;
-            width: auto;
-        }
-
-        .content-container {
-            max-width: 800px;
-            width: 85%;
-            margin: 20px auto 40px;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.55);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(139, 115, 85, 0.3);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            flex-grow: 1;
-        }
-
-        .page-title {
-            font-family: 'Noto Kufi Arabic', sans-serif;
-            font-size: 26px;
-            color: #4a3b32;
-            text-align: center;
-            margin: 0 auto 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid rgba(139, 115, 85, 0.25);
-        }
-
-        /* ── Table ── */
+        /* ── Shabat table styles ── */
         .shabat-table {
             width: 100%;
             border-collapse: collapse;
-            font-family: 'Noto Naskh Arabic', sans-serif;
+            font-family: var(--font-body);
             direction: rtl;
         }
 
         .shabat-table thead tr {
-            background: #4a3b32;
+            background: var(--color-dark);
         }
 
         .shabat-table thead th {
-            color: #f4efdf;
-            font-family: 'Noto Kufi Arabic', sans-serif;
+            color: var(--color-cream);
+            font-family: var(--font-heading);
             font-size: 15px;
             font-weight: 700;
             padding: 14px 20px;
@@ -111,58 +66,7 @@
             white-space: nowrap;
         }
 
-        /* ── Back button ── */
-        .back-btn-container {
-            text-align: center;
-            margin-top: 40px;
-        }
-
-        .back-btn {
-            font-family: 'Noto Kufi Arabic', sans-serif;
-            display: inline-block;
-            background: #4a3b32;
-            color: #f4efdf;
-            text-decoration: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .back-btn:hover {
-            background: #6a5646;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        /* ── Footer ── */
-        /* .bottom-footer {
-            text-align: center;
-            padding: 15px;
-            background: #4a3b32;
-            color: #f4efdf;
-            font-size: 14px;
-            font-weight: bold;
-            margin-top: auto;
-        } */
-
         @media (max-width: 768px) {
-            .content-container {
-                margin: 15px auto;
-                padding: 25px;
-                width: 90%;
-            }
-
-            .header img {
-                max-height: 200px;
-            }
-
-            .page-title {
-                font-size: 20px;
-            }
-
             .shabat-table thead th,
             .shabat-table tbody td {
                 padding: 10px 12px;
@@ -177,10 +81,8 @@
 </head>
 
 <body>
-
-    <!-- Floating Menu -->
     <div id="floating-menu-container">
-        <button id="menu-icon-btn" class="floating-btn">
+        <button id="menu-icon-btn" class="floating-btn" aria-label="القائمة">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
                 stroke-linecap="round" stroke-linejoin="round">
                 <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -191,12 +93,10 @@
         <div id="menu-dropdown"></div>
     </div>
 
-    <!-- Logo Header -->
     <div class="header">
         <img src="logo.png" alt="شعار شجرة السياط">
     </div>
 
-    <!-- Content -->
     <div class="content-container">
 
         <h1 class="page-title">شبات الأسرة</h1>
@@ -225,7 +125,7 @@
                     <td>يوميًا بعد صلاة العشاء</td>
                     <td>في منزله في حي الضلع</td>
                 </tr>
-                 <tr>
+                <tr>
                     <td>هيثم سعود السياط</td>
                     <td>كل خميس بعد صلاة العشاء</td>
                     <td>في منزله في حي السليمانية</td>
@@ -242,12 +142,9 @@
         <div class="back-btn-container">
             <a href="tree.html" class="back-btn">العودة إلى شجرة الأسرة</a>
         </div>
-
     </div>
 
-    <footer class="bottom-footer">
-    </footer>
-
+    <footer class="bottom-footer"></footer>
     <script src="menu.js"></script>
 </body>
 

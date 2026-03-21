@@ -1,24 +1,21 @@
 <!DOCTYPE html>
-<html lang="Arabic">
+<html lang="ar">
 
 <head>
-
     <link rel="preload" as="image" href="logo.png">
-
-    <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
-    <title>شجرة أسرة السياط</title>
-
-    <link rel="icon" href="favicon_io/favicon.ico" type="image/x-icon">
-
-    <link rel="icon" href="favicon_io/favicon-32x32.png" type="image/png">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <script src="https://d3js.org/d3.v6.min.js"></script>
-
+    <title>شجرة أسرة السياط</title>
+    <meta name="description" content="شجرة أسرة السياط التفاعلية — تصفح أفراد الأسرة وأنسابهم">
+    <link rel="icon" href="favicon_io/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon_io/favicon-32x32.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&family=Reem+Kufi+Ink:wght@400;700&family=Noto+Kufi+Arabic:wght@100..900&display=swap">
     <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v6.min.js" crossorigin="anonymous"></script>
     <style>
+        /* ── Death Popup (tree-page only) ── */
         #death-popup-overlay {
             position: fixed;
             inset: 0;
@@ -41,7 +38,7 @@
             transform: translate(-50%, -50%) scale(0.9);
             z-index: 2001;
             background: rgba(244, 239, 223, 0.98);
-            border: 1px solid rgba(139, 115, 85, 0.4);
+            border: 1px solid var(--color-border-strong);
             border-radius: 16px;
             padding: 28px 32px;
             min-width: 280px;
@@ -61,20 +58,20 @@
         }
 
         #death-popup-name {
-            font-family: 'Noto Kufi Arabic', sans-serif;
+            font-family: var(--font-heading);
             font-size: 16px;
             font-weight: 700;
-            color: #4a3b32;
+            color: var(--color-text);
             line-height: 1.8;
             margin-bottom: 6px;
             text-align: center;
         }
 
         #death-popup-rahma {
-            font-family: 'Noto Naskh Arabic', sans-serif;
+            font-family: var(--font-body);
             font-size: 15px;
             font-weight: 600;
-            color: #6a5646;
+            color: var(--color-text-light);
             margin-bottom: 14px;
             border-bottom: 1px solid rgba(139, 115, 85, 0.2);
             padding-bottom: 12px;
@@ -82,33 +79,30 @@
         }
 
         #death-popup-date {
-            font-family: 'Noto Naskh Arabic', sans-serif;
+            font-family: var(--font-body);
             font-size: 15px;
-            color: #6a5646;
+            color: var(--color-text-light);
             display: flex;
-            /* align-items: center; */
-            align-items: flex-start;  /* ← change from center to flex-start */
+            align-items: flex-start;
             gap: 8px;
-            justify-content: center
+            justify-content: center;
         }
 
         #death-popup-date::before {
             content: '❖';
             font-size: 16px;
             opacity: 0.8;
-            /* margin-top: 2px;  ← optional: fine-tune vertical alignment */
-
         }
 
         #death-popup-close {
             display: block;
             margin: 18px auto 0;
-            background: #4a3b32;
-            color: #f4efdf;
+            background: var(--color-dark);
+            color: var(--color-cream);
             border: none;
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
             padding: 8px 24px;
-            font-family: 'Noto Naskh Arabic', sans-serif;
+            font-family: var(--font-body);
             font-size: 14px;
             font-weight: bold;
             cursor: pointer;
@@ -116,12 +110,7 @@
         }
 
         #death-popup-close:hover {
-            background: #6a5646;
-        }
-
-        #lineage-text {
-            opacity: 0;
-            transition: opacity 0.4s ease;
+            background: var(--color-text-light);
         }
 
         #death-popup-portrait {
@@ -129,7 +118,7 @@
             width: 100%;
             max-width: 200px;
             height: auto;
-            border-radius: 10px;
+            border-radius: var(--radius-md);
             margin: 0 auto 14px;
             border: 2px solid rgba(139, 115, 85, 0.35);
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
@@ -137,49 +126,30 @@
         }
 
         #death-popup-label {
-            font-family: 'Noto Kufi Arabic', sans-serif;
+            font-family: var(--font-heading);
             font-size: 13px;
             font-weight: 700;
-            color: #4a3b32;
+            color: var(--color-text);
         }
 
-        .death-date-parts {
-            display: inline-flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 0 4px;
-            white-space: nowrap;
-        }
-
-        .death-date-hijri,
-        .death-date-miladi {
-            white-space: nowrap;
-        }
-
-        .death-date-sep {
-            white-space: nowrap;
+        @media (max-width: 768px) {
+            #death-popup {
+                max-width: 60vw;
+            }
         }
 
         @media (max-width: 480px) {
-            .death-date-parts {
-                flex-direction: column;
-                align-items: center;
-                gap: 4px;
-            }
-
-            .death-date-sep {
-                display: none;
+            #death-popup {
+                max-width: 85vw;
             }
         }
     </style>
 </head>
 
-<body>
-    <div id="ui-wrapper">
-    </div>
+<body class="tree-page">
+    <div id="ui-wrapper"></div>
 
-    <!-- Fixed Header Overlay: logo + lineage text, hides on scroll, never scales with tree -->
+    <!-- Fixed Header Overlay: logo + lineage text -->
     <div id="header-overlay">
         <img src="logo.png" alt="شعار أسرة السياط" id="header-logo">
         <p id="lineage-text">آل سياط من عشيرة أهل الحجلا من الزقاريط من الربيعية من عبدة من قبيلة شمر الطائية<br>وهم
@@ -188,7 +158,7 @@
     </div>
 
     <div id="floating-search-container">
-        <button id="search-icon-btn" class="floating-btn" title="بحث">
+        <button id="search-icon-btn" class="floating-btn" title="بحث" aria-label="بحث">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
                 stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
@@ -203,7 +173,7 @@
     </div>
 
     <div id="floating-menu-container">
-        <button id="menu-icon-btn" class="floating-btn">
+        <button id="menu-icon-btn" class="floating-btn" aria-label="القائمة">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
                 stroke-linecap="round" stroke-linejoin="round">
                 <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -211,12 +181,10 @@
                 <line x1="3" y1="18" x2="21" y2="18"></line>
             </svg>
         </button>
-
-        <div id="menu-dropdown">
-        </div>
+        <div id="menu-dropdown"></div>
     </div>
 
-    <button id="share-btn" class="floating-btn" title="مشاركة">
+    <button id="share-btn" class="floating-btn" title="مشاركة" aria-label="مشاركة">
         <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
             stroke-linecap="round" stroke-linejoin="round">
             <circle cx="18" cy="5" r="3"></circle>
@@ -229,7 +197,7 @@
     <div id="share-toast">تم نسخ الرابط!</div>
 
     <div class="zoom-controls">
-        <button id="controls-toggle-btn" class="floating-btn" title="أدوات التحكم">
+        <button id="controls-toggle-btn" class="floating-btn" title="أدوات التحكم" aria-label="أدوات التحكم">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
                 stroke-linecap="round" stroke-linejoin="round">
                 <line x1="4" y1="6" x2="20" y2="6"></line>
@@ -242,10 +210,10 @@
         </button>
 
         <div id="controls-panel">
-            <button id="zoom-in-btn" class="floating-btn" title="تكبير">+</button>
-            <button id="zoom-out-btn" class="floating-btn" title="تصغير">-</button>
+            <button id="zoom-in-btn" class="floating-btn" title="تكبير" aria-label="تكبير">+</button>
+            <button id="zoom-out-btn" class="floating-btn" title="تصغير" aria-label="تصغير">-</button>
 
-            <button id="expand-btn" class="floating-btn" title="تمديد الشجرة بالكامل">
+            <button id="expand-btn" class="floating-btn" title="تمديد الشجرة بالكامل" aria-label="تمديد الشجرة">
                 <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path d="M15 3h6v6"></path>
@@ -255,7 +223,7 @@
                 </svg>
             </button>
 
-            <button id="collapse-btn" class="floating-btn" title="طي الشجرة">
+            <button id="collapse-btn" class="floating-btn" title="طي الشجرة" aria-label="طي الشجرة">
                 <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path d="M4 14h6v6"></path>
@@ -265,22 +233,13 @@
                 </svg>
             </button>
 
-            <button id="center-btn" class="floating-btn" title="توسيط الجد الأول">
+            <button id="center-btn" class="floating-btn" title="توسيط الجد الأول" aria-label="توسيط الجد الأول">
                 <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
                     stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"></circle>
                     <circle cx="12" cy="12" r="3"></circle>
                 </svg>
             </button>
-
-            <!-- <button id="export-btn" class="floating-btn" title="تصدير PNG">
-                <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
-            </button> -->
         </div>
     </div>
 
@@ -294,13 +253,20 @@
         <div id="death-popup-name"></div>
         <div id="death-popup-rahma">- رحمه الله وأسكنه فسيح جناته -</div>
         <div id="death-popup-date"></div>
-        <button id="death-popup-close">إغلاق</button>
+        <button id="death-popup-close" aria-label="إغلاق">إغلاق</button>
     </div>
 
-    <footer class="bottom-footer">
-    </footer>
+    <footer class="bottom-footer"></footer>
 
     <script type="module" src="script.js"></script>
+    <script>
+        // Fallback: if module fails to load, show error after timeout
+        setTimeout(function() {
+            if (!document.querySelector('#tree-container svg')) {
+                document.getElementById('tree-container').innerHTML = '<p style="text-align:center;color:#a33;font-size:18px;padding:40px;direction:rtl;">تعذّر تحميل البيانات. يرجى تحديث الصفحة.</p>';
+            }
+        }, 5000);
+    </script>
     <script src="menu.js"></script>
     <script>
         (function () {
@@ -313,7 +279,6 @@
                 toggleBtn.classList.toggle('active', isOpen);
             });
 
-            // Close panel when clicking outside
             document.addEventListener('click', function (e) {
                 if (!toggleBtn.contains(e.target) && !panel.contains(e.target)) {
                     panel.classList.remove('open');
@@ -358,21 +323,6 @@
                 }
             });
         })();
-
-        // ── Export PNG ──
-        (function () {
-            const exportBtn = document.getElementById("export-btn");
-            exportBtn.addEventListener("click", async function (e) {
-                e.stopPropagation();
-                exportBtn.disabled = true;
-                exportBtn.style.opacity = "0.5";
-                await window.exportTree(function () {
-                    exportBtn.disabled = false;
-                    exportBtn.style.opacity = "";
-                });
-            });
-        })();
-
     </script>
 </body>
 

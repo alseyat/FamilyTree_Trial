@@ -3,88 +3,31 @@
 
 <head>
     <link rel="preload" as="image" href="logo.png">
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تمرة السياطية - شجرة أسرة السياط</title>
-
+    <meta name="description" content="تمرة السياطية — أيقونة الجوف وأول بشائر موسم التمور في الشمال">
     <link rel="icon" href="favicon_io/favicon.ico" type="image/x-icon">
     <link rel="icon" href="favicon_io/favicon-32x32.png" type="image/png">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&family=Reem+Kufi+Ink:wght@400;700&family=Noto+Kufi+Arabic:wght@100..900&display=swap">
     <link rel="stylesheet" href="style.css">
-
     <style>
-        body {
-            font-family: 'Noto Naskh Arabic', sans-serif;
-            direction: rtl;
-            background-color: #f4efdf;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
-            color: #4a3b32;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            overflow-y: auto;
-        }
-
-        .header {
-            text-align: center;
-            padding: 30px 20px 0px;
-        }
-
-        .header img {
-            max-height: 350px;
-            width: auto;
-        }
-
-        .content-container {
-            max-width: 800px;
-            width: 85%;
-            margin: 20px auto 40px;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.55);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(139, 115, 85, 0.3);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            flex-grow: 1;
-        }
-
-        .page-title {
-            font-family: 'Noto Kufi Arabic', sans-serif;
-            font-size: 26px;
-            color: #4a3b32;
-            text-align: center;
-            margin: 0 0 25px 0;
-            padding-bottom: 15px;
-            border-bottom: 2px solid rgba(139, 115, 85, 0.25);
-            line-height: 1.6;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+        /* ── Dates page overrides ── */
+        .content-container p {
+            line-height: 2.1;
+            margin-bottom: 16px;
         }
 
         .content-container h2 {
-            color: #8b7355;
             font-size: 20px;
-            border-bottom: 1.5px solid rgba(139, 115, 85, 0.2);
+            border-bottom-width: 1.5px;
             padding-bottom: 8px;
             margin-top: 32px;
             margin-bottom: 14px;
         }
 
-        .content-container h2:first-of-type {
-            margin-top: 0;
-        }
-
-        .content-container p {
-            font-size: 18px;
-            line-height: 2.1;
-            text-align: justify;
-            margin-bottom: 16px;
-        }
-
-        /* Numbered list styling */
         .content-container ol {
             padding-right: 24px;
             padding-left: 0;
@@ -98,10 +41,10 @@
         }
 
         .content-container ol li strong {
-            color: #4a3b32;
+            color: var(--color-text);
         }
 
-        /* References section */
+        /* References */
         .references-section {
             margin-top: 36px;
             padding-top: 18px;
@@ -120,50 +63,24 @@
         }
 
         .references-section a {
-            color: #8b7355;
+            color: var(--color-accent);
             text-decoration: underline;
             transition: color 0.2s ease;
         }
 
         .references-section a:hover {
-            color: #4a3b32;
+            color: var(--color-text);
         }
 
-        /* Highlighted closing paragraph */
         .closing-paragraph {
             background: rgba(139, 115, 85, 0.08);
-            border-right: 4px solid #8b7355;
+            border-right: 4px solid var(--color-accent);
             padding: 14px 18px;
-            border-radius: 0 8px 8px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
             font-size: 16px;
             line-height: 2.1;
             font-weight: bold;
-            color: #4a3b32;
-        }
-
-        .back-btn-container {
-            text-align: center;
-            margin-top: 40px;
-        }
-
-        .back-btn {
-            font-family: 'Noto Kufi Arabic', sans-serif;
-            display: inline-block;
-            background: #4a3b32;
-            color: #f4efdf;
-            text-decoration: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .back-btn:hover {
-            background: #6a5646;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            color: var(--color-text);
         }
 
         /* Themed image frame */
@@ -179,8 +96,8 @@
             background: linear-gradient(145deg, #c9a96e, #8b7355, #c9a96e, #6b5340, #c9a96e);
             border-radius: 4px;
             box-shadow:
-                0 0 0 2px #f4efdf,
-                0 0 0 4px #8b7355,
+                0 0 0 2px var(--color-bg),
+                0 0 0 4px var(--color-accent),
                 0 8px 25px rgba(74, 59, 50, 0.35);
         }
 
@@ -194,7 +111,6 @@
             z-index: 1;
         }
 
-        /* Corner ornaments */
         .dates-image-frame::after {
             content: '✦';
             position: absolute;
@@ -208,7 +124,7 @@
 
         .corner-ornament {
             position: absolute;
-            color: #f4efdf;
+            color: var(--color-cream);
             font-size: 14px;
             opacity: 0.85;
             line-height: 1;
@@ -229,47 +145,22 @@
         }
 
         @media (max-width: 768px) {
-            .dates-image-frame img {
-                /* width: 100%; */
-
-            max-width: 100%;
-            width: 280px;
-            height: auto;
-            }
-        }
-
-        /* .bottom-footer {
-            text-align: center;
-            padding: 15px;
-            background: #4a3b32;
-            color: #f4efdf;
-            font-size: 14px;
-            font-weight: bold;
-            margin-top: auto;
-        } */
-
-        @media (max-width: 768px) {
             .content-container {
-                margin: 15px auto;
-                padding: 25px;
                 width: 80%;
             }
 
-            .header img {
-                max-height: 200px;
-            }
-
-            .page-title {
-                font-size: 20px;
+            .dates-image-frame img {
+                max-width: 100%;
+                width: 280px;
+                height: auto;
             }
         }
     </style>
 </head>
 
 <body>
-
     <div id="floating-menu-container">
-        <button id="menu-icon-btn" class="floating-btn">
+        <button id="menu-icon-btn" class="floating-btn" aria-label="القائمة">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="#4a3b32" stroke-width="2.5" fill="none"
                 stroke-linecap="round" stroke-linejoin="round">
                 <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -369,8 +260,7 @@
                 </li>
                 <li>
                     <strong>د. عارف المسعر (رحمه الله):</strong> كتاب <em>"النخلة في حياة أهل الجوف"</em>، الطبعة
-                    الرسمية،
-                    صفحة 12.
+                    الرسمية، صفحة 12.
                 </li>
                 <li>
                     <strong>الأستاذ يوسف بن علي الشاعل:</strong> مقال <em>"كنوز خلف النفود مفتاحها بيد الرؤية"</em>،
@@ -388,12 +278,9 @@
         <div class="back-btn-container">
             <a href="tree.html" class="back-btn">العودة إلى شجرة الأسرة</a>
         </div>
-
     </div>
 
-    <footer class="bottom-footer">
-    </footer>
-
+    <footer class="bottom-footer"></footer>
     <script src="menu.js"></script>
 </body>
 
