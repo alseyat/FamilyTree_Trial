@@ -1,6 +1,24 @@
 import data from './alseyat.js';
 
 // =========================================
+//  Portrait image loader (case-insensitive)
+// =========================================
+/** Try common image extensions for a portrait path (without extension).
+ *  Calls back with the working src, or null if none matched. */
+function tryPortraitExtensions(basePath, callback) {
+    const exts = ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp'];
+    let i = 0;
+    function tryNext() {
+        if (i >= exts.length) { callback(null); return; }
+        const img = new Image();
+        img.onload = () => callback(img.src);
+        img.onerror = () => { i++; tryNext(); };
+        img.src = `${basePath}.${exts[i]}`;
+    }
+    tryNext();
+}
+
+// =========================================
 //  Constants & Layout Config
 // =========================================
 const BREAKPOINT = 768;
@@ -404,10 +422,10 @@ function openDeathPopup(d) {
     portraitEl.src = '';
 
     if (hasPortrait) {
-        const img = new Image();
-        img.onload = () => { portraitEl.src = img.src; portraitEl.style.display = 'block'; showPopup(); };
-        img.onerror = () => { portraitEl.style.display = 'none'; showPopup(); };
-        img.src = `assets/${d.data.portrait}.jpg`;
+        tryPortraitExtensions(`assets/${d.data.portrait}`, (src) => {
+            if (src) { portraitEl.src = src; portraitEl.style.display = 'block'; }
+            showPopup();
+        });
     } else {
         showPopup();
     }
