@@ -21,26 +21,113 @@ const MENU_ITEMS = [
 ];
 
 document.addEventListener('DOMContentLoaded', function () {
-    const menuContainer = document.getElementById('floating-menu-container');
-    if (!menuContainer) return;
+    const isIntroPage = document.body.classList.contains('intro-page');
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
-    const menuIconBtn = document.getElementById('menu-icon-btn');
-    const menuDropdown = document.getElementById('menu-dropdown');
+    // ── Build Top Navigation Bar (skip on intro page) ──
+    if (!isIntroPage) {
+        const nav = document.createElement('nav');
+        nav.id = 'top-navbar';
 
-    // Inject dropdown items (skip hidden ones)
-    if (menuDropdown) {
-        menuDropdown.innerHTML = '';
+        // Logo
+        const logo = document.createElement('a');
+        logo.href = 'index.html';
+        logo.innerHTML = '<img id="navbar-logo" src="logo.png" alt="شعار أسرة السياط">';
+
+        // Desktop links
+        const links = document.createElement('div');
+        links.id = 'navbar-links';
+
+        // Mobile hamburger toggle
+        const toggle = document.createElement('button');
+        toggle.id = 'navbar-toggle';
+        toggle.setAttribute('aria-label', 'القائمة');
+        toggle.innerHTML = `<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>`;
+
+        // Mobile dropdown
+        const mobileMenu = document.createElement('div');
+        mobileMenu.id = 'navbar-mobile-menu';
+
+        // Populate links
         MENU_ITEMS.forEach(item => {
             if (item.hidden) return;
-            const el = document.createElement('a');
-            el.href = item.href;
-            el.className = 'menu-item';
-            el.textContent = item.label;
-            menuDropdown.appendChild(el);
+
+            const isActive = currentPage === item.href;
+
+            // Desktop link
+            const a = document.createElement('a');
+            a.href = item.href;
+            a.className = 'nav-link' + (isActive ? ' active' : '');
+            a.textContent = item.label;
+            links.appendChild(a);
+
+            // Mobile link
+            const ma = document.createElement('a');
+            ma.href = item.href;
+            ma.className = 'nav-link' + (isActive ? ' active' : '');
+            ma.textContent = item.label;
+            mobileMenu.appendChild(ma);
+        });
+
+        // Assemble navbar: logo (right) → links (left) → toggle (left, mobile)
+        nav.appendChild(logo);
+        nav.appendChild(links);
+        nav.appendChild(toggle);
+
+        // Insert at top of body
+        document.body.prepend(mobileMenu);
+        document.body.prepend(nav);
+
+        // ── Mobile toggle ──
+        let mobileOpen = false;
+
+        toggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            mobileOpen = !mobileOpen;
+            if (mobileOpen) {
+                mobileMenu.classList.add('open');
+                // Animate: need a frame for the transition
+                requestAnimationFrame(() => {
+                    mobileMenu.style.opacity = '1';
+                    mobileMenu.style.transform = 'translateY(0)';
+                });
+                toggle.innerHTML = `<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>`;
+            } else {
+                closeMobileMenu();
+            }
+        });
+
+        function closeMobileMenu() {
+            mobileOpen = false;
+            mobileMenu.classList.remove('open');
+            toggle.innerHTML = `<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>`;
+        }
+
+        // Close on outside click
+        document.addEventListener('click', function (e) {
+            if (mobileOpen && !mobileMenu.contains(e.target) && !toggle.contains(e.target)) {
+                closeMobileMenu();
+            }
+        });
+
+        // Close on Escape
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && mobileOpen) closeMobileMenu();
         });
     }
 
-    // Inject universal footer
+    // ── Inject universal footer ──
     const footer = document.querySelector('footer.bottom-footer');
     if (footer) {
         const isTreePage = window.location.pathname.endsWith('tree.html');
@@ -79,19 +166,5 @@ document.addEventListener('DOMContentLoaded', function () {
                 </a>
             </div>
         `;
-    }
-
-    // Toggle menu open/close
-    if (menuIconBtn && menuDropdown) {
-        menuIconBtn.addEventListener('click', function (event) {
-            menuDropdown.classList.toggle('show');
-            event.stopPropagation();
-        });
-
-        document.addEventListener('click', function (event) {
-            if (!menuContainer.contains(event.target)) {
-                menuDropdown.classList.remove('show');
-            }
-        });
     }
 });

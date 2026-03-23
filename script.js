@@ -436,9 +436,47 @@ function closeDeathPopup() {
     document.getElementById('death-popup-overlay').classList.remove('open');
 }
 
+// =========================================
+//  Portrait Lightbox
+// =========================================
+function openLightbox(src, alt) {
+    const lightbox = document.getElementById('portrait-lightbox');
+    const img = document.getElementById('lightbox-img');
+    img.src = src;
+    img.alt = alt || '';
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+    const lightbox = document.getElementById('portrait-lightbox');
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+    document.getElementById('lightbox-img').src = '';
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('death-popup-close').addEventListener('click', closeDeathPopup);
     document.getElementById('death-popup-overlay').addEventListener('click', closeDeathPopup);
+
+    // Lightbox: click portrait in death popup to open full-size
+    document.getElementById('death-popup-portrait').addEventListener('click', function () {
+        if (this.src && this.style.display !== 'none') {
+            openLightbox(this.src, this.alt);
+        }
+    });
+
+    // Lightbox: close on background click, close button, or Escape
+    document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+    document.getElementById('portrait-lightbox').addEventListener('click', function (e) {
+        if (e.target === this) closeLightbox();
+    });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            const lightbox = document.getElementById('portrait-lightbox');
+            if (lightbox.classList.contains('open')) closeLightbox();
+        }
+    });
 });
 
 // =========================================
