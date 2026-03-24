@@ -238,7 +238,7 @@ const people = [
   { id:  93, name: "خالد",  parentId: 90 },
 
   // أبناء سعود (id: 79)
-  { id:  94, name: "أنس",  parentId: 79 },
+  { id:  94, name: "أنس", portrait: 94,  parentId: 79 },
 
   // أبناء أنس (id: 94)
   { id:  95, name: "سلام",  parentId: 94 },

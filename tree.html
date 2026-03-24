@@ -200,6 +200,99 @@
                 max-width: 85vw;
             }
         }
+
+        /* ── Alive Portrait Popup ── */
+        #portrait-popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+
+        #portrait-popup-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #portrait-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            z-index: 2001;
+            background: rgba(244, 239, 223, 0.98);
+            border: 1px solid var(--color-border-strong);
+            border-radius: 16px;
+            padding: 28px 32px;
+            min-width: 240px;
+            max-width: 30vw;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            direction: rtl;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+        }
+
+        #portrait-popup.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        #portrait-popup-img {
+            display: block;
+            width: 100%;
+            min-width: 120px;
+            min-height: 120px;
+            max-width: 200px;
+            height: auto;
+            border-radius: var(--radius-md);
+            margin: 0 auto 14px;
+            border: 2px solid rgba(107, 142, 107, 0.4);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            object-fit: cover;
+            cursor: zoom-in;
+        }
+
+        #portrait-popup-name {
+            font-family: var(--font-heading);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--color-text);
+            line-height: 1.8;
+            margin-bottom: 14px;
+        }
+
+        #portrait-popup-close {
+            display: block;
+            margin: 4px auto 0;
+            background: var(--color-dark);
+            color: var(--color-cream);
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 8px 24px;
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        #portrait-popup-close:hover {
+            background: var(--color-text-light);
+        }
+
+        @media (max-width: 768px) {
+            #portrait-popup { max-width: 60vw; }
+        }
+
+        @media (max-width: 480px) {
+            #portrait-popup { max-width: 85vw; }
+        }
     </style>
 </head>
 
@@ -355,6 +448,14 @@
     <div id="portrait-lightbox" role="dialog" aria-modal="true">
         <button id="lightbox-close" aria-label="إغلاق">✕</button>
         <img id="lightbox-img" src="" alt="">
+    </div>
+
+    <!-- Alive Portrait Popup -->
+    <div id="portrait-popup-overlay"></div>
+    <div id="portrait-popup">
+        <img id="portrait-popup-img" src="" alt="" style="display:none;">
+        <div id="portrait-popup-name"></div>
+        <button id="portrait-popup-close" aria-label="إغلاق">إغلاق</button>
     </div>
 
     <!-- Death Date Popup -->

@@ -51,6 +51,7 @@ body.tree-page {
     height: 100dvh;
     min-height: 0;
     overflow: hidden;
+    box-sizing: border-box; /* padding-top is included in 100vh, not added on top */
 }
 
 /* Tree page: simpler background (pattern can interfere with SVG tree) */
@@ -434,6 +435,13 @@ body.tree-page {
 
     #top-navbar {
         padding: 0 16px;
+    }
+
+    /* Prevent wide horizontal logo from overflowing into the center/left */
+    #navbar-logo {
+        max-width: 42vw;
+        height: auto;
+        max-height: 52px;
     }
 }
 

@@ -51,13 +51,18 @@ function getHOffset() {
 
 /** Determine node fill color based on deceased status */
 function getNodeFill(d) {
-    const isDead = d.data.deceased || d.data.death !== undefined || d.data.portrait;
+    const isDead = d.data.deceased || d.data.death !== undefined;
     return isDead ? '#c3baa2' : '#f8edcf';
 }
 
-/** Does this node have death/portrait info worth showing? */
+/** Does this node have death info worth showing? (death property exists, even if empty string) */
 function hasDeathInfo(d) {
-    return (d.data.death !== undefined && d.data.death !== null) || d.data.portrait;
+    return d.data.death !== undefined && d.data.death !== null;
+}
+
+/** Is this person alive and has a portrait? */
+function isAliveWithPortrait(d) {
+    return !!d.data.portrait && (d.data.death === undefined || d.data.death === null);
 }
 
 /** Build a transform string for a node position */
@@ -273,6 +278,33 @@ function update(source, center = false) {
         .attr('font-size', '9px').attr('fill', '#fff')
         .attr('pointer-events', 'none').text('❖');
 
+    // Portrait badge (top-left, static — no glow)
+    const portraitBadge = nodeEnter.append('g')
+        .attr('class', 'portrait-badge')
+        .attr('transform', 'translate(-44, -16)')
+        .style('cursor', 'pointer')
+        .style('display', d => isAliveWithPortrait(d) ? null : 'none')
+        .on('click', function (event, d) {
+            event.stopPropagation();
+            openPortraitPopup(d);
+        });
+
+    portraitBadge.append('circle')
+        .attr('r', 8)
+        .attr('fill', '#6b8e6b')
+        .attr('stroke', '#fff')
+        .attr('stroke-width', '1.5');
+    // Person silhouette: head + shoulders
+    portraitBadge.append('circle')
+        .attr('cx', 0).attr('cy', -2.5).attr('r', 2.8)
+        .attr('fill', '#fff').attr('stroke', 'none');
+    portraitBadge.append('path')
+        .attr('d', 'M-4,4.5 Q-4,0.5 0,0.5 Q4,0.5 4,4.5')
+        .attr('fill', '#fff').attr('stroke', 'none');
+
+    // ── Update portrait badge visibility on re-render ──
+    // (handled below in nodeUpdate section)
+
     // Children count badge
     const badge = nodeEnter.append('g')
         .attr('class', 'children-badge')
@@ -307,6 +339,8 @@ function update(source, center = false) {
         .style('fill', d => d._children ? '#ea5050' : '#95a5a6');
     nodeUpdate.select('.death-badge')
         .style('display', d => hasDeathInfo(d) ? null : 'none');
+    nodeUpdate.select('.portrait-badge')
+        .style('display', d => isAliveWithPortrait(d) ? null : 'none');
 
     // ── Exit nodes ──
     node.exit().transition()
@@ -437,6 +471,27 @@ function closeDeathPopup() {
 }
 
 // =========================================
+//  Alive Portrait Popup
+// =========================================
+function openPortraitPopup(d) {
+    const imgEl = document.getElementById('portrait-popup-img');
+    imgEl.style.display = 'none';
+    imgEl.src = '';
+    document.getElementById('portrait-popup-name').textContent = getFullName(d);
+
+    tryPortraitExtensions(`assets/${d.data.portrait}`, (src) => {
+        if (src) { imgEl.src = src; imgEl.style.display = 'block'; }
+        document.getElementById('portrait-popup').classList.add('open');
+        document.getElementById('portrait-popup-overlay').classList.add('open');
+    });
+}
+
+function closePortraitPopup() {
+    document.getElementById('portrait-popup').classList.remove('open');
+    document.getElementById('portrait-popup-overlay').classList.remove('open');
+}
+
+// =========================================
 //  Portrait Lightbox
 // =========================================
 function openLightbox(src, alt) {
@@ -461,6 +516,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Lightbox: click portrait in death popup to open full-size
     document.getElementById('death-popup-portrait').addEventListener('click', function () {
+        if (this.src && this.style.display !== 'none') {
+            openLightbox(this.src, this.alt);
+        }
+    });
+
+    // Alive portrait popup
+    document.getElementById('portrait-popup-close').addEventListener('click', closePortraitPopup);
+    document.getElementById('portrait-popup-overlay').addEventListener('click', closePortraitPopup);
+    document.getElementById('portrait-popup-img').addEventListener('click', function () {
         if (this.src && this.style.display !== 'none') {
             openLightbox(this.src, this.alt);
         }
