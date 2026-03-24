@@ -262,19 +262,6 @@
             return year * 10000 + month * 100 + day;
         }
 
-        /** Try common image extensions for a portrait path (without extension). */
-        function tryPortraitExtensions(basePath, callback) {
-            const exts = ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp'];
-            let i = 0;
-            function tryNext() {
-                if (i >= exts.length) { callback(null); return; }
-                const img = new Image();
-                img.onload = () => callback(img.src);
-                img.onerror = () => { i++; tryNext(); };
-                img.src = `${basePath}.${exts[i]}`;
-            }
-            tryNext();
-        }
 
         const deceased = people
             .filter(p => p.death !== undefined || p.portrait !== undefined)
@@ -353,17 +340,16 @@
                 const img = li.querySelector('.deceased-portrait');
                 const placeholder = li.querySelector('.deceased-portrait-placeholder');
                 if (img) {
-                    tryPortraitExtensions(`assets/${person.portrait}`, (src) => {
-                        if (src) {
-                            img.src = src;
-                            img.style.display = '';
-                            if (placeholder) placeholder.style.display = 'none';
-                            img.addEventListener('click', e => {
-                                e.stopPropagation();
-                                openLightbox(src, person.name);
-                            });
-                        }
-                    });
+                    const src = `assets/${person.portrait}.jpg`;
+                    img.onload = () => {
+                        img.style.display = '';
+                        if (placeholder) placeholder.style.display = 'none';
+                        img.addEventListener('click', e => {
+                            e.stopPropagation();
+                            openLightbox(src, person.name);
+                        });
+                    };
+                    img.src = src;
                 }
             }
 

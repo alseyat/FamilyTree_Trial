@@ -5,19 +5,6 @@ import data from './alseyat.js';
 // =========================================
 /** Try common image extensions for a portrait path (without extension).
  *  Calls back with the working src, or null if none matched. */
-function tryPortraitExtensions(basePath, callback) {
-    const exts = ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG', 'webp'];
-    let i = 0;
-    function tryNext() {
-        if (i >= exts.length) { callback(null); return; }
-        const img = new Image();
-        img.onload = () => callback(img.src);
-        img.onerror = () => { i++; tryNext(); };
-        img.src = `${basePath}.${exts[i]}`;
-    }
-    tryNext();
-}
-
 // =========================================
 //  Constants & Layout Config
 // =========================================
@@ -416,6 +403,16 @@ function click(event, d) {
 }
 
 // =========================================
+//  Portrait Loading Indicator
+// =========================================
+function showLoading() {
+    document.getElementById('portrait-loading').classList.add('show');
+}
+function hideLoading() {
+    document.getElementById('portrait-loading').classList.remove('show');
+}
+
+// =========================================
 //  Death Date Popup
 // =========================================
 function openDeathPopup(d) {
@@ -456,10 +453,19 @@ function openDeathPopup(d) {
     portraitEl.src = '';
 
     if (hasPortrait) {
-        tryPortraitExtensions(`assets/${d.data.portrait}`, (src) => {
-            if (src) { portraitEl.src = src; portraitEl.style.display = 'block'; }
+        showLoading();
+        const img = new Image();
+        img.onload = () => {
+            portraitEl.src = img.src;
+            portraitEl.style.display = 'block';
+            hideLoading();
             showPopup();
-        });
+        };
+        img.onerror = () => {
+            hideLoading();
+            showPopup();
+        };
+        img.src = `assets/${d.data.portrait}.jpg`;
     } else {
         showPopup();
     }
@@ -479,11 +485,21 @@ function openPortraitPopup(d) {
     imgEl.src = '';
     document.getElementById('portrait-popup-name').textContent = getFullName(d);
 
-    tryPortraitExtensions(`assets/${d.data.portrait}`, (src) => {
-        if (src) { imgEl.src = src; imgEl.style.display = 'block'; }
+    showLoading();
+    const img = new Image();
+    img.onload = () => {
+        imgEl.src = img.src;
+        imgEl.style.display = 'block';
+        hideLoading();
         document.getElementById('portrait-popup').classList.add('open');
         document.getElementById('portrait-popup-overlay').classList.add('open');
-    });
+    };
+    img.onerror = () => {
+        hideLoading();
+        document.getElementById('portrait-popup').classList.add('open');
+        document.getElementById('portrait-popup-overlay').classList.add('open');
+    };
+    img.src = `assets/${d.data.portrait}.jpg`;
 }
 
 function closePortraitPopup() {
