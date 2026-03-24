@@ -137,10 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <span class="legend-swatch" style="background:#c3baa2; border: 2px solid #2c3e50;"></span>
                     <span>متوفى</span>
                 </div>
-                <div class="legend-item">
-                    <span class="legend-swatch" style="background:#f8edcf; border: 2px solid #2c3e50;"></span>
-                    <span>على قيد الحياة</span>
-                </div>
+               
                 <div class="legend-item">
                     <svg width="20" height="20" viewBox="-10 -10 20 20" style="overflow:visible; flex-shrink:0;">
                         <circle r="8" fill="none" stroke="#8b6914" stroke-width="2">
@@ -151,6 +148,14 @@ document.addEventListener('DOMContentLoaded', function () {
                         <text dy="0.35em" text-anchor="middle" font-size="9px" fill="#fff">❖</text>
                     </svg>
                     <span>اضغط لعرض التفاصيل</span>
+                </div>
+                <div class="legend-item">
+                    <svg width="20" height="20" viewBox="-10 -10 20 20" style="overflow:visible; flex-shrink:0;">
+                        <circle r="8" fill="#6b8e6b" stroke="#fff" stroke-width="1.5"/>
+                        <circle cx="0" cy="-2.5" r="2.8" fill="#fff"/>
+                        <path d="M-4,4.5 Q-4,0.5 0,0.5 Q4,0.5 4,4.5" fill="#fff"/>
+                    </svg>
+                    <span>صورة شخصية</span>
                 </div>
             </div>
         ` : '';
