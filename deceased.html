@@ -264,7 +264,7 @@
 
 
         const deceased = people
-            .filter(p => p.death !== undefined || p.portrait !== undefined)
+            .filter(p => p.death !== undefined && p.death !== null)
             .map(p => ({
                 id: p.id,
                 name: p.name,
