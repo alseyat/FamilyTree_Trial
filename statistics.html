@@ -238,7 +238,7 @@
                 .forEach(([depth, count]) => {
                     const li = document.createElement('li');
                     li.className = 'generation-item';
-                    const label = genLabels[parseInt(depth)] || `الجيل ${parseInt(depth) + 1}`;
+                    const label = genLabels[parseInt(depth)] || `الـ ${parseInt(depth) + 1}`;
                     li.innerHTML = `
                         <div class="generation-badge">${parseInt(depth) + 1}</div>
                         <div class="generation-label">الجيل ${label}</div>
