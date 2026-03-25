@@ -109,8 +109,41 @@ let root = d3.hierarchy(data);
 root.x0 = width / 2;
 root.y0 = 0;
 
-const overlay = document.getElementById('header-overlay');
-let initialVerticalOffset = (overlay ? overlay.offsetHeight : 0) + 40;
+// Header (logo + lineage text) is rendered inside the SVG so it scrolls/zooms with the tree.
+const HEADER_HEIGHT = isMobile() ? 200 : 280;
+let initialVerticalOffset = HEADER_HEIGHT + 40;
+
+// Render header (logo + lineage) inside the SVG so it scrolls/zooms with the tree
+const headerFO = svgGroup.append('foreignObject')
+    .attr('class', 'tree-header-fo')
+    .attr('width', 900)
+    .attr('height', HEADER_HEIGHT)
+    .attr('x', -450)
+    .attr('y', 0);
+
+headerFO.append('xhtml:div')
+    .attr('xmlns', 'http://www.w3.org/1999/xhtml')
+    .style('display', 'flex')
+    .style('flex-direction', 'column')
+    .style('align-items', 'center')
+    .style('text-align', 'center')
+    .style('direction', 'rtl')
+    .style('pointer-events', 'none')
+    .style('width', '100%')
+    .style('box-sizing', 'border-box')
+    .style('padding', '0 10px')
+    .html(`
+        <img id="tree-header-logo" src="tree.png" alt="شعار أسرة السياط"
+             style="max-height:110px; width:auto; margin-bottom:6px;
+                    filter:drop-shadow(0 2px 8px rgba(0,0,0,0.18));">
+        <p style="margin:0; font-family:var(--font-heading); font-size:15px; font-weight:700;
+                  color:#3a2c1e; line-height:1.7; letter-spacing:0.02em; max-width:800px;
+                  text-shadow:0 1px 0 rgba(255,255,255,0.8), 0 2px 8px rgba(139,115,85,0.25);
+                  border-bottom:1.5px solid rgba(139,115,85,0.35); padding-bottom:4px;">
+            آل سياط من عشيرة أهل الحجلا من الزقاريط من الربيعية من عبدة من قبيلة شمر الطائية<br>
+            وهم ذرية سياط بن عودة بن محمد بن علّيق بن محمد بن سليمان (جد الحجلا) بن نافع بن عمار بن زقروط الربيعي العبدي الشمري
+        </p>
+    `);
 let initialHorizontalOffset = width / 2 + 19;
 let initialHorizontalForMobile = 79;
 
@@ -205,6 +238,21 @@ function update(source, center = false) {
     const requiredHeight = 230 + (maxY + initialVerticalOffset) * zoomLevel + 400;
 
     svgGroup.attr('transform', `translate(${currentAdjustment}, ${VERTICAL_CANVAS_PAD}) scale(${zoomLevel})`);
+
+    // Keep header centered above the root node, responsive to viewport width
+    const foWidth = isMobile() ? Math.min(window.innerWidth - 20, 500) : 900;
+    const foHeight = isMobile() ? 200 : 280;
+    const fontSize = isMobile() ? '12px' : '15px';
+    const maxPWidth = isMobile() ? (foWidth - 20) + 'px' : '800px';
+    headerFO
+        .attr('width', foWidth)
+        .attr('height', foHeight)
+        .attr('x', root.x + hOffset - foWidth / 2);
+    headerFO.select('p')
+        .style('font-size', fontSize)
+        .style('max-width', maxPWidth);
+    headerFO.select('#tree-header-logo')
+        .style('max-height', isMobile() ? '70px' : '110px');
 
     d3.select('#tree-container svg')
         .attr('width', Math.max(window.innerWidth, requiredWidth))
@@ -701,6 +749,7 @@ function collapseTree() {
 // =========================================
 //  Zoom
 // =========================================
+
 function applyZoom(newZoom) {
     const treeContainer = document.getElementById('tree-container');
     const centerX = treeContainer.scrollLeft + (treeContainer.clientWidth / 2);
@@ -730,6 +779,7 @@ function zoomOut() {
 // =========================================
 //  Event Bindings
 // =========================================
+
 document.addEventListener('DOMContentLoaded', function () {
     const searchIconBtn = document.getElementById('search-icon-btn');
     const searchWrapper = document.getElementById('search-wrapper-floating');
@@ -788,17 +838,14 @@ update(root);
 // =========================================
 const uiWrapper = document.getElementById('ui-wrapper');
 const treeContainerElement = document.getElementById('tree-container');
-const headerOverlay = document.getElementById('header-overlay');
 
 treeContainerElement.addEventListener('scroll', () => {
     const { scrollTop, scrollHeight, clientHeight } = treeContainerElement;
 
     if (scrollTop > 50) {
         uiWrapper.classList.add('hidden');
-        if (headerOverlay) headerOverlay.classList.add('hidden');
     } else if (scrollTop <= 5 && scrollHeight > clientHeight + 100) {
         uiWrapper.classList.remove('hidden');
-        if (headerOverlay) headerOverlay.classList.remove('hidden');
     }
 });
 

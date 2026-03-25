@@ -1001,58 +1001,6 @@ ul#search-results li:hover {
 /* =========================================
    Tree Page: Header Overlay (Logo + Lineage)
    ========================================= */
-#header-overlay {
-    position: fixed;
-    top: 76px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 900;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 14px 24px 10px;
-    pointer-events: none;
-    width: 100%;
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
-    transition-delay: 0.1s;
-}
-
-#header-overlay.hidden {
-    opacity: 0;
-    visibility: hidden;
-    transform: translateX(-50%) translateY(-20px);
-    transition-delay: 0s;
-}
-
-#header-logo {
-    max-height: 110px;
-    width: auto;
-    margin-bottom: 6px;
-    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.18));
-}
-
-#lineage-text {
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    margin: 0;
-    font-family: var(--font-heading);
-    font-size: clamp(13px, 1.5vw, 15px);
-    font-weight: 700;
-    color: #3a2c1e;
-    direction: rtl;
-    text-align: center;
-    line-height: 1.7;
-    letter-spacing: 0.02em;
-    max-width: 55vw;
-    text-shadow:
-        0 1px 0 rgba(255, 255, 255, 0.8),
-        0 2px 8px rgba(139, 115, 85, 0.25);
-    border-bottom: 1.5px solid rgba(139, 115, 85, 0.35);
-    padding-bottom: 4px;
-}
-
 /* =========================================
    Mobile Responsive
    ========================================= */
@@ -1080,14 +1028,6 @@ ul#search-results li:hover {
         padding: 8px;
     }
 
-    #header-logo {
-        max-height: 70px;
-    }
-
-    #lineage-text {
-        font-size: 11px;
-        max-width: 65vw;
-    }
 }
 
 /* =========================================
@@ -1143,7 +1083,6 @@ ul#search-results li:hover {
     #navbar-controls-dropdown,
     #share-toast,
     .back-btn-container,
-    #header-overlay,
     #ui-wrapper,
     #particles-canvas,
     #sparkle-canvas {

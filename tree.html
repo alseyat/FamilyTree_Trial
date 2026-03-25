@@ -342,13 +342,7 @@
 <body class="tree-page">
     <div id="ui-wrapper"></div>
 
-    <!-- Fixed Header Overlay: logo + lineage text -->
-    <div id="header-overlay">
-        <img src="tree.png" alt="شعار أسرة السياط" id="header-logo">
-        <p id="lineage-text">آل سياط من عشيرة أهل الحجلا من الزقاريط من الربيعية من عبدة من قبيلة شمر الطائية<br>وهم
-            ذرية سياط بن عودة بن محمد بن علّيق بن محمد بن سليمان (جد الحجلا) بن نافع بن عمار بن زقروط الربيعي العبدي
-            الشمري</p>
-    </div>
+    <!-- Header content is now rendered inside the SVG by script.js so it scrolls/zooms with the tree -->
 
     <!-- Right-side control column: search → controls → share -->
     <!-- Search wrapper lives outside #right-controls so it stays visible on mobile -->
@@ -548,9 +542,6 @@
             });
         })();
 
-        document.fonts.ready.then(() => {
-            document.getElementById('lineage-text').style.opacity = '1';
-        });
 
         // ── Share Button (desktop) ──
         (function () {
